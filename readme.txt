@@ -1,5 +1,7 @@
 === Kommiku ===
+Contributors: anraiki
 Tags: comics, manga, stories, illustrations, one manga, viewer
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GJ4QR9D5NPHQN
 Requires at least: 2.5
 Tested up to: 2.9.2
 Stable tag: 2.8
