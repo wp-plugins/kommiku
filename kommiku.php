@@ -1,16 +1,12 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 1.5
-Plugin URI: http://dotspiral.com/manga-comic-viewer/
-Description: A very good Comic Viewer
+Version: 2.0
+Plugin URI: http://dotspiral.com/kommiku/
+Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 */ 
-
-//Thank you 
-//NGallery for some of the "Definite" Codes
-//Page-Comments for the Alternative URL REWRITE - Keyvan Minoukadeh (http://www.keyvan.net/)
 
 if ( !defined('WP_LOAD_PATH') ) {
 
