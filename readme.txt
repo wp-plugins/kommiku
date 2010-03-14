@@ -20,6 +20,9 @@ Kommiku is a Online Illustrative Story Viewer. The main purpose is to browse thr
 
 == Changelog ==
 = 2.x = 
+V2.0.1 - March 14, 2010
+* Permission Bug Fix
+* Other Unknown bugs Fix
 v2.0 - February 15th 2010
 * New Framework- *Kommiku is now Wordpress dependent*
 * Database Structured.
