@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0
+Version: 2.1
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -27,14 +27,12 @@ $comic_upload_directory = get_option( 'kommiku_comic_upload' );
 define('KOMMIKU_URLPATH', WP_PLUGIN_URL . '/' . plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_PLUGIN_PATH', plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_FOLDER', dirname(__FILE__) );
-define('KOMMIKU_VERSION', 1.5);
 define('UPLOAD_FOLDER',WP_LOAD_PATH.$comic_upload_directory  );
 define('UPLOAD_URLPATH','http://'.$_SERVER['HTTP_HOST'].'/'.$comic_upload_directory );
 define('KOMMIKU_ABSPATH', str_replace("\\","/", WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/' ));
 define('KOMMIKU_URL_FORMAT', get_option( 'kommiku_url_format' ));
 define('KOMMIKU_SKIN', get_option( 'kommiku_skin_directory' ));
 define('HTTP_HOST', 'http://'.$_SERVER['HTTP_HOST'].'/' );
-
 
 add_action('admin_menu', 'kommiku_menu');
 
@@ -49,22 +47,24 @@ function kommiku_fancy_url($var='REQUEST_URI')
 	}
 	
 	$explodeURL = array_slice(explode('/',$req),1,5);
+				
 	if($explodeURL[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '') {
-		if(get_option('kommiku_one_comic') != 'false') {
+		if(get_option('kommiku_one_comic') != 0 && get_option('kommiku_one_comic') != false) {
 			$kommiku['manga'] = true;
 			$kommiku['series'] = get_option( 'kommiku_one_comic' );
 			$kommiku['one_comic'] = true;
 			$kommiku['chapter'] = $explodeURL[1];
 			$kommiku['pages'] = $explodeURL[2];
-		} else {
+		} else if($explodeURL[1] != '') {
 			global $wpdb;
 			$kommiku['series'] = strtolower($explodeURL[1]);
 			if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
 				$kommiku['manga'] = true;
 			$kommiku['chapter'] = $explodeURL[2];
 			$kommiku['pages'] = $explodeURL[3];
+		} else {
+			$kommiku['manga'] = true;
 		}
-		
 	} else if((count($explodeURL) <= 4) && (count($explodeURL) >= 1) && ($explodeURL[0] != '')) {
 		if(get_option('kommiku_no_slug')) {
 			if(get_option('kommiku_one_comic') != 'false' )  {
@@ -87,7 +87,7 @@ function kommiku_fancy_url($var='REQUEST_URI')
 }
 
 add_action('init', 'kommiku_fancy_url');
-add_action('template_redirect', 'kommiku_source');
+add_action('init', 'kommiku_source');
 
 function kommiku_header() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;
@@ -109,7 +109,7 @@ function kommiku_footer() {
 function kommiku_source()
 {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;	
-		include(KOMMIKU_FOLDER.'/admin/database.php');
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 		
 	if($kommiku['manga'])	{
@@ -220,7 +220,7 @@ function kommiku() {
 		if(!is_dir(UPLOAD_FOLDER))
 			mkdir(UPLOAD_FOLDER, 0755);
 			error_reporting(E_ALL ^ E_NOTICE);
-		require(KOMMIKU_FOLDER.'/admin/database.php');
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 		$wpdb->show_errors();
 		$phpdate = date( 'Y-m-d H:i:s' );
@@ -608,7 +608,7 @@ function kommiku_model_createpage() {
 
 function kommiku_settings() {
 	global $settings,$status;
-		include(KOMMIKU_FOLDER.'/admin/database.php');
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 			
 		if ($_POST['what'] == "settings" && $_POST['action'] == "update") {
@@ -661,10 +661,21 @@ register_activation_hook( __FILE__ , 'install');
 function install()
 	{
 	    global $wpdb, $kommiku_version;
-		//$version = get_option( 'kommiku_version' );
+		$version = get_option( 'kommiku_version' );
 		
-		//if ($version != KOMMIKU_VERSION) {
-		//		if (!$version) { //Install the Table Only if the Version Option didn't exist.
+		if ($version = '2.0') {
+			
+			$updateTable = 'ALTER TABLE `'.$wpdb->prefix.'_comic_chapter` 
+							ADD `pub_date` VARCHAR(30) NOT NULL ,
+							ADD `slug` VARCHAR(100) 
+							NOT NULL';
+			$wpdb->query($updateTable);
+				
+			update_option('kommiku_version', '2.1');	
+		}
+		
+		if ($version != KOMMIKU_VERSION) {
+				if (!$version) { //Install the Table Only if the Version Option didn't exist.
 				    $table = $wpdb->prefix."comic_page";
 					    if($wpdb->get_var("show tables like '$table'") != $table) {
 						    $structure = "CREATE TABLE $table (
@@ -699,6 +710,8 @@ function install()
 						        number VARCHAR(5) NOT NULL,
 						        summary TEXT NOT NULL,
 						        series_id INT(9) NOT NULL,
+								pub_date VARCHAR(30) NOT NULL,
+								slug VARCHAR(100), 
 							UNIQUE KEY id (id)
 						    );";
 						    $wpdb->query($structure);
@@ -731,16 +744,16 @@ function install()
 						    );";
 						    $wpdb->query($structure);
 						    
-						add_option("kommiku_version", KOMMIKU_VERSION);
+						add_option("kommiku_version", 2.1);
 						add_option("kommiku_url_format", 'manga');
 						add_option("kommiku_comic_upload", 'comics');
-						add_option("kommiku_skin_directory", 'kommiku');
+						add_option("kommiku_skin_directory", 'default');
 						add_option("kommiku_one_comic", 'false');
 						add_option("kommiku_no_slug", 'false');
 						mkdir(WP_LOAD_PATH."/comics", 0755);
 				}
-			//}
-		//}
+			}
+		}
 		
 	}
 

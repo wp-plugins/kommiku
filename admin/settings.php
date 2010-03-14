@@ -9,6 +9,7 @@
 	$settings['list'] = getFileList(KOMMIKU_FOLDER.'/themes/');
 	if($settings['url']) $settings_url = $settings['url'].'/';
 	//For no Slug to happen, we need a Series!
+	if($settings['one_comic'] == 'false') $settings['one_comic'] = '';
 ?>
 
 <div class="wrap">
