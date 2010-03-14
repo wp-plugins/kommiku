@@ -209,7 +209,7 @@ function kommiku_source()
 }
 
 function kommiku_menu() {
-	add_menu_page('Kommiku', 'Comic', 11, KOMMIKU_FOLDER, 'kommiku', KOMMIKU_URLPATH.'comic.png');
+	add_menu_page('Kommiku', 'Comic', 8, KOMMIKU_FOLDER, 'kommiku', KOMMIKU_URLPATH.'comic.png'); //Thanks Lokis :)
 	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'List', 8, 'kommiku', 'kommiku'); 
 	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Settings', 8, 'kommiku_settings', 'kommiku_settings'); 
 	}
