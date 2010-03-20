@@ -55,7 +55,9 @@ switch(rand(0,3)) {
 		
 		}
 		
-	
+if(KOMMIKU_URL_FORMAT) $seriesUrl = KOMMIKU_URL_FORMAT.'/';
+if(kommiku_no_slug) unset($series["slug"]);
+if($series["slug"]) $seriesSlug = strtolower($series['slug']).'/';
 ?>	
 
 <div class="wrap">
@@ -171,7 +173,7 @@ switch(rand(0,3)) {
 			<div style="margin-bottom: 10px;">
 				<div class="inside">
 					<div id="edit-slug-box">
-						<strong>Permalink:</strong> <span id="sample-permalink">http://dotspiral.com/<?php echo KOMMIKU_URL_FORMAT.'/'.strtolower($series['slug']).'/'.$db->trailingslash($chapter_number); ?>
+						<strong>Permalink:</strong> <span id="sample-permalink"><?php echo HTTP_HOST.$seriesUrl.$seriesSlug.$db->trailingslash($chapter_number); ?>
 						<input type="text" value="<?php echo $page['slug']; ?>" name="slug" style="width: 10%; background: #FFFBCC;" />
 						</span>
 					</div>

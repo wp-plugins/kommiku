@@ -2,6 +2,7 @@
 	  
 	  if(($isPage)) {
 	  		global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku;
+	  		if($series_chapter)
 	  		foreach ($series_chapter as $chapterList) { $h++;
 				$chapterLists[$h] = $chapterList->number;
 				$chapterListID[$h] = $chapterList->id;

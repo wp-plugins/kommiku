@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.1
+Version: 2.0.3
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -67,7 +67,7 @@ function kommiku_fancy_url($var='REQUEST_URI')
 		}
 	} else if((count($explodeURL) <= 4) && (count($explodeURL) >= 1) && ($explodeURL[0] != '')) {
 		if(get_option('kommiku_no_slug')) {
-			if(get_option('kommiku_one_comic') != 'false' )  {
+			if(get_option('kommiku_one_comic') != 'false' && is_numeric($explodeURL[0]))  {
 				$kommiku['manga'] = true;
 				$kommiku['series'] = get_option( 'kommiku_one_comic' );
 				$kommiku['one_comic'] = true;
@@ -165,7 +165,8 @@ function kommiku_source()
 			$kommiku['url']['page'] = $series['url'].$chapter['url'].$page['slug']."/";
 		}
 		
-		if($db->series_list())
+		$series_list = $db->series_list();
+		if($series_list)
 			foreach ($db->series_list() as $row) {
 				$kommiku['series_listing'] .= '<option value="'.$row->slug.'">'.$row->title.'</option>';
 				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$row->title.'</a></li>';
@@ -499,14 +500,14 @@ function kommiku() {
 					$ext = substr($basefilename, strrpos($basefilename, '.') + 1);
 					$filename = $_CLEAN['slug'].'.'.$ext;
 					
-					if ((($ext == "jpg") && ($_FILES["img"]["type"] == "image/jpeg")) || 
-				        (($ext == "png") && ($_FILES["img"]["type"] == "image/png")) || 
-				        (($ext == "gif") && ($_FILES["img"]["type"] == "image/gif")) && 
+					if (((strtolower($ext) == "jpg") && ($_FILES["img"]["type"] == "image/jpeg")) || 
+				        ((strtolower($ext) == "png") && ($_FILES["img"]["type"] == "image/png")) || 
+				        ((strtolower($ext) == "gif") && ($_FILES["img"]["type"] == "image/gif")) && 
 				        ($_FILES["img"]["size"] < 2048000)) {
 						//Determine the path to which we want to save this file
 				   			$newname = UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$filename;
 				   		//Go Ahead and Move :D	
-				   			$_CLEAN['img'] = $db->clean($filename); //str_replace(WP_LOAD_PATH,'',$db->clean($newname));
+				   			$_CLEAN['img'] = $filename; //str_replace(WP_LOAD_PATH,'',$db->clean($newname));
 			   		} else {
 			   			//More than 2MB?
 			   			$page['error']['toolarge'] = true; 
@@ -519,7 +520,6 @@ function kommiku() {
 			   		 else 
 				   		$_CLEAN['img'] = $oldPage['img'];
 			   	}
-			   	
 			if(!$page['fail']) {
 				$page['pubdate'] = date("Y-m-d H:i:s O");
 				if($chapter['number']) $chapterHistory = ' Chapter '.$chapter['number'].' -';
@@ -580,7 +580,98 @@ function kommiku() {
 
 	}
 }
-	
+
+add_action( 'widgets_init', 'load_widgets' );
+
+function load_widgets() {
+	register_widget( 'story_lister' );
+}
+
+class story_lister extends WP_Widget {
+
+	/**
+	 * Widget setup.
+	 */
+	function story_lister() {
+		/* Widget settings. */
+		$widget_ops = array( 'classname' => 'kstory-lister', 'description' => __('A widget that lists the Stories under the Kommiku plugin.', 'Kommiku: Story Lister') );
+
+		/* Widget control settings. */
+		$control_ops = array( 'width' => 300, 'height' => 350, 'id_base' => 'kommiku-story-lister-widget' );
+
+		/* Create the widget. */
+		$this->WP_Widget( 'kommiku-story-lister-widget', __('Kommiku: Story Lister', 'Kommiku: Story Lister'), $widget_ops, $control_ops );
+	}
+
+	/**
+	 * How to display the widget on the screen.
+	 */
+	function widget( $args, $instance ) {
+		extract( $args );
+		
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
+		$db = new kommiku_database();
+		
+		$series_list = $db->series_list();
+		if($series_list)
+			foreach ($series_list as $row) {
+				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$row->title.'</a></li>';
+			};	
+		
+		/* Our variables from the widget settings. */
+		$title = apply_filters('widget_title', $instance['title'] );
+
+		/* Before widget (defined by themes). */
+		echo $before_widget;
+
+		/* Display the widget title if one was input (before and after defined by themes). */
+		if ( $title )
+			echo $before_title . $title . $after_title;
+
+		//Grab Series
+		if($kommiku['series_list']) {
+			echo "<ul>";
+			echo $kommiku['series_list'];
+			echo "</ul>";
+			}
+			
+		/* After widget (defined by themes). */
+		echo $after_widget;
+	}
+
+	/**
+	 * Update the widget settings.
+	 */
+	function update( $new_instance, $old_instance ) {
+		$instance = $old_instance;
+
+		/* Strip tags for title and name to remove HTML (important for text inputs). */
+		$instance['title'] = strip_tags( $new_instance['title'] );
+
+		return $instance;
+	}
+
+	/**
+	 * Displays the widget settings controls on the widget panel.
+	 * Make use of the get_field_id() and get_field_name() function
+	 * when creating your form elements. This handles the confusing stuff.
+	 */
+	function form( $instance ) {
+
+		/* Set up some default widget settings. */
+		$defaults = array( 'title' => __('Example', 'example'), 'name' => __('John Doe', 'example'), 'sex' => 'male', 'show_sex' => true );
+		$instance = wp_parse_args( (array) $instance, $defaults ); ?>
+
+		<!-- Widget Title: Text Input -->
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e('Title:', 'hybrid'); ?></label>
+			<input id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo $instance['title']; ?>" style="width:100%;" />
+		</p>
+
+	<?php
+	}
+}
+
 function kommiku_model_series() {
 	global $series,$db,$status;		
 	include KOMMIKU_FOLDER.'/admin/list_series.php';
@@ -663,7 +754,7 @@ function install()
 	    global $wpdb, $kommiku_version;
 		$version = get_option( 'kommiku_version' );
 		
-		if ($version = '2.0') {
+		/*if ($version = '2.0') {
 			
 			$updateTable = 'ALTER TABLE `'.$wpdb->prefix.'_comic_chapter` 
 							ADD `pub_date` VARCHAR(30) NOT NULL ,
@@ -672,12 +763,13 @@ function install()
 			$wpdb->query($updateTable);
 				
 			update_option('kommiku_version', '2.1');	
-		}
+		}*/
 		
-		if ($version != KOMMIKU_VERSION) {
+		//Added Widget, No Table Optimization
+		if ($version = '2.0') { update_option('kommiku_version', '2.0.3') }		
+		
 				if (!$version) { //Install the Table Only if the Version Option didn't exist.
 				    $table = $wpdb->prefix."comic_page";
-					    if($wpdb->get_var("show tables like '$table'") != $table) {
 						    $structure = "CREATE TABLE $table (
 						        id INT(9) NOT NULL AUTO_INCREMENT,
 						        title VARCHAR(100) NOT NULL,
@@ -744,16 +836,15 @@ function install()
 						    );";
 						    $wpdb->query($structure);
 						    
-						add_option("kommiku_version", 2.1);
+						add_option("kommiku_version", "2.0.3");
 						add_option("kommiku_url_format", 'manga');
 						add_option("kommiku_comic_upload", 'comics');
 						add_option("kommiku_skin_directory", 'default');
 						add_option("kommiku_one_comic", 'false');
 						add_option("kommiku_no_slug", 'false');
 						mkdir(WP_LOAD_PATH."/comics", 0755);
-				}
 			}
-		}
+		
 		
 	}
 
