@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.3
+Version: 2.0.3.1
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -766,7 +766,13 @@ function install()
 		}*/
 		
 		//Added Widget, No Table Optimization
-		if ($version = '2.0') { update_option('kommiku_version', '2.0.3') }		
+		if ($version = '2.0.3') { 
+			update_option('kommiku_version', '2.0.3.1'); 
+		}		
+		
+		if ($version = '2.0') { 
+			update_option('kommiku_version', '2.0.3'); 
+		}		
 		
 				if (!$version) { //Install the Table Only if the Version Option didn't exist.
 				    $table = $wpdb->prefix."comic_page";
