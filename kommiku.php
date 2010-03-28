@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.3.1
+Version: 2.0.4
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -224,7 +224,7 @@ function kommiku() {
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 		$wpdb->show_errors();
-		$phpdate = date( 'Y-m-d H:i:s' );
+		$phpdate = date("Y-m-d H:i:s O");
 		
 		if($_POST['delete'] == "Delete It!") {
 						
@@ -405,14 +405,14 @@ function kommiku() {
 					
 				if(!$chapter['fail']) {
 					if($_POST['action'] == "create") {
-						$db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id']);
+						$db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['number']);
 						$chapterID = $wpdb->get_var("SELECT id FROM `".$table."` WHERE number = '".$_POST['number']."'");
 						$db->historyu('chapter','create',$phpdate,$series['title'],$series['slug'],$_CLEAN['title'],$_POST['number'],'0','0');
 						mkdir(UPLOAD_FOLDER.'/'.$series['slug'].'/'.$_POST['number'], 0755);
 						$status['pass'] = 'The Chapter has been successfully created';
 						kommiku_model_chapter();
 					} else if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {						
-						$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id']);
+						$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['number']);
 						$status['pass'] = 'The Chapter has been successfully updated';
 						$OldChapterFolder = str_replace('.0','',$_OLD['number']).'/';
 						$NewChapterFolder = str_replace('.0','',$_POST['number']).'/';
@@ -752,29 +752,10 @@ register_activation_hook( __FILE__ , 'install');
 function install()
 	{
 	    global $wpdb, $kommiku_version;
+	    
 		$version = get_option( 'kommiku_version' );
 		
-		/*if ($version = '2.0') {
-			
-			$updateTable = 'ALTER TABLE `'.$wpdb->prefix.'_comic_chapter` 
-							ADD `pub_date` VARCHAR(30) NOT NULL ,
-							ADD `slug` VARCHAR(100) 
-							NOT NULL';
-			$wpdb->query($updateTable);
-				
-			update_option('kommiku_version', '2.1');	
-		}*/
-		
-		//Added Widget, No Table Optimization
-		if ($version = '2.0.3') { 
-			update_option('kommiku_version', '2.0.3.1'); 
-		}		
-		
-		if ($version = '2.0') { 
-			update_option('kommiku_version', '2.0.3'); 
-		}		
-		
-				if (!$version) { //Install the Table Only if the Version Option didn't exist.
+				if (!$wpdb->get_var("SELECT * FROM `".$wpdb->prefix."comic_series`")) { /
 				    $table = $wpdb->prefix."comic_page";
 						    $structure = "CREATE TABLE $table (
 						        id INT(9) NOT NULL AUTO_INCREMENT,
@@ -842,15 +823,42 @@ function install()
 						    );";
 						    $wpdb->query($structure);
 						    
-						add_option("kommiku_version", "2.0.3");
-						add_option("kommiku_url_format", 'manga');
-						add_option("kommiku_comic_upload", 'comics');
-						add_option("kommiku_skin_directory", 'default');
-						add_option("kommiku_one_comic", 'false');
-						add_option("kommiku_no_slug", 'false');
-						mkdir(WP_LOAD_PATH."/comics", 0755);
 			}
 		
+		if(!get_option( 'kommiku_comic_upload' ))
+			add_option("kommiku_comic_upload", 'comics');
+			
+		if(!get_option( 'kommiku_version' ))
+			add_option("kommiku_version", "2.0.3");
+			
+		if(!get_option( 'kommiku_url_format' ))
+			add_option("kommiku_url_format", 'manga');
+			
+		if(!get_option( 'kommiku_skin_directory' ))
+			add_option("kommiku_skin_directory", 'default');
+			
+		if(!get_option( 'kommiku_one_comic' ))
+			add_option("kommiku_one_comic", 'false');
+			
+		if(!get_option( 'kommiku_no_slug' ))
+			add_option("kommiku_no_slug", 'false');
+			
+		if(!is_dir(WP_LOAD_PATH."/comics"))
+			mkdir(WP_LOAD_PATH."/comics", 0755);
+			
+		if ($version = '2.0') { update_option('kommiku_version', '2.0.3'); 	}	
+		if ($version = '2.0.3') { update_option('kommiku_version', '2.0.3.1'); }		
+		
+		//Newest
+		if ($version != '2.4' || $wpdb->query("SELECT * FROM `".$wpdb->prefix."_comic_chapter` ORDER BY `".$wpdb->prefix."_comic_chapter`.`pub_date` ASC")) {
+			$updateTable = 'ALTER TABLE `'.$wpdb->prefix.'_comic_chapter` 
+							ADD `pubdate` VARCHAR(30) NOT NULL ,
+							ADD `slug` VARCHAR(100) 
+							NOT NULL';
+			$wpdb->query($updateTable);
+				
+			update_option('kommiku_version', '2.0.4');	
+		}			
 		
 	}
 

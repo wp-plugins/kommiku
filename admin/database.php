@@ -126,7 +126,7 @@ Class kommiku_database {
 	  		
 	}
 	
-	function chapter_create($title = '', $number, $summary = '', $series_id, $returner = false) {
+	function chapter_create($title = '', $number, $summary = '', $series_id, $date, $slug,$returner = false) {
 	    global $wpdb;
 		
 		$table = $wpdb->prefix."comic_chapter";
@@ -135,10 +135,12 @@ Class kommiku_database {
 	  	array( 'title' => $title, 
 	  		   'number' => $number, 
 	  		   'summary' => $summary,
-	  		   'series_id' => $series_id
+	  		   'series_id' => $series_id,
+			   'pubdate' => $date,
+			   'slug' = $slug
 	  		 ), 
 	  	
-	  	array( '%s', '%s', '%s', '%d' )  
+	  	array( '%s', '%s', '%s', '%d', '%s', '%s' )  
 	  	       
 	  	    );
 	  	 if($returner == true)
@@ -487,7 +489,7 @@ Class kommiku_database {
 	
 	}
 	
-	function chapter_update($id = NULL,$title = '',$number,$summary,$series_id) {
+	function chapter_update($id = NULL,$title = '',$number,$summary,$series_id,$date,$slug) {
 	    global $wpdb;
 	    
 	    if(!$id)
@@ -500,10 +502,12 @@ Class kommiku_database {
 			  	array( 'title' => $title, 
 			  		   'number' => $number, 
 			  		   'summary' => $summary,
-			  		   'series_id' => $series_id
+			  		   'series_id' => $series_id,
+					   'pubdate' => $date,
+					   '$slug' => $slug
 			  		 ), 
 			  	array( 'id' => $id ),
-			  	array( '%s', '%s', '%s', '%d' ),  
+			  	array( '%s', '%s', '%s', '%d', '%s', '%s' ),  
 				array( '%d' ) );
 		}
 	}

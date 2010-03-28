@@ -20,6 +20,10 @@ Kommiku is a Online Illustrative Story Viewer. The main purpose is to browse thr
 
 == Changelog ==
 = 2.x = 
+V2.0.4 - March 14, 2010
+* More bug fixes. 
+* Database "not created" detection installed.
+* Added two awesome features to the Chapter Database: publishing date and slugs!
 V2.0.1 - March 14, 2010
 * Permission Bug Fix
 * Other Unknown bugs Fix
