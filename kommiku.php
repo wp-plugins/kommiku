@@ -789,7 +789,7 @@ function install()
 						        number VARCHAR(5) NOT NULL,
 						        summary TEXT NOT NULL,
 						        series_id INT(9) NOT NULL,
-								pub_date VARCHAR(30) NOT NULL,
+								pubdate VARCHAR(30) NOT NULL,
 								slug VARCHAR(100), 
 							UNIQUE KEY id (id)
 						    );";
