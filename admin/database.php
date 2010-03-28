@@ -137,7 +137,7 @@ Class kommiku_database {
 	  		   'summary' => $summary,
 	  		   'series_id' => $series_id,
 			   'pubdate' => $date,
-			   'slug' = $slug
+			   'slug' => $slug
 	  		 ), 
 	  	
 	  	array( '%s', '%s', '%s', '%d', '%s', '%s' )  
@@ -504,7 +504,7 @@ Class kommiku_database {
 			  		   'summary' => $summary,
 			  		   'series_id' => $series_id,
 					   'pubdate' => $date,
-					   '$slug' => $slug
+					   'slug' => $slug
 			  		 ), 
 			  	array( 'id' => $id ),
 			  	array( '%s', '%s', '%s', '%d', '%s', '%s' ),  

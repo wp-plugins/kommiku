@@ -755,7 +755,7 @@ function install()
 	    
 		$version = get_option( 'kommiku_version' );
 		
-				if (!$wpdb->get_var("SELECT * FROM `".$wpdb->prefix."comic_series`")) { /
+				if (!$wpdb->get_var("SELECT * FROM `".$wpdb->prefix."comic_series`")) { 
 				    $table = $wpdb->prefix."comic_page";
 						    $structure = "CREATE TABLE $table (
 						        id INT(9) NOT NULL AUTO_INCREMENT,
