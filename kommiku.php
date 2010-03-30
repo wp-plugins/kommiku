@@ -23,6 +23,7 @@ if ( !defined('WP_LOAD_PATH') ) {
 }
 
 $comic_upload_directory = get_option( 'kommiku_comic_upload' );
+if(!$comic_upload_directory) $comic_upload_directory = 'comics';
 
 define('KOMMIKU_URLPATH', WP_PLUGIN_URL . '/' . plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_PLUGIN_PATH', plugin_basename( dirname(__FILE__) ) . '/' );
