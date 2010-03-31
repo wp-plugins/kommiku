@@ -15,8 +15,8 @@
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
 	<h2>Kommiku Settings</h2>
-	<?php if ($settings['pass'] || $settings['error']) { ?>
-		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204); margin-bottom: 0;"><p><?php echo $settings['pass'].$settings['error']; ?></p></div>
+	<?php if ($post['pass'] || $settings['error']) { ?>
+		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204); margin-bottom: 0;"><p><?php echo $post['pass'].$settings['error']; ?></p></div>
 	<?php } ?>
 	<form method="post" action="admin.php?page=kommiku_settings" name="post">
 	<input name="what" value="settings" type="hidden"/>
@@ -87,5 +87,13 @@
 		<input type="submit" value="Save Changes" class="button-primary" name="submit"/>
 	</p>
 
+	</form>
+	
+	<form method="post" action="admin.php?page=kommiku_settings" name="post">
+	<input name="what" value="settings" type="hidden"/>
+	<input name="action" value="checktable" type="hidden"/>
+	<p class="submit">
+		<input type="submit" value="Check Tables" class="button-primary" name="submit"/>
+	</p>
 	</form>
 </div>
