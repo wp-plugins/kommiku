@@ -2,9 +2,8 @@
 
 if($series_chapter)
 foreach ($series_chapter as $item) {
-	$thedate = $wpdb->get_var("SELECT pubdate FROM ".$wpdb->prefix."comic_history WHERE type = 'chapter' AND type_id = '".$item->id."'");
 	if ($item->title) $chapterTitle = ' - '.$item->title;
-	$chapterListing = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->number.'/">Chapter '.$item->number.$chapterTitle.'</a><span style="float: right;">'.strftime('%D',strtotime($thedate)).'</span></li>'.$chapterListing;
+	$chapterListing = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->number.'/">Chapter '.$item->number.$chapterTitle.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$chapterListing;
 }
 
 if(!$chapterListing) $chapterListing = "<li>There are no chapter for this story at the moment.</li>";

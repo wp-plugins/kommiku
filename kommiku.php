@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.5
+Version: 2.0.6
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -112,7 +112,7 @@ function kommiku_source()
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;	
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
-		
+				
 	if($kommiku['manga'])	{
 						
 		if(!empty($kommiku['series'])) {
@@ -194,7 +194,25 @@ function kommiku_source()
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
 		//Main Page with no Series Selected
 		} else {
-			$history = $db->history_read();
+			$chapterUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
+			`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
+			`".$wpdb->prefix."comic_chapter`.`pubdate` as pubdate,
+			`".$wpdb->prefix."comic_series`.`title` as series_name
+			FROM `".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
+			WHERE `".$wpdb->prefix."comic_chapter`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
+			ORDER BY `".$wpdb->prefix."comic_chapter`.`pubdate` DESC";
+			$pageUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
+			`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
+			`".$wpdb->prefix."comic_page`.`slug` as page_slug, 
+			`".$wpdb->prefix."comic_page`.`pubdate` as pubdate,
+			`".$wpdb->prefix."comic_series`.`title` as series_name,
+			`".$wpdb->prefix."comic_series`.`chapterless` as chapterless
+			FROM `".$wpdb->prefix."comic_page`,`".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
+			WHERE `".$wpdb->prefix."comic_page`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
+			AND `".$wpdb->prefix."comic_page`.`chapter_id` = `".$wpdb->prefix."comic_chapter`.`id`
+			ORDER BY `".$wpdb->prefix."comic_page`.`pubdate` DESC";
+			$chapterUpdates = $wpdb->get_results($chapterUquery);
+			$pageUpdates = $wpdb->get_results($pageUquery);
 			$kommiku['seotitle'] .= "Story Listing";
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_index.php';
 		}
@@ -202,10 +220,6 @@ function kommiku_source()
 		exit;
 	}
 	
-	//Home home page
-	$kommiku["history"] = $db->history_read();
-	rsort($kommiku["history"]);
-		
 	unset($db);
 	
 }

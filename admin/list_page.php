@@ -5,7 +5,7 @@ if(!$chapter) $chapter = $db->chapter_detail();
 if($page_list)
 foreach ($page_list as $row) {
 	if ($row->title) $title = " - ".$row->title;
-	$listing[$row->number] = '<li><A href="'.$url.'admin.php?page=kommiku&sub=createpage&series='.$series["id"].'&chapter='.$chapter["id"].'&pg='.$row->id.'">'.$row->number.$title.'</a></li>';
+	$listing[$row->number] = '<li>#'.$row->number.' - <A href="'.$url.'admin.php?page=kommiku&sub=createpage&series='.$series["id"].'&chapter='.$chapter["id"].'&pg='.$row->id.'">'.$row->slug.'</a></li>';
 	unset($title);
 	}	
 $chapter_number = str_replace('.0','',$chapter['number']);

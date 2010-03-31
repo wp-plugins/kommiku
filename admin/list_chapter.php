@@ -4,7 +4,7 @@ $series = $db->series_detail();
 if($chapter_list)
 foreach ($chapter_list as $row) {
 	if ($row->title) $title = ' - '.$row->title;
-	$listing[$row->number] = '<li><A href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$row->id.'">'.$row->number.$title.'</a></li>';
+	$listing[$row->number] = '<li>#'.$row->number.' - <A href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$row->id.'">'.$row->slug.$title.'</a></li>';
 	unset($title);
 	}	
 if ($listing) ksort($listing,SORT_NUMERIC);
