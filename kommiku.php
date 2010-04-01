@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.6
+Version: 2.0.7
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -345,7 +345,8 @@ function kommiku() {
 					
 					if($_POST['action'] == "create") {
 						$db->series_create($_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$_POST['chapterless']);
-						mkdir(UPLOAD_FOLDER.'/'.$_POST['slug'], 0755);
+						if(!is_dir(UPLOAD_FOLDER.'/'.$_POST['slug']))
+							mkdir(UPLOAD_FOLDER.'/'.$_POST['slug'], 0755);
 						$status['pass'] = 'The Series has been successfully created';
 						$seriesID =	$wpdb->get_var("SELECT id FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'");
 						$db->historyu('series','create',$phpdate,$_CLEAN['title'],$_CLEAN['slug'],'0','0','0','0');

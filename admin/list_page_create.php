@@ -16,9 +16,7 @@ if (is_numeric($_GET["series"])) {
 
 $series = $db->series_detail($page['series_id']);
 $chapter = $db->chapter_detail($page['chapter_id']);
-	
-$chapter_number = str_replace('.0','',$chapter['number']);
-$folder = "/images/comic/".strtolower($series['title']).'/'.$chapter_number;
+$folder = "/images/comic/".$series['slug'].'/'.$chapter['slug'];
 if ($listing) ksort($listing,SORT_NUMERIC);
 
 $pageNumber = $db->page_number($_GET['series'],$chapter_id);
@@ -26,6 +24,7 @@ $pageNumber = $db->page_number($_GET['series'],$chapter_id);
 if(!isset($page['slug'])) $page['slug'] = $pageNumber;
 if(!is_numeric($page['number'])) $page['number'] = $pageNumber;
 if($page['id']) $pageTitle  = ' &raquo; Page '.$page['number'];
+if($series['chapterless'] == 0) $chapter_number = $chapter['slug'];
 if($chapter['id']) $chapterTitle = '&raquo; <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$chapter['id'].'">Chapter '.$chapter_number.'</a>';
 if($chapter['id']) $chapterURL = '&amp;chapter='.$chapter['id'];
 $publishWord = "Publish";
@@ -56,8 +55,8 @@ switch(rand(0,3)) {
 		}
 		
 if(KOMMIKU_URL_FORMAT) $seriesUrl = KOMMIKU_URL_FORMAT.'/';
-if(kommiku_no_slug) unset($series["slug"]);
-if($series["slug"]) $seriesSlug = strtolower($series['slug']).'/';
+$seriesSlug = strtolower($series['slug']).'/';
+if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 ?>	
 
 <div class="wrap">
@@ -183,12 +182,12 @@ if($series["slug"]) $seriesSlug = strtolower($series['slug']).'/';
 			
 		<div class="metabox-holder">
 				
-		<?php if($page['img']){ ?>
+		<?php if($page['img'] && $series['slug']){ ?>
 			<div class="postbox">
 				<h3 style="cursor: default;"><span>The Page</span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px; overflow-x: scroll; text-align: center;">
-						<?php echo '<img src="'.UPLOAD_URLPATH.'/'.strtolower($series['slug']).'/'.$db->trailingslash($chapter_number).$page['img'].'" />'; ?>
+						<?php echo '<img src="'.UPLOAD_URLPATH.'/'.$series['slug'].'/'.$db->trailingslash($chapter_number).$page['img'].'" />'; ?>
 					</div>
 				</div>
 			</div>
