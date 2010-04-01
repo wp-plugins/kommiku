@@ -31,9 +31,9 @@
 			Page <select onchange="javascript:window.location='<?php if(KOMMIKU_URL_FORMAT) echo '/'.KOMMIKU_URL_FORMAT; echo "/".$series['slug']."/".$chapter['next']; ?>'+this.value+'/';" name="Pages" class="viewerPage"><?php echo $pageOption; ?></select>
 		</div>
 	</div>   
-	<div>
-		<?php if($page["title"]){ ?> <h2><?=$page["title"]?></h2> <?php } ?>
-		<?php if($page["story"]){ ?> <p><?=$page["story"]?></p> <?php } ?>
+	<div id="page-info">
+		<?php if($page["title"]){ ?> <h2 id="page-title"><?=$page["title"]?></h2> <?php } ?>
+		<?php if($page["story"]){ ?> <p id="page-story><?=$page["story"]?></p> <?php } ?>
 	</div>
 </div>
 					

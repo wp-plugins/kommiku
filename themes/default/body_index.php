@@ -24,7 +24,7 @@
 			<ul>
 			<?php if (is_array($pageUpdates)) { ?>
 				<?php foreach ($pageUpdates as $item) {?>
-					<?php if ($item->chapter_slug == '0') { ?>
+					<?php if ($item->chapterless == '1') { ?>
 					<li>
 						<a href="<?php echo HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$item->series_slug.'/'.$item->page_slug.'/'; ?>"><?php echo $item->series_name." - Page ".$item->page_slug; ?></a>
 						<span style="float: right;"><?php echo strftime('%D',strtotime($item->pubdate)); ?></span>

@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.7
+Version: 2.0.8
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -97,7 +97,7 @@ function kommiku_header() {
 }
 
 function kommiku_css() {
-		echo KOMMIKU_URLPATH.'/themes/'.KOMMIKU_SKIN.'/style.css';
+		echo KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/style.css';
 		return;
 }
 
@@ -200,7 +200,7 @@ function kommiku_source()
 			`".$wpdb->prefix."comic_series`.`title` as series_name
 			FROM `".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
 			WHERE `".$wpdb->prefix."comic_chapter`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
-			ORDER BY `".$wpdb->prefix."comic_chapter`.`pubdate` DESC";
+			ORDER BY `".$wpdb->prefix."comic_chapter`.`pubdate` DESC LIMIT 0 , 15";
 			$pageUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
 			`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
 			`".$wpdb->prefix."comic_page`.`slug` as page_slug, 
@@ -210,7 +210,7 @@ function kommiku_source()
 			FROM `".$wpdb->prefix."comic_page`,`".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
 			WHERE `".$wpdb->prefix."comic_page`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
 			AND `".$wpdb->prefix."comic_page`.`chapter_id` = `".$wpdb->prefix."comic_chapter`.`id`
-			ORDER BY `".$wpdb->prefix."comic_page`.`pubdate` DESC";
+			ORDER BY `".$wpdb->prefix."comic_page`.`pubdate` DESC LIMIT 0 , 15";
 			$chapterUpdates = $wpdb->get_results($chapterUquery);
 			$pageUpdates = $wpdb->get_results($pageUquery);
 			$kommiku['seotitle'] .= "Story Listing";
