@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.8
+Version: 2.0.9
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
