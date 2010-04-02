@@ -14,12 +14,11 @@ function cmp( $a, $b )
   return ($a->pubdate < $b->pubdate) ? -1 : 1;
 } 
 
-
-if ($wpdb->get_var("SELECT value FROM `".$wpdb->prefix."comic_options"."` WHERE option_name = 'show_page_update' AND type = 'series' AND type_id = '".$series['id']."'") || $series['chapterless']) {
+if ($wpdb->get_var("SELECT value FROM `".$wpdb->prefix."comic_options"."` WHERE option_name = 'show_page_update' AND type = 'series' AND type_id = '".$series['id']."'") || $series['chapterless'] == "1") {
 	$series_pages = $db->series_pages($series['id']);
 	if($series['chapterless']) sort($series_pages); else usort($series_pages,'cmp');
 	foreach ($series_pages as $item) { 
-		if (isset($item->chapterNumber)) {
+		if (isset($item->chapterNumber)) { //ChapterNumber should be Chapter
 			$pageUpdate = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->chapterNumber.'/'.$item->pageSlug.'/">Chapter '.$item->chapterNumber.' - Page '.$item->pageNumber.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$pageUpdate;
 		} else {
 			$pageUpdate = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->pageSlug.'/">Page '.$item->pageNumber.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$pageUpdate;

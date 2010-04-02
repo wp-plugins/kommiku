@@ -2,26 +2,28 @@
 	  
 	  if(($isPage)) {
 	  		global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku;
-	  		if($series_chapter)
+	  		if($series_chapter) {
+		  	sort($series_chapter);
 	  		foreach ($series_chapter as $chapterList) { $h++;
-				$chapterLists[$h] = $chapterList->number;
+				$chapterLists[$h] = $chapterList->slug;
 				$chapterListID[$h] = $chapterList->id;
 				if($select) {
-					$nextChapter = $chapterList->number;
+					$nextChapter = $chapterList->slug;
 					$nextChapterID = $chapterList->id;
 				}
 				unset($select); 
-				if($chapterList->number == $chapter["number"]) {
+				if($chapterList->slug == $chapter["slug"]) {
 					$select = "selected=selected ";
 					$chapterSelected = $h;
 				}
 				if ($chapterList->title) $chapterTitle = ' - '.$chapterList->title;
-				$chapterOption = '<option '.$select.'value="'.$chapterList->number.'">'.$chapterList->number.$chapterTitle.'</option>'.$chapterOption;			
-				if($select) { 
+				$chapterOption = '<option '.$select.'value="'.$chapterList->slug.'">'.$chapterList->slug.$chapterTitle.'</option>'.$chapterOption;			
+				if($select) {
 					$pass = $h-1;
 					if(isset($chapterListID[$pass])) $previousChapter = $chapterLists[$pass];
 					if(isset($chapterListID[$pass])) $previousChapterID = $chapterListID[$pass];
 				}
+			}
 			}  
 				
 			if($chapter_pages) {

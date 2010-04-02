@@ -297,7 +297,7 @@ Class kommiku_database {
 		$tableB = $wpdb->prefix."comic_chapter";
 			
 			if(!$series['chapterless'])
-	  			$select = "SELECT `".$tableA."`.slug as pageSlug, `".$tableA."`.number as pageNumber, `".$tableA."`.pubdate as pubdate ,`".$tableB."`.number as chapterNumber FROM `".$tableA."` JOIN `".$tableB."` ON `".$tableA."`.`chapter_id` = `".$tableB."`.`id` WHERE `".$tableA."`.`series_id` = '".$series['id']."' ORDER BY `".$tableA."`.`pubdate` DESC LIMIT 0 , 10";
+	  			$select = "SELECT `".$tableA."`.slug as pageSlug, `".$tableA."`.number as pageNumber, `".$tableA."`.pubdate as pubdate ,`".$tableB."`.slug as chapterNumber FROM `".$tableA."` JOIN `".$tableB."` ON `".$tableA."`.`chapter_id` = `".$tableB."`.`id` WHERE `".$tableA."`.`series_id` = '".$series['id']."' ORDER BY `".$tableA."`.`pubdate` DESC LIMIT 0 , 10";
 	  		else
 	  			$select = "SELECT pubdate, slug as pageSlug, number as pageNumber FROM `".$tableA."` WHERE `series_id` = '".$series['id']."' ORDER BY `pubdate` DESC LIMIT 0 , 10";
 	  			

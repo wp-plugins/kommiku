@@ -134,6 +134,7 @@ function kommiku_source()
 			$kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND number = '".$kommiku['chapter']."'"); 
 			$chapter = $db->chapter_detail($kommiku['chapter_id']);
 			$series_chapter = $db->series_chapter($kommiku['series_id']);
+			sort($series_chapter);
 			$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
 			$kommiku['slug']['chapter'] = $chapter['slug'];	
 			$kommiku['number']['chapter'] = $chapter['number'];
