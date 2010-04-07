@@ -265,7 +265,7 @@ Class kommiku_database {
 	function series_list() {
 		global $wpdb;
 		$table = $wpdb->prefix."comic_series";
-	  		$select = "SELECT * FROM ".$table;
+	  		$select = "SELECT * FROM `".$table."` ORDER BY `title` ASC";
 	  		$results = $wpdb->get_results( $select );
 			return $results;
 	}
