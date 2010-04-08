@@ -1,0 +1,49 @@
+.column {
+	float: left;
+	width: 310px;	
+	margin-right: 20px;
+}
+
+.column h2 {
+	margin: 0;	
+}
+
+.column ul {
+	padding-left: 25px;
+}
+
+.kommiku-bread {
+	display: inline;	
+}
+
+#page-img, .narrowcolumn {
+	width:665px;
+}
+
+.narrowcolumn {
+	margin: 15px auto;
+	padding: 0;
+	float: none;	
+}
+
+#page-img {
+	overflow: hidden;	
+	margin-top: 15px;
+}
+
+#imageWrapper {
+	margin: 15px 0;	
+}
+
+.manga-navi {
+	text-align: center;	
+}
+
+.previousLink {
+	float: left;	
+}
+
+.nextLink {
+	float: right;
+	display:inline;
+}
