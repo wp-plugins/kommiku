@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.10
+Version: 2.0.11
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -34,10 +34,6 @@ define('KOMMIKU_ABSPATH', str_replace("\\","/", WP_PLUGIN_DIR . '/' . plugin_bas
 define('KOMMIKU_URL_FORMAT', get_option( 'kommiku_url_format' ));
 define('KOMMIKU_SKIN', get_option( 'kommiku_skin_directory' ));
 define('HTTP_HOST', 'http://'.$_SERVER['HTTP_HOST'].'/' );
-
-if(KOMMIKU_SKIN == "kommiku") 
-	define('KOMMIKU_SKIN', 'default' );
-
 add_action('admin_menu', 'kommiku_menu');
 
 function kommiku_fancy_url($var='REQUEST_URI')
