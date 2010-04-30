@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.11
+Version: 2.0.12
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Manga Viewer.
 Author: Henry Tran
@@ -12,7 +12,6 @@ if ( !defined('WP_LOAD_PATH') ) {
 
 	/** classic root path if wp-content and plugins is below wp-config.php */
 	$classic_root = dirname(dirname(dirname(dirname(__FILE__)))) . '/' ;
-	
 	if (file_exists( $classic_root . 'wp-load.php') )
 		define( 'WP_LOAD_PATH', $classic_root);
 	else
@@ -29,11 +28,11 @@ define('KOMMIKU_URLPATH', WP_PLUGIN_URL . '/' . plugin_basename( dirname(__FILE_
 define('KOMMIKU_PLUGIN_PATH', plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_FOLDER', dirname(__FILE__) );
 define('UPLOAD_FOLDER',WP_LOAD_PATH.$comic_upload_directory  );
-define('UPLOAD_URLPATH','http://'.$_SERVER['HTTP_HOST'].'/'.$comic_upload_directory );
+define('UPLOAD_URLPATH',get_bloginfo('url').'/'.$comic_upload_directory );
 define('KOMMIKU_ABSPATH', str_replace("\\","/", WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/' ));
 define('KOMMIKU_URL_FORMAT', get_option( 'kommiku_url_format' ));
 define('KOMMIKU_SKIN', get_option( 'kommiku_skin_directory' ));
-define('HTTP_HOST', 'http://'.$_SERVER['HTTP_HOST'].'/' );
+define('HTTP_HOST', get_bloginfo('url').'/' );
 add_action('admin_menu', 'kommiku_menu');
 
 function kommiku_fancy_url($var='REQUEST_URI')
@@ -47,7 +46,13 @@ function kommiku_fancy_url($var='REQUEST_URI')
 	}
 	
 	$explodeURL = array_slice(explode('/',$req),1,5);
-				
+	
+	$checkExplosion = array_shift($explodeURL);
+	if($checkExplosion == KOMMIKU_URL_FORMAT)
+		$explodeURL = $checkExplosion;
+	
+	unset($checkExplosion);
+		
 	if($explodeURL[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '') {
 		if(get_option('kommiku_one_comic') != 0 && get_option('kommiku_one_comic') != false) {
 			$kommiku['manga'] = true;
