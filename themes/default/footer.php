@@ -37,7 +37,7 @@
 				<p class="postmetadata alt" style="border-top: none;">
 				<a href="<?php bloginfo('rss2_url'); ?>">Entries (RSS)</a>
 				and <a href="<?php bloginfo('comments_rss2_url'); ?>">Comments (RSS)</a>. <br/>
-				<a href="http://dotSpiral.com/">dotSpiral</a> &copy; 2008-2009.
+				Kommiku powered by <a href="http://dotSpiral.com/">dotSpiral</a> &copy; 2008-2010.
 				<!-- <?php echo get_num_queries(); ?> queries. <?php timer_stop(1); ?> seconds. -->
 				</p>
 	<?php } ?>

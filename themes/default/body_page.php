@@ -33,7 +33,7 @@
 	</div>   
 	<div id="page-info">
 		<?php if($page["title"]){ ?> <h2 id="page-title"><?=$page["title"]?></h2> <?php } ?>
-		<?php if($page["story"]){ ?> <p id="page-story><?=$page["story"]?></p> <?php } ?>
+		<?php if($page["story"]){ ?> <p id="page-story"><?=$page["story"]?></p> <?php } ?>
 	</div>
 </div>
 					
