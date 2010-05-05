@@ -3,7 +3,8 @@
 if($series_chapter)
 foreach ($series_chapter as $item) {
 	if ($item->title) $chapterTitle = ' - '.$item->title;
-	$chapterListing = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->number.'/">Chapter '.$item->number.$chapterTitle.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$chapterListing;
+	$chapterListing = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->slug.'/">Chapter '.$item->slug.$chapterTitle.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$chapterListing;
+	if(!$lastChapter) $lastChapter = HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->slug.'/';
 }
 
 if(!$chapterListing) $chapterListing = "<li>There are no chapter for this story at the moment.</li>";
@@ -20,11 +21,21 @@ if ($wpdb->get_var("SELECT value FROM `".$wpdb->prefix."comic_options"."` WHERE 
 	foreach ($series_pages as $item) { 
 		if (isset($item->chapterNumber)) { //ChapterNumber should be Chapter
 			$pageUpdate = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->chapterNumber.'/'.$item->pageSlug.'/">Chapter '.$item->chapterNumber.' - Page '.$item->pageNumber.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$pageUpdate;
+			if(!$last) $last = HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->chapterNumber.'/'.$item->pageSlug.'/';
 		} else {
 			$pageUpdate = '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->pageSlug.'/">Page '.$item->pageNumber.'</a><span style="float: right;">'.strftime('%D',strtotime($item->pubdate)).'</span></li>'.$pageUpdate;
+			if(!$lastPage) $lastPage = HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$series["slug"].'/'.$item->pageSlug.'/';
 		} 
 	}
 }
+
+if($lastPage && !$lastChapter) 
+	$firstRead = $lastPage;
+else if($last && !$lastChapter) 
+	$firstRead = $last;
+else if($lastChapter) 
+	$firstRead = $lastChapter;
+
 ?>
 
 <div id="content" class="narrowcolumn home">
@@ -40,6 +51,7 @@ if ($wpdb->get_var("SELECT value FROM `".$wpdb->prefix."comic_options"."` WHERE 
 				<?php echo $chapterListing; ?>
 			</ul>
 		<?php } ?>
+		<h2><a href="<?=$firstRead?>">&raquo; Start Reading</a></h2>
 	</div>
 	
 	<?php if ($pageUpdate) { ?>

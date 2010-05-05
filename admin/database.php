@@ -147,7 +147,7 @@ Class kommiku_database {
 	  	 	return $wpdb->insert_id;
 	
 	}
-	
+
 	function historyu($what,$action,$pubdate,$series_name,$series_slug,$chapter_name,$chapter_number,$page_name,$page_slug) {
 	    global $wpdb;
 		
@@ -224,6 +224,22 @@ Class kommiku_database {
 				return $results["max_number"]+1;
 		}
 	}	
+	function chapter_hupdate($y = 30){
+	    global $wpdb;
+
+		if(is_numeric($y))
+			$query = '
+			SELECT b.slug AS series_slug, b.title as series_title, a.slug as chapter_slug, a.pubdate as date
+			FROM `'.$wpdb->prefix.'comic_chapter` as a, `'.$wpdb->prefix.'comic_series` as b
+			WHERE b.id = a.series_id
+			ORDER BY a.`pubdate` DESC 
+			LIMIT 0 , '.$y;
+			
+		$results = $wpdb->get_results( $query );
+		return $results;
+		
+		
+	}
 	
 	function page_list($series_id = NULL, $chapter_id = NULL) {
 	    global $wpdb;
