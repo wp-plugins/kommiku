@@ -3,6 +3,7 @@ $alphabets = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
 	if($db->series_list())
 	foreach ($db->series_list() as $row) {
 		$singleLetter = ucwords($row->title[0]);
+		if(is_numeric($singleLetter)) { $singleLetter = '0-9'; }
 		if($row->chapterless) $chapterless = 'listpage';
 			else $chapterless = 'listchapter';
 		$letter[$singleLetter][] = '<li><A href="'.$url.'admin.php?page=kommiku&sub='.$chapterless.'&series='.$row->id.'">'.$row->title.'</a></li>';
