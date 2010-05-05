@@ -62,7 +62,7 @@ function kommiku_fancy_url($var='REQUEST_URI')
 			$kommiku['chapter'] = $explodeURL[1];
 			$kommiku['pages'] = $explodeURL[2];
 		} else if($explodeURL[1] != '') {
-		//Else normal style!
+		//Else normal style!!
 			global $wpdb;
 			$kommiku['series'] = strtolower($explodeURL[1]);
 			if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
