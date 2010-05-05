@@ -18,6 +18,11 @@ Kommiku is a Online Illustrative Story Viewer. The main purpose is to browse thr
 
 2. Activate the plugin. And you should be good to go :)
 
+== Upgrade Notice ==
+= 2.0.14 =
+Always backup!
+Especially the theme folder!
+
 == Screenshots ==
 1. screenshot-1.jpg
 
