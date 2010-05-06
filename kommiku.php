@@ -137,15 +137,17 @@ function kommiku_source()
 		} 
 		
 		if(isset($kommiku['chapter'])) {
-			$kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND number = '".$kommiku['chapter']."'"); 
-			$chapter = $db->chapter_detail($kommiku['chapter_id']);
+			if(is_numeric($kommiku['chapter'])) {
+				$kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND number = '".$kommiku['chapter']."'"); 
+				$chapter = $db->chapter_detail($kommiku['chapter_id']);
+				$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
+				$kommiku['slug']['chapter'] = $chapter['slug'];	
+				$kommiku['number']['chapter'] = $chapter['number'];
+				$kommiku['title']['chapter'] = $chapter['title'];
+				$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
+			}
 			$series_chapter = $db->series_chapter($kommiku['series_id']);
 			sort($series_chapter);
-			$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
-			$kommiku['slug']['chapter'] = $chapter['slug'];	
-			$kommiku['number']['chapter'] = $chapter['number'];
-			$kommiku['title']['chapter'] = $chapter['title'];
-			$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
 		}
 				
 		if(empty($kommiku['chapter_id'])) {
@@ -352,8 +354,8 @@ function kommiku() {
 					
 					if($_POST['action'] == "create") {
 						$db->series_create($_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$_POST['chapterless']);
-						if(!is_dir(UPLOAD_FOLDER.'/'.$_POST['slug']))
-							mkdir(UPLOAD_FOLDER.'/'.$_POST['slug'], 0755);
+						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($_POST['slug'])))
+							mkdir(UPLOAD_FOLDER.'/'.strtolower($_POST['slug']), 0755);
 						$status['pass'] = 'The Series has been successfully created';
 						$seriesID =	$wpdb->get_var("SELECT id FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'");
 						$db->historyu('series','create',$phpdate,$_CLEAN['title'],$_CLEAN['slug'],'0','0','0','0');
@@ -432,8 +434,8 @@ function kommiku() {
 						$chapterID = $wpdb->get_var("SELECT id FROM `".$table."` WHERE number = '".$_POST['number']."'");
 						$db->historyu('chapter','create',$phpdate,$series['title'],$series['slug'],$_CLEAN['title'],$_POST['number'],'0','0');
 						
-						if(!is_dir(UPLOAD_FOLDER.'/'.$series['slug'].'/'.$_POST['number']))
-							mkdir(UPLOAD_FOLDER.'/'.$series['slug'].'/'.$_POST['number'], 0755);
+						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number']))
+							mkdir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number'], 0755);
 							
 						$status['pass'] = 'The Chapter has been successfully created';
 						kommiku_model_chapter();
@@ -557,10 +559,10 @@ function kommiku() {
 								//Check if Directory Exist
 								if(!is_dir(UPLOAD_FOLDER))
 									mkdir(UPLOAD_FOLDER, 0755);
-								if(!is_dir(UPLOAD_FOLDER.$seriesFolder))
-									mkdir(UPLOAD_FOLDER.$seriesFolder, 0755);
-								if(!is_dir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder))
-									mkdir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder, 0755);
+								if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder)))
+									mkdir(UPLOAD_FOLDER.strtolower($seriesFolder), 0755);
+								if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder))
+									mkdir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder, 0755);
 
 								$table = $wpdb->prefix."comic_page";
 								$db->page_create($_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_CLEAN['story'],$_POST['number'],$page['series_id'],$_POST['chapter_id']);
@@ -594,10 +596,10 @@ function kommiku() {
 							error_reporting(E_ALL ^ E_NOTICE); 
 							if(!is_dir(UPLOAD_FOLDER))
 								mkdir(UPLOAD_FOLDER, 0755);
-							if(!is_dir(UPLOAD_FOLDER.$seriesFolder))
-								mkdir(UPLOAD_FOLDER.$seriesFolder, 0755);
-							if(!is_dir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder))
-								mkdir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder, 0755);
+							if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder)))
+								mkdir(UPLOAD_FOLDER.strtolower($seriesFolder), 0755);
+							if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder))
+								mkdir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder, 0755);
 							move_uploaded_file($_FILES['img']['tmp_name'],$newname); 
 							
 								if ($handle = opendir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder)) {
@@ -929,6 +931,24 @@ function kommiku_settings() {
 			
 	include KOMMIKU_FOLDER.'/admin/settings.php';
 	}
+	
+//shortcodes!
+
+	add_shortcode( 'kommiku_series_list' , 'series_list' );
+	function series_list() {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_series";
+	  	$select = "SELECT * FROM `".$table."` ORDER BY `title` ASC";
+	  	$series_list = $wpdb->get_results( $select );
+		if($series_list)
+			foreach ($series_list as $row) {
+				$theLIST .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$row->title.'</a></li>';
+			};	
+			
+		echo $theLIST;
+	}
+
+
 	
 function install()
 	{

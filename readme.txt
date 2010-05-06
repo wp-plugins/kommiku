@@ -8,31 +8,42 @@ Stable tag: 2.8
 
 Kommiku, a Online Comic, Manga, or Illustrative Story viewer. Can be used as a portfolio as well.
 
+
 == Description ==
 Kommiku is a Online Illustrative Story Viewer. The main purpose is to browse through stories (comic or manga) with simplicity. However, it can also be used as way to display as a portfolio.
+
 
 == Installation ==
 *Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
 
 1. After downloading the Kommiku plugin, unpack and upload the folder, "kommiku", to the wp-content/plugins folder on your blog. Make sure to leave the directory structure of the archive intact so that all of the Kommiku files are located in 'wp-content/plugins/kommiku/'
+2. Activate the plugin.
+3. Make sure that your Permalink on Wordpress is not set to default or will conflict with Kommiku's permalink.
 
-2. Activate the plugin. And you should be good to go :)
+Then you should be good to go :)
+
 
 == Screenshots ==
 
-1. screenshot-1.jpg
+1. What the viewer looks like. You may view a demo at http://dotspiral.com/manga/eslend/
+
 
 == Frequently Asked Questions ==
 
 = When I go to my Comic Base URL or http://mysite.com/manga/ it doesn't work.
-
 Make sure the directory for that Comic Base does not exist. For example, if I had the directory called "Manga" in my root files, and my Comic Base as "Manga", the directory folder will override Wordpress's Hook, and you will be going to the directory instead.
 
 = It still not working!
-
 Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "default". You know when you get http://example.com/?p=321 . Well... thats default. Only prerequiste is that you change the permalink to something else.
 
+
 == Changelog ==
+
+= 2.0.15 =
+* Shortcode Framework Added!
+* [kommiku_series_list] will not show the a list of the series in a page or post. Make sure to wrap it with a <ul> tag.
+* Page going Out of Order. Fixed!
+* Uploads sometimes didn't upload. Fixed!
 
 = 2.0.14 =
 * Chapter Listing Widget Added
@@ -42,10 +53,12 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 = 1.x =
 * Old Stuff is Old News.
 
+
 == Upgrade Notice ==
 = 2.0.14 =
 Always backup!
 Especially the theme folder!
+
 
 == Support ==
 

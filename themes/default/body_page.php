@@ -1,9 +1,18 @@
-<?php kommiku_header(); ?>
+<?php kommiku_header(); 
+
+list($imgWidth, $imgHeight, $imgType, $imgAttr) = getimagesize($theimage);
+
+if($imgWidth > 800) {
+	$expandWidth = $imgWidth + 40;
+	$minusWidth = (800 - $expandWidth)/2;
+	$styleInjection = "style='width:".$expandWidth."px; margin-left:".$minusWidth."px; background: white;'";
+}
+?>
 	
 <div class="narrowcolumn home" id="content">
 
 	<?php if($kommiku['one_page']){ ?>
-	<div class="breadcrumb>"
+	<div class="breadcrumb">
 		<h2 class="kommiku-bread"><a href="<?=HTTP_HOST?><?=KOMMIKU_URL_FORMAT?>/">Story Listings</a></h2> &raquo; 
 		<h2 class="kommiku-bread"><a href="<?=HTTP_HOST?><?=$kommiku['url']['series']?>"><?=$kommiku["title"]["series"]?></a></h2> &raquo; 
 	

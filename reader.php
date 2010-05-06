@@ -1,7 +1,7 @@
 	  <?php 
 	  
 	  if(($isPage)) {
-	  		global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku;
+	  		global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku, $theimage;
 	  		if($series_chapter) {
 		  	sort($series_chapter);
 	  		foreach ($series_chapter as $chapterList) { $h++;
@@ -135,11 +135,12 @@
 				$urlC = $chapter["number"].'/';	
 			}
 			
-			if($series && $page)
-				$wrapper = '<img src="'.UPLOAD_URLPATH.'/'.$series["slug"].'/'.$urlC.$page["img"].'" />';
-			else
+			if($series && $page) {
+				$wrapper = '<img src="'.UPLOAD_URLPATH.'/'.strtolower($series["slug"]).'/'.$urlC.$page["img"].'" />';
+			} else {
 				$wrapper = 'Page does not Exist';	
-				
+			}
+			
 			if(isset($nextLink)) {
 				if($class) $class = 'class="'.$class.'" '; 
 				if($title) $title = 'title="'.$title.'" '; 
@@ -150,5 +151,13 @@
 			} 
 				
 		}
+		
+		if($page["chapter_id"]) {
+			$urlC = $chapter["number"].'/';	
+		}
+		
+		$theimage = UPLOAD_URLPATH.'/'.strtolower($series["slug"]).'/'.$urlC.str_replace(" ","%20",$page["img"]);
+
+		
 }
 		?>

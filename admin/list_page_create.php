@@ -187,7 +187,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 				<h3 style="cursor: default;"><span>The Page</span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px; overflow-x: scroll; text-align: center;">
-						<?php echo '<img src="'.UPLOAD_URLPATH.'/'.$series['slug'].'/'.$db->trailingslash($chapter_number).$page['img'].'" />'; ?>
+						<?php echo '<img src="'.UPLOAD_URLPATH.'/'.strtolower($series['slug']).'/'.$db->trailingslash($chapter_number).$page['img'].'" />'; ?>
 					</div>
 				</div>
 			</div>

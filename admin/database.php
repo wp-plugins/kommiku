@@ -300,9 +300,8 @@ Class kommiku_database {
 	    global $wpdb;
 	    if (!is_numeric($series_id) || !is_numeric($chapter_id)) return;
 		$table = $wpdb->prefix."comic_page";
-	  		$select = "SELECT * FROM ".$table." WHERE series_id = '".$series_id."' AND chapter_id = '".$chapter_id."' ORDER BY number DESC";
+	  		$select = "SELECT * FROM ".$table." WHERE series_id = '".$series_id."' AND chapter_id = '".$chapter_id."' ORDER BY number asc";
 	  		$results = $wpdb->get_results( $select );
-	  		sort($results);
 			return $results;
 	}
 	
