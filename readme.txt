@@ -25,27 +25,25 @@ Then you should be good to go :)
 
 == Screenshots ==
 
-1. What the viewer looks like. You may view a demo at http://dotspiral.com/manga/eslend/
+1. screenshot-1.jpg What the viewer looks like. You may view a demo at http://dotspiral.com/manga/eslend/
 
 
 == Frequently Asked Questions ==
 
-= When I go to my Comic Base URL or http://mysite.com/manga/ it doesn't work.
+= When I go to my Comic Base URL or http://mysite.com/manga/ it doesn't work. =
 Make sure the directory for that Comic Base does not exist. For example, if I had the directory called "Manga" in my root files, and my Comic Base as "Manga", the directory folder will override Wordpress's Hook, and you will be going to the directory instead.
 
-= It still not working!
+= It still not working! =
 Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "default". You know when you get http://example.com/?p=321 . Well... thats default. Only prerequiste is that you change the permalink to something else.
 
 
 == Changelog ==
 
-= 2.0.15 =
+= 2.0.14 =
 * Shortcode Framework Added!
-* [kommiku_series_list] will not show the a list of the series in a page or post. Make sure to wrap it with a <ul> tag.
+* [kommiku_series_list] will not show the a list of the series in a page or post. Make sure to wrap it with a &lt;ul&gt; tag.
 * Page going Out of Order. Fixed!
 * Uploads sometimes didn't upload. Fixed!
-
-= 2.0.14 =
 * Chapter Listing Widget Added
 * Series with Number as their Starting Letter will now properly List.
 * The Comic base will now be properly detected by ONE level if Wordpress is not installed on the root. 
