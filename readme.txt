@@ -3,29 +3,32 @@ Contributors: anraiki
 Tags: comics, manga, stories, illustrations, one manga, viewer, plugin, posts, admin, management, webcomics, comicpress, webcomic, comic, chapters, chapter, page, pages, post, library 
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GJ4QR9D5NPHQN
 Requires at least: 2.5
-Tested up to: 2.9.2
+Tested up to: 3.x
 Stable tag: 2.8
 
-Kommiku, a Online Comic, Manga, or Illustrative Story viewer. Can be used as a portfolio as well.
-
+Kommiku, a Online Media viewer. It can be used as a Manga Viewer, a Comic Viewer, a Novel Viewer, or as a Portfolio.
 
 == Description ==
-Kommiku is a Online Illustrative Story Viewer. The main purpose is to browse through stories (comic or manga) with simplicity. However, it can also be used as way to display as a portfolio.
+Kommiku is a Online Media Viewer. The main purpose is to browse through stories (comic, manga, or novels). It will be like reading a book online.
 
+== Installation ==
+*Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
+
+1. After downloading the Kommiku plugin, unpack and upload the folder, "kommiku", to the wp-content/plugins folder on your blog. Make sure to leave the directory structure of the archive intact so that all of the Kommiku files are located in 'wp-content/plugins/kommiku/'
+
+2. Make sure your "Permalink for Wordpress" are not the default permalink. Change it to "Day and Name" or "Numeric" but not Default.
 
-== Installation ==
-*Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
+3. Activate the plugin. And you should be good to go :)
 
-1. After downloading the Kommiku plugin, unpack and upload the folder, "kommiku", to the wp-content/plugins folder on your blog. Make sure to leave the directory structure of the archive intact so that all of the Kommiku files are located in 'wp-content/plugins/kommiku/'
-2. Activate the plugin.
-3. Make sure that your Permalink on Wordpress is not set to default or will conflict with Kommiku's permalink.
-
-Then you should be good to go :)
-
+== Upgrade Notice ==
+= 2.1.rc1 =
+Always backup!
+Especially the theme folder!
+Some of the function in Kommiku have been deprecated. Please email me anri.tora@gmail.com if there are any problems. 
 
 == Screenshots ==
-
-1. screenshot-1.jpg What the viewer looks like. You may view a demo at http://dotspiral.com/manga/eslend/
+1. screenshot-1.jpg 
+What the viewer looks like. You may view a demo at http://eslend.com/
 
 
 == Frequently Asked Questions ==
@@ -38,6 +41,19 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
+= 2.1 =
+* Step 1. Updates!
+* Rework the Theme (so people don't get confused why their theme is not being incorporated)
+* Rework the Upgrading Function so now Kommiku will properly upgrade
+* Lots of Database Changes
+* Fix lots of issues
+* Add features for a pro version of Kommiku
+* Add more features to add information to Stories or Series
+* Copied lots of Tosho design and features
+* Upload Chapter through zip/rar files
+* Categories to categorize your stories
+* Chapter Slugs
+* Numerical Listing
 
 = 2.0.14 =
 * Shortcode Framework Added!
@@ -53,9 +69,8 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Upgrade Notice ==
-= 2.0.14 =
-Always backup!
-Especially the theme folder!
+= 2.1 =
+Backup your theme folder if it's called "default". Things are going to change drastically in this version.
 
 
 == Support ==
@@ -70,6 +85,3 @@ If you run into a bug (I am calling them kittens), report them to me. I will tak
 
 Fastest way to get support, email me! 
 Anri.tora@gmail.com
-
-I will help you, and please do help me too :)
-
