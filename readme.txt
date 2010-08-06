@@ -11,12 +11,12 @@ Kommiku, a Online Media viewer. It can be used as a Manga Viewer, a Comic Viewer
 == Description ==
 Kommiku is a Online Media Viewer. The main purpose is to browse through stories (comic, manga, or novels). It will be like reading a book online.
 
-Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"), [Eslend](http://eslend.com/ "Eslend: a web-manga | a web-comic"), [Eclipse Scanlation](http://eclipse-scans.net/eso/ Eclipse Scanlators)
+Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"), [Eslend](http://eslend.com/ "Eslend: a web-manga | a web-comic"), [Eclipse Scanlation](http://eclipse-scans.net/eso/ "Eclipse Scanlators")
 
 *If you like this plug-in, speak a different language other than English, and would like to contribute to Kommiku. I would like you to [email me](mailto:anri.tora@gmail.com) so I can transcribe this plug-in for other people as well.
 
 == Installation ==
-*Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
+* Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
 
 1. After downloading the Kommiku plugin, unpack and upload the folder, "kommiku", to the wp-content/plugins folder on your blog. Make sure to leave the directory structure of the archive intact so that all of the Kommiku files are located in 'wp-content/plugins/kommiku/'
 
@@ -46,30 +46,26 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 == Changelog ==
 = 2.1 =
-*Step 1. Updates!
-*Rework the Theme (so people don't get confused why their theme is not being incorporated)
-*Rework the Upgrading Function so now Kommiku will properly upgrade
-*Lots of Database Changes
-*Fix lots of issues
-*Add features for a pro version of Kommiku
-*Add more features to add information to Stories or Series
-*Copied lots of Tosho design and features
-*Upload Chapter through zip/rar files
-*Categories to categorize your stories
-*Chapter Slugs
-*Numerical Listing
+* Rework the Theme 
+* Rework the Upgrading Function
+* Add features for a pro version of Kommiku
+* Add features to add information to Stories or Series
+* Add Feature to Upload Chapter through zip/rar files
+* Categories to categorize your stories
+* Chapter Slugs
+* Numerical Listing
 
 = 2.0.14 =
-*Shortcode Framework Added!
-*[kommiku_series_list] will not show the a list of the series in a page or post. Make sure to wrap it with a &lt;ul&gt; tag.
-*Page going Out of Order. Fixed!
-*Uploads sometimes didn't upload. Fixed!
-*Chapter Listing Widget Added
-*Series with Number as their Starting Letter will now properly List.
-*The Comic base will now be properly detected by ONE level if Wordpress is not installed on the root. 
+* Shortcode Framework Added!
+* [kommiku_series_list] will not show the a list of the series in a page or post. Make sure to wrap it with a &lt;ul&gt; tag.
+* Page going Out of Order. Fixed!
+* Uploads sometimes didn't upload. Fixed!
+* Chapter Listing Widget Added
+* Series with Number as their Starting Letter will now properly List.
+* The Comic base will now be properly detected by ONE level if Wordpress is not installed on the root. 
 
 = 1.x =
-*Old Stuff is Old News.
+* Old Stuff is Old News.
 
 
 == Upgrade Notice ==
@@ -78,7 +74,6 @@ Backup your theme folder if it's called "default". Things are going to change dr
 
 
 == Support ==
-
 Credit
 (c) 2008-2010 Henry Tran
 
