@@ -36,6 +36,8 @@ define('K_SCANLATOR_URL', get_option('kommiku_scanlator') );
 add_action('admin_menu', 'kommiku_menu');
 load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
 
+$kommiku['alphabets'] = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
+
 function kommiku_fancy_url($var='REQUEST_URI'){
 	global $kommiku;
 	if (!in_array($var, array('REQUEST_URI', 'PATH_INFO'))) $var = 'REQUEST_URI';
@@ -211,29 +213,30 @@ function kommiku_source()
 		if($kommiku['find']) {
 			$kommiku['find'] = urldecode($kommiku['find']);
 			$kommiku['results'] = $db->find_series($kommiku['find']);
-			$kommiku['description'] = "Page containing search result for: ".$kommiku['find'];	
+			$kommiku['description'] = __("Search Results for: ").$kommiku['find'];	
 			$kommiku['keyword'] = "Manga, Comics, ".$kommiku['find'];		
-			$kommiku['seotitle'] = 'Search Results for "'.$kommiku['find'].'"';
+			$kommiku['seotitle'] = __('Search Results for: ')."'".$kommiku['find'].'"';
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_search.php';
 			exit;
 		}		
 				
 		if($kommiku['category'] == 'complete') {
-			$kommiku['keyword'] = "Manga, Comics, Tosho, Toshokan, Library, Completed Series";
-			$kommiku['description'] = "Completed stories by various authors and illustrators.";
+			#Seo Feature
+			#$kommiku['keyword'] = "Manga, Comics,Completed Series";
+			#$kommiku['description'] = "Completed stories by various authors and illustrators.";
 		} else if($kommiku['category']) {
 			$category = $db->category_detail($kommiku['category']);
 			$category["url"] = HTTP_HOST.KOMMIKU_URL_INDEX.'/'.$category["slug"].'/';
 			$category["name"] = ucfirst($category["name"]);
 			$category["list"] = $db->category_read();
-			$kommiku['keyword'] = "Manga, Comics, Tosho, Toshokan, Library";
-			$kommiku['description'] = "Dead page is Dead.";
+			#$kommiku['keyword'] = "Manga, Comics, Tosho, Toshokan, Library";
+			$kommiku['description'] = __("Dead page is Dead.");
 			if ($category["name"]) {
 				$kommiku['keyword'] .= ', '.$category["name"];
-				$kommiku['seotitle'] = 'Category: '.$category["name"];
-				$kommiku['description'] = "Category: ".$category["name"].". Series Listing.";
+				$kommiku['seotitle'] = __('Category: ').$category["name"];
+				$kommiku['description'] = __('Category: ').$category["name"].". Series Listing.";
 			} else {
-				$kommiku['seotitle'] = 'OMG! 404?! '; 
+				$kommiku['seotitle'] = __('OMG! 404?! '); 
 			}
 			$search_results = $db->search_category($kommiku['category']);
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_category.php';
@@ -300,7 +303,6 @@ function kommiku_source()
 			$kommiku['url']['page'] = $series['url'].$chapter['url'].$page['slug']."/";
 		}
 		
-		$kommiku['alphabets'] = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
 		$kommiku['series_list_raw'] = $db->series_list();
 		if($kommiku['series_list_raw'] )
 			foreach ($kommiku['series_list_raw'] as $row) {
@@ -326,7 +328,7 @@ function kommiku_source()
 		} else {
 			$chapterUpdates = $db->chapter_update_list();
 			$pageUpdates = $wpdb->get_results($pageUquery);
-			$kommiku['seotitle'] .= "Story Listing";
+			$kommiku['seotitle'] .= __("Story Listing");
 			$category["list"] = $db->category_read();
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_index.php';
 		}
@@ -361,17 +363,14 @@ function kommiku() {
 				$chapterFolder = $chapter['number'].'/';
 				error_reporting(0); 
 				if(!unlink(UPLOAD_FOLDER.$series['folder'].$chapterFolder.$page['img']))
-					$status['error'] = 'The Image could not be deleted (or it doesn\'t exist) but the record was deleted (or maybe it was already gone?)';
-				if($chapterFolder) $chapterHistory = ' - Chapter '.$chapter['number']; 
+					$status['error'] = __('The Image could not be deleted (or it doesn\'t exist) but the record was deleted (or maybe it was already gone?)');
+				if($chapterFolder) $chapterHistory = sprintf(__(' - Chapter %d'),$chapter['number']); 
 				$db->page_delete($_POST['pg'],$page['chapter_id'],$page['series_id']);
-				
-				//Remove the Record! Imo. **************************** Maybe fix?
-				
 				error_reporting(E_ALL ^ E_NOTICE);
 				unset($page);
 				if($status['error'])
 					$status['error'] .= '<br/>';
-					$status['pass'] = 'The Page has been deleted';
+					$status['pass'] = __('The Page has been deleted');
 				kommiku_model_page();
 
 					
@@ -388,7 +387,7 @@ function kommiku() {
 				error_reporting(E_ALL ^ E_NOTICE);
 				unset($chapter);
 				if(!$status['error']) {
-					$status['pass'] = 'The Chapter has been deleted';
+					$status['pass'] = __('The Chapter has been deleted');
 					kommiku_model_chapter();
 				} else				
 					kommiku_model_page();
@@ -403,7 +402,7 @@ function kommiku() {
 				//error_reporting(E_ALL ^ E_NOTICE);
 				unset($series);
 				if(!$status['error']) {
-					$status['pass'] = 'The Series has been deleted';
+					$status['pass'] = __('The Series has been deleted');
 					kommiku_model_series();
 				} else				
 					kommiku_model_chapter();
@@ -448,8 +447,8 @@ function kommiku() {
 					
 					kommiku_scanlator_edit();
 				} else {
-					if ($scanlator['fail']['title']) $status['error'] .= 'The scanlator name has already been taken.<br/>';
-					if ($scanlator['fail']['slug']) $status['error'] .= 'The scanlator slug has already been taken.<br/>';
+					if ($scanlator['fail']['title']) $status['error'] .= __('The scanlator name has already been taken.<br/>');
+					if ($scanlator['fail']['slug']) $status['error'] .= __('The scanlator slug has already been taken.<br/>');
 					$scanlator['title'] = $_POST['title'];
 					$scanlator['slug'] = $_POST['slug'];
 					$scanlator['text'] = stripslashes($_POST['text']);
@@ -476,8 +475,8 @@ function kommiku() {
 					
 					kommiku_category_edit();
 				} else {
-					if ($category['fail']['name']) $status['error'] .= 'The category name has already been taken.<br/>';
-					if ($category['fail']['slug']) $status['error'] .= 'The category slug has already been taken.<br/>';
+					if ($category['fail']['name']) $status['error'] .= __('The category name has already been taken.<br/>');
+					if ($category['fail']['slug']) $status['error'] .= __('The category slug has already been taken.<br/>');
 					$category['name'] = $_POST['name'];
 					$category['slug'] = $_POST['slug'];
 					$category['description'] = stripslashes($_POST['description']);
@@ -568,21 +567,13 @@ function kommiku() {
 						$db->series_create($_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$chapterless,$categories,$author,$illustrator,$read,$creation,$alt_name,$status,$rating,$story_type,$_CLEAN['img']);
 						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($_POST['slug'])))
 							mkdir(UPLOAD_FOLDER.'/'.strtolower($_POST['slug']), 0755);
-						$status['pass'] = 'The Series has been successfully created';
+						$status['pass'] = __('The Series has been successfully created');
 						$seriesID =	$wpdb->get_var("SELECT id FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'");
 						unset($series);
 						kommiku_model_series();
 					} else if($_POST['action'] == "update" && is_numeric($_POST['series_id'])) {
 						$db->series_update($_POST['series_id'],$_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$chapterless,$_POST['categories'],$_CLEAN['author'],$_CLEAN['illustrator'],$_POST['read'],$_CLEAN['creation'],$_CLEAN['alt_name'],$_POST['status'],$_POST['mature'],$story_type,$_CLEAN['img']);
-						$status['pass'] = 'The Series has been updated';
-
-						if ($_POST['show_page_update']) {
-							if($db->option_detail('series',$_POST['series_id'],'show_page_update')) {
-									$db->option_update('series',$_POST['series_id'],'show_page_update',$_POST['show_page_update']);
-								} else {
-									$db->option_create('series',$_POST['series_id'],'show_page_update',$_POST['show_page_update']);
-							}
-						}						
+						$status['pass'] = __('The Series has been updated');						
 						
 						if(!$noRename)
 							rename(UPLOAD_FOLDER.'/'.$_OLD['slug'], UPLOAD_FOLDER.'/'.$_CLEAN['slug']);
@@ -592,8 +583,8 @@ function kommiku() {
 							kommiku_model_page();
 					}
 				} else {
-					if ($series['fail']['title']) $status['error'] .= 'The series name has already been taken.<br/>';
-					if ($series['fail']['slug']) $status['error'] .= 'The series slug has already been taken.<br/>';
+					if ($series['fail']['title']) $status['error'] .= __('The series name has already been taken.<br/>');
+					if ($series['fail']['slug']) $status['error'] .= __('The series slug has already been taken.<br/>');
 					$series['title'] = $_POST['title'];
 					$series['slug'] = $_POST['slug'];
 					$series['summary'] = stripslashes($_POST['summary']);
@@ -658,7 +649,7 @@ function kommiku() {
 						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number']))
 							mkdir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number'], 0755);
 							
-						$status['pass'] = 'The Chapter has been successfully created';
+						$status['pass'] = __('The Chapter has been successfully created');
 						kommiku_model_chapter();
 					} else if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {						
 						$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$chapter['pubdate'],$_POST['slug'],$_POST['scanlator'],$_POST['scanlator_slug'],$_POST['volume'],$folder);
@@ -675,9 +666,9 @@ function kommiku() {
 						kommiku_model_page();
 					}
 				} else {
-					if ($chapter['fail']['number']['duplicate']) $status['error'] .= 'The Chapter number has already been taken.<br/>';
-					if ($chapter['fail']['number']['character']) $status['error'] .= 'The Chapter number has to be in decimals or numbers.<br/>';
-					if($chapter['fail']['number'])  $status['error'] .= 'The "Volume Input" must be Numeric';
+					if ($chapter['fail']['number']['duplicate']) $status['error'] .= __('The Chapter number has already been taken.<br/>');
+					if ($chapter['fail']['number']['character']) $status['error'] .= __('The Chapter number has to be in decimals or numbers.<br/>');
+					if($chapter['fail']['number'])  $status['error'] .= __('The "Volume Input" must be Numeric');
 					$chapter['title'] = $_POST['title'];
 					$chapter['number'] = $_POST['number'];
 					$chapter['summary'] = $_POST['summary'];
@@ -733,7 +724,7 @@ function kommiku() {
 					$chapterFolder = '';
 					
 				if (!isset($chapterFolder) && $chapter['number'])
-					die($chapterFolder.' not Being set');
+					die($chapterFolder.' not being set');
 				
 				//Check slug //doube check for UPDATE
 				if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."' AND series_id = '".$_POST['series_id']."' AND chapter_id = '".$_POST['chapter_id']."'") == $_CLEAN['slug'])  
@@ -806,10 +797,10 @@ function kommiku() {
 								}
 								
 							} else {
-								$status['pass'] = 'Error 1: Could not move file'.UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$filename;
+								$status['pass'] = __('Error 1: Could not move file').' - '.UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$filename;
 							}
 						} else {
-							$status['pass'] = 'No file were uploaded. But a page was created.';
+							$status['pass'] = __('No file were uploaded. But a page was created.');
 							$table = $wpdb->prefix."comic_page";
 							$db->page_create($_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_POST['story'],$_POST['number'],$page['series_id'],$_POST['chapter_id'],'');
 							$table = $wpdb->prefix."comic_page";
@@ -817,7 +808,7 @@ function kommiku() {
 						}
 					} else if (is_numeric($_POST['page_id']) && $_POST['action'] == "update") {
 						//Uploaded a File? Delete The Last File!
-						$status['pass'] = 'The Image/Page has been updated';
+						$status['pass'] = __('The Image/Page has been updated');
 						if ($newname) {
 							error_reporting(E_ALL ^ E_WARNING); 
 							if(!unlink(UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$oldPage['img']))
@@ -830,9 +821,9 @@ function kommiku() {
 							if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder))
 								mkdir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder, 0755);
 							if(move_uploaded_file($_FILES['img']['tmp_name'],$newname))
-								$status['pass'] .= ' | Image moved!';
+								$status['pass'] .= __(' | Image moved!');
 							else
-								$status['pass'] .= ' | Image Failed!';
+								$status['pass'] .= __(' | Image Failed!');
 										}
 						
 
@@ -840,7 +831,7 @@ function kommiku() {
 							$wp_post_slug = $_POST['wp_post_slug'];
 						} else if($_POST['wp_post_slug'] != '') {
 							$wp_post_slug = '';
-							$status['error'] .= '<br/>No such Wordpress Post';
+							$status['error'] .= __('<br/>No such Wordpress Post');
 						}
 									
 						$db->page_update($oldPage['id'],$_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_CLEAN['story'],$_CLEAN['number'],$page['series_id'],$page['chapter_id'],$wp_post_slug);
@@ -848,12 +839,12 @@ function kommiku() {
 					}
 					kommiku_model_createpage();
 				} else {
-					if ($page['fail']['number']['duplicate']) $status['error'] .= 'The Page number has already been taken.<br/>';
-					if ($page['fail']['number']['character']) $status['error'] .= 'The Page number has to be in decimals or numbers.<br/>';
-					if ($page['fail']['slug']) $status['error'] .= 'The Slug for the Page on this Chapter has already been taken';
-					if ($page['fail']['nofile']) $status['error'] .= "There was no file to upload";
-					if ($page['fail']['toolarge']) $status['error'] .= "The file is too large";
-					if ($page['fail']['exist']) $status['error'] .= "The file couldn't be moved!? Please check permission on your folders";;
+					if ($page['fail']['number']['duplicate']) $status['error'] .= __('The Page number has already been taken.<br/>');
+					if ($page['fail']['number']['character']) $status['error'] .= __('The Page number has to be in decimals or numbers.<br/>');
+					if ($page['fail']['slug']) $status['error'] .= __('The Slug for the Page on this Chapter has already been taken');
+					if ($page['fail']['nofile']) $status['error'] .= __("There was no file to upload");
+					if ($page['fail']['toolarge']) $status['error'] .= __("The file is too large");
+					if ($page['fail']['exist']) $status['error'] .= __("The file couldn't be moved!? Please check permission on your folders");
 					kommiku_model_createpage();
 				}
 			}	
@@ -1075,7 +1066,7 @@ class chapter_lister extends WP_Widget {
 }
 
 function kommiku_model_series() {
-	global $series,$db,$status;	
+	global $kommiku,$series,$db,$status;	
 	include KOMMIKU_FOLDER.'/admin/list_series.php';
 	}
 	
@@ -1105,10 +1096,10 @@ function kommiku_scanlator_edit() {
 	}
 	
 function kommiku_category() {
-	global $settings,$status,$wpdb;
+	global $kommiku,$settings,$status,$wpdb;
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
-		
+	
 	include KOMMIKU_FOLDER.'/admin/category.php';
 	}
 	
@@ -1125,6 +1116,7 @@ function kommiku_ftp_dump() {
 	}
 	
 function kommiku_scanlator() {
+	global $kommiku;
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 		include KOMMIKU_FOLDER.'/extension/scanlator/scanlator.php';
@@ -1168,13 +1160,13 @@ function kommiku_settings() {
 			}
 			
 			if($_POST['directory']){
-				update_option('directory', urlencode($_POST['directory']));
+				update_option('kommiku_url_index', urlencode($_POST['directory']));
 				$settings['directory'] = $_POST['directory'];
 			} else {
 				if(!get_option( 'kommiku_url_index' ))
 				add_option("kommiku_url_index", 'directory');
 			
-				update_option('directory', 'directory');
+				update_option('kommiku_url_index', 'directory');
 				$settings['directory'] = 'directory';
 			}
 			
@@ -1219,7 +1211,7 @@ function kommiku_settings() {
 			$newName = WP_LOAD_PATH.'/'.$settings['upload'];
 				
 				if(is_dir($newName) && $oldName != $newName) {
-						$settings['error'] = "The 'Upload Directory' you are trying to rename already exist.";
+						$settings['error'] = __("The 'Upload Directory' you are trying to rename already exist.");
 						$settings['upload'] = get_option( 'kommiku_comic_upload' );
 						$settings['fail']['upload'] = true;
 					} else if($oldName != $newName) {
@@ -1228,14 +1220,14 @@ function kommiku_settings() {
 					}
 				
 				if(is_dir(KOMMIKU_FOLDER.'/themes/'.$settings['skin'])) {
-						$settings['pass'] = "Your skin has been updated";
+						$settings['pass'] = __("Your skin has been updated");
 						update_option('kommiku_skin_directory', $settings['skin']);
 					} else {
 						if($settings['error']) $settings['error'] .= '<br/>';
-						$settings['error'] .= 'The skin does not exist';
+						$settings['error'] .= __('The skin does not exist');
 					}
 					
-				if(!$settings['fail']) $settings['pass'] = "Your Settings has been updated";
+				if(!$settings['fail']) $settings['pass'] = __("Your Settings has been updated");
 				update_option('kommiku_url_format', $settings['url']);
 			}
 			
@@ -1351,7 +1343,7 @@ add_shortcode( 'kommiku_series_list' , 'series_list' );
 		return $theLIST;
 	}
 
-	add_shortcode( 'kommiku_chapter_update_list' , 'chapter_update_list' );
+add_shortcode( 'kommiku_chapter_update_list' , 'chapter_update_list' );
 	function chapter_update_list() {
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
@@ -1368,18 +1360,18 @@ add_shortcode( 'kommiku_series_list' , 'series_list' );
 		
 function kommiku_menu() {
 	add_menu_page('Kommiku', 'Comic', 8, KOMMIKU_FOLDER, 'kommiku', KOMMIKU_URLPATH.'comic.png'); //Thanks Lokis :)
-	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'List', 8, 'kommiku', 'kommiku'); 
-	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Settings', 8, 'kommiku_settings', 'kommiku_settings'); 
+	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', __('List'), 8, 'kommiku', 'kommiku'); 
+	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', __('Settings'), 8, 'kommiku_settings', 'kommiku_settings'); 
 	
 	if(file_exists(KOMMIKU_ABSPATH . 'extension/ftp-dumper-p.php')) {
-		add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Ftp Dump', 8, 'kommiku_ftp_dump', 'kommiku_ftp_dump'); 
+		add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', __('Ftp Dump'), 8, 'kommiku_ftp_dump', 'kommiku_ftp_dump'); 
 	}
 	
 	if(get_option('kommiku_scanlator_enabled')) {
-		add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Scanlators', 8, 'kommiku_scanlator', 'kommiku_scanlator'); 
+		add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', __('Scanlators'), 8, 'kommiku_scanlator', 'kommiku_scanlator'); 
 	}
 
-	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Categories', 5, 'kommiku_category', 'kommiku_category'); 
+	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', __('Categories'), 5, 'kommiku_category', 'kommiku_category'); 
 		
 	}
 	

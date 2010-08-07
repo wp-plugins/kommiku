@@ -27,7 +27,7 @@ if($page['id']) $pageTitle  = ' &raquo; Page '.$page['number'];
 if($series['chapterless'] == 0) $chapter_number = $chapter['slug'];
 if($chapter['id']) $chapterTitle = '&raquo; <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$chapter['id'].'">Chapter '.$chapter_number.'</a>';
 if($chapter['id']) $chapterURL = '&amp;chapter='.$chapter['id'];
-$publishWord = "Publish";
+$publishWord = __("Publish");
 if ($chapterless == 0) { 
 	$chapterURL = '&chapter='.$chapter["id"]; 
 	$chapterWord = 'Chapter';
@@ -40,16 +40,16 @@ if ($chapterless == 0) {
 
 switch(rand(0,3)) {
 	case 0:
-		$deleteWord = 'Don\'t Do it!';
+		$deleteWord = __("Don't Do it!");
 		break;
 	case 1:
-		$deleteWord = 'It\'s a TRAP!';
+		$deleteWord = __("It's a TRAP!");
 		break;
 	case 2:
-		$deleteWord = 'Why???!';
+		$deleteWord = __("Why???!");
 		break;
 	case 3:
-		$deleteWord = 'But I am your friend :(';
+		$deleteWord = __("But I am your friend :(");
 		break;
 		
 		}
@@ -61,7 +61,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><A href="<?php echo $url; ?>admin.php?page=kommiku">Series Listing</a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a> <?php echo $chapterTitle.$pageTitle; ?></h2>
+	<h2><A href="<?php echo $url; ?>admin.php?page=kommiku"><?_e('Series Listing')?></a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a> <?php echo $chapterTitle.$pageTitle; ?></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
@@ -70,7 +70,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 		<?php if ($page['id'] || $_GET['pg']) { ?>
 		<input type="hidden" value="update" name="action"/>
 		<input type="hidden" value="<?php echo $page['id']; ?>" name="page_id"/>
-		<?php $publishWord = 'Update'; } else { ?>
+		<?php $publishWord = __("Update"); } else { ?>
 		<input type="hidden" value="create" name="action"/>
 		<?php } ?>
 		<input type="hidden" value="page" name="what"/>	
@@ -78,7 +78,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 		<div class="inner-sidebar" id="side-info-column">
 			<div class="meta-box-sortables ui-sortable" id="side-sortables">
 				<div class="postbox">
-					<h3 style="cursor: default;"><span>Publishing</span></h3>
+					<h3 style="cursor: default;"><span><?_e('Publishing')?></span></h3>
 					<div class="inside">
 						<div class="submitbox" style="padding: 5px;">
 							<div style="background: none; font-size: 11px;">
@@ -86,19 +86,19 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 									<input type="file" name="img" size="30" tabindex="1" value="" autocomplete="off" style="background: rgb(238, 238, 238) none repeat scroll 0% 0%; width: 100%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous;"/>
 								</div>
 								<div class="misc-pub-section ">
-									Series: <strong><?php echo $series['title']; ?></strong>
+									<?_e('Series:')?> <strong><?php echo $series['title']; ?></strong>
 									<input type="hidden" value="<?php echo $series['id']; ?>" name="series_id"/>
 									<div class="clear"></div> 
 								</div>
 								<?php if(is_numeric($chapter['number'])){ ?>
 								<div class="misc-pub-section ">
-									Chapter: <strong><?php echo $chapter['number']; ?></strong>
+									<?_e('Chapter:')?> <strong><?php echo $chapter['number']; ?></strong>
 									<input type="hidden" value="<?php echo $chapter['id']; ?>" name="chapter_id"/>
 									<div class="clear"></div> 
 								</div>
 								<?php } ?>
 								<div class="misc-pub-section ">
-									Page #: <input type="text" name="number" value="<?php echo $page['number']; ?>" style="width: 180px; float: right; text-align: left;" />
+									<?_e('Page #:')?> <input type="text" name="number" value="<?php echo $page['number']; ?>" style="width: 180px; float: right; text-align: left;" />
 									<div class="clear"></div> 
 								</div>
 								<div style="width: 100%; float: right; text-align: right">
@@ -119,7 +119,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 							<div style="background: none;">
 								<div class="clear"></div>							
 								<div style="padding: 10px 0; width: 100%; float: right; text-align: right;">
-									<a class="button-primary" href="admin.php?page=kommiku&amp;sub=delete&amp;series=<?php echo $series['id'] ?>&amp;pg=<?php echo $page['id'].$chapterURL; ?>">Delete Page!</a>
+									<a class="button-primary" href="admin.php?page=kommiku&amp;sub=delete&amp;series=<?php echo $series['id'] ?>&amp;pg=<?php echo $page['id'].$chapterURL; ?>"><?_e('Delete Page!')?></a>
 								</div>
 								<div class="clear"></div>									
 							</div>								    
@@ -132,10 +132,10 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 	
 		<div id="post-body-content">
 			<div class="postbox" style="margin-bottom: 0px;">
-				<h3 style="cursor: default;"><span>Title</span></h3>
+				<h3 style="cursor: default;"><span><?_e('Title')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
-						<label for="title" class="screen-reader-text">Title</label>
+						<label for="title" class="screen-reader-text"><?_e('Title')?></label>
 						<input style="width: 100%;" type="text" autocomplete="off" id="title" value="<?php echo $page['title']; ?>" tabindex="1" size="30" name="title"/>
 					</div>
 				</div>
@@ -144,7 +144,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 			<div style="margin-bottom: 10px;">
 				<div class="inside">
 					<div id="edit-slug-box">
-						<strong>Permalink:</strong> <span id="sample-permalink"><?php echo HTTP_HOST.$seriesUrl.$seriesSlug.$db->trailingslash($chapter_number); ?>
+						<strong><?_e('Permalink:')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.$seriesUrl.$seriesSlug.$db->trailingslash($chapter_number); ?>
 						<input type="text" value="<?php echo $page['slug']; ?>" name="slug" style="width: 10%; background: #FFFBCC;" />
 						</span>
 					</div>
@@ -156,7 +156,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 				
 		<?php if($page['img'] && $series['slug']){ ?>
 			<div class="postbox">
-				<h3 style="cursor: default;"><span>The Page</span></h3>
+				<h3 style="cursor: default;"><span><?_e('The Page')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px; overflow-x: scroll; text-align: center;">
 						<?php echo '<img src="'.UPLOAD_URLPATH.'/'.strtolower($series['slug']).'/'.$db->trailingslash($chapter_number).$page['img'].'" />'; ?>
@@ -165,23 +165,23 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 			</div>
 		<?php } ?>
 			<div class="postbox">
-				<h3 style="cursor: default;"><span>Story</span></h3>
+				<h3 style="cursor: default;"><span><?_e('Story')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
-						<label for="story" class="screen-reader-text">story</label>
-						<textarea tabindex="2" name="story" style="width: 99.5%;" rows="5"><?php echo $page['story']; ?></textarea>									
-						<p>Add a comment, description, or summary.</p>
+						<label for="story" class="screen-reader-text"><?_e('story')?></label>
+						<textarea tabindex="2" name="story" style="width: 99.5%;" rows="5"><?php echo stripslashes($page['story']); ?></textarea>									
+						<p><?_e('Add a comment, description, or summary.')?></p>
 					</div>
 				</div>
 			</div>
 						
 			<div class="postbox">
-				<h3 style="cursor: default;"><span>Wordpress Post Connect</span></h3>
+				<h3 style="cursor: default;"><span><?_e('Wordpress Post Connect')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="seodescription" class="screen-reader-text">wp_post_slug</label>
 						<input style="width: 100%;" type="text" autocomplete="off" id="title" value="<?php echo $page['wp_post_slug']; ?>" tabindex="1" size="30" name="wp_post_slug"/>
-						<p>Connect a Wordpress Post to this Page.</p>
+						<p><?_e('Connect a Wordpress Post to this Page.')?></p>
 					</div>
 				</div>
 			</div>

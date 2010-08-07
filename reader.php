@@ -82,8 +82,11 @@
 			
 			if($link && isset($previousLink)) {
 				if($class) $class = 'class="'.$class.'" '; 
-				if($title) $title = 'title="'.$title.'" ';
-					else $title =  'title="Read the previous part, Page '.$previousPage.'"';  
+				if($title) {
+					$title = 'title="'.$title.'" ';
+				} else { 
+					$title =  'title="'.__("Read the previous page").'"';
+				}					
 				echo '<a '.$class.$title.'href="'.$previousLink.'">'.$wrapper.'</a>';
 			} else if($link) {
 				echo $wrapper;
@@ -120,8 +123,11 @@
 			
 			if($link && isset($nextLink)) {
 				if($class) $class = 'class="'.$class.'" '; 
-				if($title) $title = 'title="'.$title.'" '; 
-					else $title =  'title="Read the Next part, Page '.$nextPage.'"';
+				if($title) {
+					$title = 'title="'.$title.'" '; 
+				} else {
+					$title = 'title="'.__("Read the next page").'"';
+				}
 				echo '<a '.$class.$title.'href="'.$nextLink.'">'.$wrapper.'</a>';
 			} else if($link) {
 				echo $wrapper;
@@ -138,16 +144,19 @@
 				$urlC = $chapter["number"].'/';	
 			}
 			
-			if($series && $page) {
+			if($series && $page && $page["img"]) {
 				$wrapper = '<img src="'.UPLOAD_URLPATH.'/'.strtolower($series["slug"]).'/'.$urlC.$page["img"].'" />';
 			} else {
-				$wrapper = 'Page does not Exist';	
+				$wrapper = false;	
 			}
 			
 			if(isset($nextLink)) {
 				if($class) $class = 'class="'.$class.'" '; 
-				if($title) $title = 'title="'.$title.'" '; 
-					else $title =  'title="Read the Next part, Page '.$nextPage.'"';
+				if($title) {
+					$title = 'title="'.$title.'" '; 
+				} else {
+					$title = 'title="'.__("Read the next page").'"';
+				}
 				echo '<a '.$class.$title.'href="'.$nextLink.'">'.$wrapper.'</a>';
 			} else {
 				echo $wrapper;

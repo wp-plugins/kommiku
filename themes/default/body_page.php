@@ -5,21 +5,26 @@
 		<h2 class="kommiku-bread"><a href="<?=HTTP_HOST?><?=$kommiku['url']['series']?>"><?=$kommiku["title"]["series"]?></a></h2>
 	</div>
 	
-	<div id="page-img">	
-		<?php kommiku_page_navigation(); ?>
+	<table cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">
+		<tr><td><?php kommiku_page_navigation(); ?></td></tr>
 		
-		<div id="imageWrapper">
-			<?php img(); ?>
+		<tr id="imageWrapper">
+			<td><?php if($page["img"]) img(); else echo stripslashes($page['story']); ?></td>
+		</tr>
+
+		<tr><td><?php kommiku_page_navigation(); ?></td></tr>
+	</table>   
+	<?php //Story Information ?>
+	<?php  if($page["img"] && ($page["title"] || $page["story"])){  ?>
+		<div id="page-info">
+			<?php if($page["title"]){ ?> <h2 id="page-title"><?=$page["title"]?></h2> <?php } ?>
+			<?php if($page["story"]){ ?> <p id="page-story"><?=$page["story"]?></p> <?php } ?>
 		</div>
-
-		<?php kommiku_page_navigation(); ?>
-	</div>   
-
-	<div id="page-info">
-		<?php if($page["title"]){ ?> <h2 id="page-title"><?=$page["title"]?></h2> <?php } ?>
-		<?php if($page["story"]){ ?> <p id="page-story"><?=$page["story"]?></p> <?php } ?>
-	</div>
+	<?php } ?>
+	
 </div>
+
+<?php kommiku_footer(); ?>
 
 <?php //Keyboard Commands! No need to touch this. ?>
 <script type="text/javascript">
@@ -45,7 +50,7 @@
 	}
 </script> 
 
-<?php kommiku_footer(); ?>
+
 
 
 

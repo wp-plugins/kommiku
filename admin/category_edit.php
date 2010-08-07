@@ -4,16 +4,16 @@ $category = $db->category_detail($db->clean($_GET['category']));
 
 switch(rand(0,3)) {
 	case 0:
-		$deleteWord = 'Don\'t Do it!';
+		$deleteWord = __("Don't Do it!");
 		break;
 	case 1:
-		$deleteWord = 'It\'s a TRAP!';
+		$deleteWord = __("It's a TRAP!");
 		break;
 	case 2:
-		$deleteWord = 'Why???!';
+		$deleteWord = __("Why???!");
 		break;
 	case 3:
-		$deleteWord = 'But I am your friend :(';
+		$deleteWord = __("But I am your friend :(");
 		break;
 		
 		}
@@ -23,7 +23,7 @@ switch(rand(0,3)) {
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><A href="<?php echo $url; ?>admin.php?page=kommiku_category">Category List</a> &raquo; <a href="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>"><?=$category['name']?></a></h2>
+	<h2><A href="<?php echo $url; ?>admin.php?page=kommiku_category"><?_e('Category List')?></a> &raquo; <a href="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>"><?=$category['name']?></a></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
@@ -35,12 +35,12 @@ switch(rand(0,3)) {
 		<div class="inner-sidebar" id="side-info-column">
 			<div class="meta-box-sortables ui-sortable" id="side-sortables">
 				<div class="postbox">
-					<h3 style="cursor: default;"><span>Update?</span></h3>
+					<h3 style="cursor: default;"><span><?_e('Update?')?></span></h3>
 					<div class="inside">
 						<div class="submitbox" style="padding: 5px;">
 							<div style="background: none; font-size: 11px;">
 								<div style="width: 100%; float: right; text-align: right">
-									<input style="margin-top:10px; width: 100px;" type="submit" value="Update" accesskey="p" tabindex="5" class="button-primary" name="publish"/>
+									<input style="margin-top:10px; width: 100px;" type="submit" value="<?_e('Update')?>" accesskey="p" tabindex="5" class="button-primary" name="publish"/>
 								</div>
 								<div class="clear"></div>
 								<div class="misc-pub-section "></div>
@@ -53,10 +53,10 @@ switch(rand(0,3)) {
 	
 		<div id="post-body-content">
 			<div class="postbox" style="margin-bottom: 0px;">
-				<h3 style="cursor: default;"><span>Category Name</span></h3>
+				<h3 style="cursor: default;"><span><?_e('Category Name')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
-						<label for="name" class="screen-reader-text">Name</label>
+						<label for="name" class="screen-reader-text"><?_e('Name')?></label>
 						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$category['name']?>" tabindex="1" size="30" name="name"/>
 					</div>
 				</div>
@@ -65,7 +65,7 @@ switch(rand(0,3)) {
 			<div style="margin-bottom: 10px;">
 				<div class="inside">
 					<div id="edit-slug-box">
-						<strong>Permalink:</strong> <span id="sample-permalink"><?php echo 'http://thetosho.com/category/'; ?>
+						<strong><?_e('Permalink:')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.KOMMIKU_URL_INDEX.'/'._e("category").'/'; ?>
 						<input type="text" value="<?=$category['slug']?>" name="slug" style="width: 10%; background: #FFFBCC;" /> /
 						</span>
 					</div>
@@ -76,12 +76,12 @@ switch(rand(0,3)) {
 		<div class="metabox-holder">
 		
 			<div class="postbox">
-				<h3 style="cursor: default;"><span>Description</span></h3>
+				<h3 style="cursor: default;"><span><?_e('Description')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
-						<label for="summary" class="screen-reader-text">Description</label>
+						<label for="summary" class="screen-reader-text"><?_e('Description')?></label>
 						<textarea tabindex="2" name="description" style="width: 99.5%;" rows="5"><?=stripslashes($category['description'])?></textarea>									
-						<p>Add a description of the Category</p>
+						<p><?_e('Add a description of the Category')?></p>
 					</div>
 				</div>
 			</div>
@@ -99,7 +99,7 @@ switch(rand(0,3)) {
 									<input type="hidden" value="category" name="what"/>	
 									<input type="hidden" value="delete" name="action"/>	
 									<input type="hidden" value="category" name="destination"/>	
-									<input type="submit" name="category_create" class="button-primary" tabindex="5" value="Delete this Category">
+									<input type="submit" name="category_create" class="button-primary" tabindex="5" value="<?_e('Delete this Category')?>">
 								</form>
 								</div>
 								<div class="clear"></div>									

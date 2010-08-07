@@ -1,5 +1,5 @@
 <?php	
-$alphabets = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
+$alphabets = $kommiku['alphabets'];
 $series_admin_list = $db->series_admin_list();
 	if($series_admin_list)
 	foreach ($series_admin_list as $row) {
@@ -35,15 +35,15 @@ $series_admin_list = $db->series_admin_list();
 												<div class="clear"></div> 
 											</div>
 											<div class="misc-pub-section ">
-												<span <?php if($series['fail']['slug'])echo 'style="color: #ff0000;"'; ?>>Series Slug:</span> <input name="slug" type="text" value="<?php if($_GET['action'] != 'delete') echo $series['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
+												<span <?php if($series['fail']['slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Series Slug:')?></span> <input name="slug" type="text" value="<?php if($_GET['action'] != 'delete') echo $series['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 												<div class="clear"></div> 
 											</div>
 											<div class="misc-pub-section ">
-												Summary: <textarea name="summary" type="text" style="width: 150px; float: right; text-align: left;" /><?php if($_GET['action'] != 'delete') echo stripslashes($series['summary']); ?></textarea>
+												<?_e('Summary:')?> <textarea name="summary" type="text" style="width: 150px; float: right; text-align: left;" /><?php if($_GET['action'] != 'delete') echo stripslashes($series['summary']); ?></textarea>
 												<div class="clear"></div> 
 											</div>
 											<div class="misc-pub-section ">
-												Chapter-Less: <input type="checkbox" <?php if ($series['chapterless']) echo 'checked="checked" '; ?>value="1" name="chapterless"/>
+												<?_e('Chapter-Less:')?> <input type="checkbox" <?php if ($series['chapterless']) echo 'checked="checked" '; ?>value="1" name="chapterless"/>
 												<div class="clear"></div> 
 											</div>
 										</div>
@@ -63,7 +63,7 @@ $series_admin_list = $db->series_admin_list();
 		<div id="post-body-content">
 			<div>
 				<div class="postbox">
-					<h3 style="cursor: default;"><span>Go to a Letter</span></h3>
+					<h3 style="cursor: default;"><span><?_e('Go to a Letter')?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<div id="titlediv" style="margin: 0;">
