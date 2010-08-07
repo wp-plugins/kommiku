@@ -4,8 +4,8 @@ if(!$series) $series = $db->series_detail();
 if(!$chapter) $chapter = $db->chapter_detail();
 if($page_list)
 foreach ($page_list as $row) {
-	if ($row->title) $title = " - ".$row->title;
-	$listing[$row->number] = '<li>#'.$row->number.' - <A href="'.$url.'admin.php?page=kommiku&sub=createpage&series='.$series["id"].'&chapter='.$chapter["id"].'&pg='.$row->id.'">'.$row->slug.'</a></li>';
+	if ($row->title) $title = " - ".stripslashes($row->title);
+	$listing[$row->number] = '<li>#'.$row->number.' - <a href="'.$url.'admin.php?page=kommiku&sub=createpage&series='.$series["id"].'&chapter='.$chapter["id"].'&pg='.$row->id.'">'.$row->slug.'</a></li>';
 	unset($title);
 	}	
 $chapter_number = str_replace('.0','',$chapter['number']);
@@ -27,7 +27,7 @@ switch(rand(0,3)) {
 		
 		}
 		
-
+$scanlator = get_option('kommiku_scanlator_enabled');
 		
 if (is_numeric($_GET["series"])) $chapterless = $db->chapterless();
 if ($chapterless == 0) { 
@@ -43,7 +43,7 @@ if ($chapterless == 0) {
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><A href="<?=$url?>admin.php?page=kommiku">Series Listing</a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a><?php echo $chapterTitle; ?></h2>
+	<h2><a href="<?=$url?>admin.php?page=kommiku">Series Listing</a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a><?php echo $chapterTitle; ?></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['error'].$status['pass']; ?></p></div>
 	<?php } ?>
@@ -79,15 +79,36 @@ if ($chapterless == 0) {
 							<div style="background: none;">
 									<div style="margin-bottom: 10px;">
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Chapter Name:</span> <input name="title" type="text" value="<?php echo $chapter['title']; ?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Chapter Name:</span> <input name="title" type="text" value="<?php echo stripslashes($chapter['title']); ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>>Chapter #:</span> <input name="number" type="text" value="<?php echo $chapter_number; ?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>>Chapter #:</span> <input name="number" type="text" value="<?php echo $chapter['number']; ?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section ">
+											<span <?php if($chapter['fail']['slug'])echo 'style="color: #ff0000;"'; ?>>Chapter Slug:</span> <input name="slug" type="text" value="<?php echo $chapter['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section ">
 											Summary: <textarea name="summary" type="text" style="width: 150px; float: right; text-align: left;"><?php echo stripslashes($chapter['summary']); ?></textarea>
+											<div class="clear"></div> 
+										</div>
+										<?php if($scanlator){ ?>
+										<div class="misc-pub-section ">
+											<span <?php if($chapter['fail']['scanlator'])echo 'style="color: #ff0000;"'; ?>>Scanlator:</span> <input name="scanlator" type="text" value="<?=$chapter['scanlator']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section ">
+											<span <?php if($chapter['fail']['scanlator_slug'])echo 'style="color: #ff0000;"'; ?>>Scanlator Slug:</span> <input name="scanlator_slug" type="text" value="<?=$chapter['scanlator_slug']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<?php } else {?>
+											<input type="hidden" value="" name="scanlator"/>
+											<input type="hidden" value="" name="scanlator_slug"/>
+										<?php } ?>
+										<div class="misc-pub-section ">
+											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>>Volume:</span> <input name="volume" type="text" value="<?=$chapter['volume']?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<?php if(!$series['chapterless']){ ?>
@@ -107,42 +128,6 @@ if ($chapterless == 0) {
 				</div>
 				</form>
 				<?php } ?>
-				<form method="post" action="admin.php?page=kommiku&sub=listpage&series=<?php echo $series['id']; ?>&chapter=<?php echo $chapter['id']; ?>" name="post">
-				<input type="hidden" value="<?php echo $series['id']; ?>" name="series_id"/>
-				<input type="hidden" value="<?php echo $chapter['id']; ?>" name="chapter_id"/>
-				<input type="hidden" value="update" name="action"/>
-				<input type="hidden" value="series" name="what"/>
-				<input type="hidden" value="page" name="destination"/>		
-				<div class="postbox">
-					<h3 style="cursor: default;"><span>Series Detail</span></h3>
-					<div class="inside">
-						<div class="submitbox">
-							<input type="hidden" value="<?php echo $series['id']; ?>" name="series_id"/>
-							<div style="background: none;">
-									<div style="margin-bottom: 10px;">
-										<div class="misc-pub-section ">
-											<span <?php if($series['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Series Name:</span> <input name="title" type="text" value="<?php echo $series['title']; ?>" style="width: 150px; float: right; text-align: left;" />
-											<div class="clear"></div> 
-										</div>
-										<div class="misc-pub-section ">
-											<span <?php if($series['fail']['slug'])echo 'style="color: #ff0000;"'; ?>>Series Slug:</span> <input name="slug" type="text" value="<?php echo $series['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
-											<div class="clear"></div> 
-										</div>
-										<div class="misc-pub-section ">
-											Summary: <textarea name="summary" type="text" style="width: 150px; float: right; text-align: left;" /><?php echo stripslashes($series['summary']); ?></textarea>
-											<div class="clear"></div> 
-										</div>
-									</div>
-									<div class="clear"></div>
-									<div style="width: 100%; float: right; text-align: right">
-											<input type="submit" value="Update Series" accesskey="c" tabindex="5" class="button-primary" name="series_update"/>
-									</div>
-									<div class="clear"></div>
-							</div>								    
-						</div>
-					</div>
-				</div>
-				</form>
 				<div class="postbox">
 					<h3 style="cursor: default;"><span><?php echo $deleteWord; ?></span></h3>
 					<div class="inside">

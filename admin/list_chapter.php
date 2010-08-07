@@ -3,8 +3,8 @@ $chapter_list = $db->chapter_list();
 $series = $db->series_detail();
 if($chapter_list)
 foreach ($chapter_list as $row) {
-	if ($row->title) $title = ' - '.$row->title;
-	$listing[$row->number] = '<li>#'.$row->number.' - <A href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$row->id.'">'.$row->slug.$title.'</a></li>';
+	if ($row->title) $title = ' - '.stripslashes($row->title);
+	$listing[$row->number] = '<li>#'.$row->number.' - <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$row->id.'">'.$row->slug.$title.'</a></li>';
 	unset($title);
 	}	
 if ($listing) ksort($listing,SORT_NUMERIC);
@@ -23,6 +23,7 @@ switch(rand(0,3)) {
 		break;
 		
 		}
+$scanlator = get_option('kommiku_scanlator_enabled');
 ?>	
 
 <div class="wrap">
@@ -46,11 +47,15 @@ switch(rand(0,3)) {
 							<div style="background: none;">
 								<div style="margin-bottom: 10px;">
 									<div class="misc-pub-section ">
-										<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Chapter Name:</span> <input name="title" type="text" value="<?php if($_GET['action'] != 'delete' && !$status['pass']) echo $chapter['title']; ?>" style="width: 150px; float: right; text-align: left;" />
+										<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Chapter Name:</span> <input name="title" type="text" value="<?php if($_GET['action'] != 'delete' && !$status['pass']) echo stripslashes($chapter['title']); ?>" style="width: 150px; float: right; text-align: left;" />
 										<div class="clear"></div> 
 									</div>
 									<div class="misc-pub-section ">
 										<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>>Chapter #:</span> <input name="number" type="text" value="<?php if($_GET['action'] != 'delete' && !$status['pass']) echo $chapter['number']; ?>" style="width: 150px; float: right; text-align: left;" />
+										<div class="clear"></div> 
+									</div>
+									<div class="misc-pub-section ">
+										<span <?php if($chapter['fail']['slug'])echo 'style="color: #ff0000;"'; ?>>Chapter Slug:</span> <input name="slug" type="text" value="<?php if($_GET['action'] != 'delete' && !$status['pass']) echo $chapter['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 										<div class="clear"></div> 
 									</div>
 									<div class="misc-pub-section ">
@@ -83,10 +88,26 @@ switch(rand(0,3)) {
 								<div class="misc-pub-section ">
 									<input type="file" name="zip" size="30" tabindex="1" value="" autocomplete="off" style="background: rgb(238, 238, 238) none repeat scroll 0% 0%; width: 100%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous;"/>
 								</div>
+								<div class="misc-pub-section ">
+									<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Chapter Name:</span> <input name="title" type="text" value="<?=$chapter['title']?>" style="width: 150px; float: right; text-align: left;" />
+									<div class="clear"></div> 
+								</div>
+								<div class="misc-pub-section ">
+									<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>>Chapter #:</span> <input name="number" type="text" value="<?=$chapter['number']?>" style="width: 150px; float: right; text-align: left;" />
+									<div class="clear"></div> 
+								</div>
+								<div class="misc-pub-section ">
+									<span <?php if($chapter['fail']['slug'])echo 'style="color: #ff0000;"'; ?>>Slug:</span> <input name="slug" type="text" value="<?=$chapter['slug']?>" style="width: 150px; float: right; text-align: left;" />
+									<div class="clear"></div> 
+								</div>
+								<div class="misc-pub-section ">
+									<span <?php if($chapter['fail']['language'])echo 'style="color: #ff0000;"'; ?>>Language:</span> <input name="language" type="text" value="<?=$chapter['language']?>" style="width: 150px; float: right; text-align: left;" />
+									<div class="clear"></div> 
+								</div>
 								</div>
 								<div class="clear"></div>
 								<div style="width: 100%; float: right; text-align: right">
-									<input type="submit" value="Dump it!" accesskey="p" tabindex="5" class="button-primary" name="chapter_create"/>
+									<input type="submit" value="Dump it!" accesskey="p" tabindex="5" class="button-primary" name="chapter_createchapter_create"/>
 								</div>
 								<div class="clear"></div>
 							</div>					
@@ -95,7 +116,7 @@ switch(rand(0,3)) {
 				</div>
 				</form>
 				<?php } ?>
-				<form method="post" action="admin.php?page=kommiku&sub=listchapter&series=<?=$series['id']?>" name="post">
+				<form method="post" enctype="multipart/form-data" action="admin.php?page=kommiku&sub=listchapter&series=<?=$series['id']?>" name="post">
 				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>
 				<input type="hidden" value="update" name="action"/>
 				<input type="hidden" value="series" name="what"/>	
@@ -106,17 +127,78 @@ switch(rand(0,3)) {
 						<div class="submitbox">
 							<div style="background: none;">
 									<div style="margin-bottom: 10px;">
-										<div class="misc-pub-section ">
+										<div class="misc-pub-section">
 											<span <?php if($series['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Series Name:</span> <input name="title" type="text" value="<?php echo $series['title']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
-										<div class="misc-pub-section ">
+										<div class="misc-pub-section">
 											<span <?php if($series['fail']['slug'])echo 'style="color: #ff0000;"'; ?>>Series Slug:</span> <input name="slug" type="text" value="<?php echo $series['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
-										<div class="misc-pub-section ">
+										<div class="misc-pub-section">
 											Summary: <textarea name="summary" type="text" style="width: 150px; float: right; text-align: left;" /><?php echo stripslashes($series['summary']); ?></textarea>
 											<div class="clear"></div> 
+										</div>
+										<?php if($scanlator){ ?>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['author'])echo 'style="color: #ff0000;"'; ?>>Author:</span> <input name="author" type="text" value="<?=$series['author']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['illustrator'])echo 'style="color: #ff0000;"'; ?>>Illustrator:</span> <input name="illustrator" type="text" value="<?=$series['illustrator']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<?php } ?>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>>Date Created:</span> <input name="creation" type="text" value="<?=$series['creation']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>>Other Names:</span> <input name="alt_name" type="text" value="<?=$series['alt_name']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>>Categories:</span> <input name="categories" type="text" value="<?=$series['categories']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section" style="text-align: right;"> 
+											Read Direction:  
+											<select name="read">
+												<option <?php  if($series['read'] == '0') echo 'selected="selected"'; ?>value="0">Left to Right</option>
+												<option <?php  if($series['read'] == '1') echo 'selected="selected"'; ?>value="1">Right to Left</option>
+												<option <?php  if($series['read'] == '2') echo 'selected="selected"'; ?>value="2">Top to Bottom</option>
+											</select>
+										</div>
+										<div class="misc-pub-section" style="text-align: right;">
+											Status: 
+											<select name="status">
+												<option <?php if($series['status'] == '0') echo 'selected="selected"'; ?>value="0">Unknown</option>
+												<option <?php if($series['status'] == '1') echo 'selected="selected"'; ?>value="1">Ongoing</option>
+												<option <?php if($series['status'] == '2') echo 'selected="selected"'; ?>value="2">On-Hold</option>
+												<option <?php if($series['status'] == '3') echo 'selected="selected"'; ?>value="3">Dropped</option>
+												<option <?php if($series['status'] == '4') echo 'selected="selected"'; ?>value="4">Complete</option>
+											</select>
+										</div>	
+										<div class="misc-pub-section" style="text-align: right;">
+											Story Type: 
+											<select name="type">
+												<option <?php if($series['type'] == '0') echo 'selected="selected"'; ?>value="0">(_blank)</option>
+												<option <?php if($series['type'] == '1') echo 'selected="selected"'; ?>value="1">Manga</option>
+												<option <?php if($series['type'] == '2') echo 'selected="selected"'; ?>value="2">Manhwa</option>
+												<option <?php if($series['type'] == '3') echo 'selected="selected"'; ?>value="3">Manhua</option>
+												<option <?php if($series['type'] == '4') echo 'selected="selected"'; ?>value="4">Comic</option>
+												<option <?php if($series['type'] == '5') echo 'selected="selected"'; ?>value="5">Unknown</option>
+												<option <?php if($series['type'] == '6') echo 'selected="selected"'; ?>value="6">Novel</option>
+											</select>
+										</div>	
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['rating'])echo 'style="color: #ff0000;"'; ?>>Age Rating:</span> <input name="rating" type="text" value="<?php echo $series['rating']; ?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section ">Series Book Cover: 
+										<?php if($series['img']) echo '<strong>[Exist]</strong>'; ?>
+										<br/><br/>
+											<input type="file" style="background: none repeat scroll 0% 0% rgb(238, 238, 238); width: 100%; -moz-background-inline-policy: continuous;" autocomplete="off" value="" tabindex="1" size="30" name="img">
 										</div>
 										<?php if(!$series['chapterless']){ ?>
 										<div class="misc-pub-section ">

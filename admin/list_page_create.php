@@ -111,34 +111,6 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 					</div>
 				</div>
 				
-				<div class="postbox">
-					<h3 style="cursor: default;"><span>Options</span></h3>
-					<div class="inside">
-						<div class="submitbox" style="padding: 5px;">
-							<div style="background: none; font-size: 11px;">
-								<div class="clear"></div>
-								<div class="misc-pub-section ">
-									<input style="min-width: 0;" type="checkbox" name="show_date" <?php if ($page['show_date']) echo 'checked="checked" '; ?>value="1"/> Show Date
-								</div>
-								<div class="misc-pub-section ">																															
-									<input style="min-width: 0;" type="checkbox" name="show_title" <?php if ($page['show_title']) echo 'checked="checked" '; ?>value="1"/> Show Title of the Page	
-								</div>
-								<div class="misc-pub-section ">
-									<input style="min-width: 0;" type="checkbox" name="show_first" <?php if ($page['show_first']) echo 'checked="checked" '; ?>value="1"/> Link First Page of Chapter
-								</div>
-								<div class="misc-pub-section ">											
-									<input style="min-width: 0;" type="checkbox" name="show_one" <?php if ($page['show_one']) echo 'checked="checked" '; ?>value="1"/> Link to First Page of Series
-								</div>
-								<div class="misc-pub-section ">											
-									<input style="min-width: 0;" type="checkbox" name="show_last" <?php if ($page['show_last']) echo 'checked="checked" '; ?>value="1"/> Link to the Latest Page of the Series
-								</div>
-								<div class="misc-pub-section ">
-									<input style="min-width: 0;" type="checkbox" name="show_comment" <?php if ($page['show_comment']) echo 'checked="checked" '; ?>value="1"/> Link to Discussion on Chapter
-								</div>
-							</div>								    
-						</div>
-					</div>
-				</div>
 				<?php if ($page['id'] || $_GET['pg']) { ?>
 				<div class="postbox">
 					<h3 style="cursor: default;"><span><?php echo $deleteWord; ?></span></h3>
@@ -202,27 +174,18 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 					</div>
 				</div>
 			</div>
+						
+			<div class="postbox">
+				<h3 style="cursor: default;"><span>Wordpress Post Connect</span></h3>
+				<div class="inside">
+					<div class="submitbox" style="padding: 5px;">
+						<label for="seodescription" class="screen-reader-text">wp_post_slug</label>
+						<input style="width: 100%;" type="text" autocomplete="off" id="title" value="<?php echo $page['wp_post_slug']; ?>" tabindex="1" size="30" name="wp_post_slug"/>
+						<p>Connect a Wordpress Post to this Page.</p>
+					</div>
+				</div>
+			</div>
 			
-			<div class="postbox">
-				<h3 style="cursor: default;"><span>SEO Keywords</span></h3>
-				<div class="inside">
-					<div class="submitbox" style="padding: 5px;">
-						<label for="seokeyword" class="screen-reader-text">seokeyword</label>
-						<textarea tabindex="2" name="seokeyword" style="width: 99.5%;" rows="1"><?php echo $page['seokeyword']; ?></textarea>					
-						<p>These are like tags on your Wordpress post.</p>
-					</div>
-				</div>
-			</div>
-
-			<div class="postbox">
-				<h3 style="cursor: default;"><span>SEO Description</span></h3>
-				<div class="inside">
-					<div class="submitbox" style="padding: 5px;">
-						<label for="seodescription" class="screen-reader-text">seodescription</label>
-						<textarea tabindex="2" name="seodescription" style="width: 99.5%;" rows="1"><?php echo $page['seodescription']; ?></textarea>					
-					</div>
-				</div>
-			</div>
 		</div>
 	</div>
 		

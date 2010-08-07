@@ -31,7 +31,7 @@ $series_admin_list = $db->series_admin_list();
 								<div style="background: none;">
 										<div style="margin-bottom: 10px;">
 											<div class="misc-pub-section ">
-												<span <?php if($series['fail']['title'])echo 'style="color: #ff0000;"'; ?>>Series Name:</span> <input name="title" type="text" value="<?php if($_GET['action'] != 'delete') echo $series['title']; ?>" style="width: 150px; float: right; text-align: left;" />
+												<span <?php if($series['fail']['title'])echo 'style="color: #ff0000;"'; ?>><?_e('Series Name:'?></span> <input name="title" type="text" value="<?php if($_GET['action'] != 'delete') echo $series['title']; ?>" style="width: 150px; float: right; text-align: left;" />
 												<div class="clear"></div> 
 											</div>
 											<div class="misc-pub-section ">

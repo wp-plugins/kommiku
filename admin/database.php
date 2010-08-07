@@ -55,6 +55,31 @@ function delTree($dir) { // bcairns@gmail.com :3 Thanks!
 
 Class kommiku_database {
 		
+	function chapter_update_list() {
+		global $wpdb;
+		$chapterUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
+		`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
+		`".$wpdb->prefix."comic_chapter`.`pubdate` as pubdate,
+		`".$wpdb->prefix."comic_series`.`title` as series_name
+		FROM `".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
+		WHERE `".$wpdb->prefix."comic_chapter`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
+		ORDER BY `".$wpdb->prefix."comic_chapter`.`pubdate` DESC LIMIT 0 , 15";
+		$pageUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
+		`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
+		`".$wpdb->prefix."comic_page`.`slug` as page_slug, 
+		`".$wpdb->prefix."comic_page`.`pubdate` as pubdate,
+		`".$wpdb->prefix."comic_series`.`title` as series_name,
+		`".$wpdb->prefix."comic_series`.`chapterless` as chapterless
+		FROM `".$wpdb->prefix."comic_page`,`".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
+		WHERE `".$wpdb->prefix."comic_page`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
+		AND `".$wpdb->prefix."comic_page`.`chapter_id` = `".$wpdb->prefix."comic_chapter`.`id`
+		ORDER BY `".$wpdb->prefix."comic_page`.`pubdate` DESC LIMIT 0 , 15";
+		$chapterUpdatesList = $wpdb->get_results($chapterUquery);
+	
+		return $chapterUpdatesList;
+	
+	}
+		
 	function trailingslash($str) {
 		
 		if (substr($str, -1, 1) != "/" && $str != '')
@@ -101,7 +126,8 @@ Class kommiku_database {
 		$story      	 = '',
 		$number,
 		$series_id,
-		$chapter_id	
+		$chapter_id,
+		$wp_post_slug
 	) {
 	    global $wpdb;
 			
@@ -116,18 +142,139 @@ Class kommiku_database {
 	  		   'story' => $story,
 	  		   'number' => $number,
 	  		   'series_id' => $series_id,
-	  		   'chapter_id' => $chapter_id
+	  		   'chapter_id' => $chapter_id,
+			   'wp_post_slug' => $wp_post_slug
 	  		 ), 
 	  	
-			array( '%s', '%s','%s','%s','%s','%d','%d','%d' )
+			array( '%s', '%s','%s','%s','%s','%d','%d','%d', '%s' )
 	  	       
 	  	    );
 	
 	  		
 	}
 	
-	function chapter_create($title = '', $number, $summary = '', $series_id, $date, $slug,$returner = false) {
+	function category_update($id,$name,$summary,$slug)  {
 	    global $wpdb;
+	    
+	    if(is_numeric($id)) {
+			$table = $wpdb->prefix."comic_category";
+		  	$wpdb->update( $table , 
+		  	
+			  	array( 'title' => $name, 
+			  		   'summary' => $summary, 
+	 		   		   'slug' => $slug
+			  	  		 ), 
+			  	array( 'id' => $id ),
+			  	array( '%s', '%s', '%s'),  
+				array( '%d' ) );
+		}
+	}
+	
+	function category_detail($slug) {
+	    global $wpdb;
+		
+		$table = $wpdb->prefix."comic_category";
+	  		$select = "SELECT * FROM ".$table." WHERE slug = '".$slug."'";
+	  		$results = $wpdb->get_row( $select , ARRAY_A );
+			return $results;
+		
+	}
+	
+	function category_read() {
+	    global $wpdb;
+	    
+			$table = $wpdb->prefix."comic_category";
+	  		$select = "SELECT * FROM ".$table." ORDER BY name";
+	  		$results = $wpdb->get_results( $select );
+			return $results;
+		
+	}
+
+	function category_create($name,$summary,$slug) {
+	    global $wpdb;
+		
+		$table = $wpdb->prefix."comic_category";
+	  	$wpdb->insert( $table , 
+	  	
+	  	array( 'title' => $name, 
+	  		   'summary' => $summary,
+			   'slug' => $slug
+	  		 ), 
+	  	
+	  	array( '%s', '%s', '%s' )  
+	  	       
+	  	    );
+	  	    
+	}
+	
+	function category_delete($category) {
+	    global $wpdb;
+	    
+		if(is_numeric($category)) {
+		$table = $wpdb->prefix."comic_category";
+	  		$select = "DELETE FROM ".$table." WHERE id = '".$category."'";
+		    $wpdb->query($select);
+		    
+		}
+	}
+	
+	function search_category($category)  {
+	    global $wpdb;
+			$table = $wpdb->prefix."comic_series";
+			$category = str_replace("_"," ",$category);
+	  		$select = "SELECT * FROM ".$table." WHERE `categories` LIKE '%".$category."%'";
+	  		$results = $wpdb->get_results( $select );
+			return $results;
+	}
+	
+	function find_series($find)  {
+	    global $wpdb;
+	    $find = stripslashes($find);
+			$table = $wpdb->prefix."comic_series";			
+	  		$select = "SELECT * FROM `".$table."` WHERE `categories` LIKE '%".$find."%' OR `title` LIKE '%".$find."%' OR `alt_name` LIKE '%".$find."%' OR `author` LIKE '%".$find."%' OR `illustrator` LIKE '%".$find."%'";
+	  		$results = $wpdb->get_results( $select );
+			return $results;
+	}
+	
+	function check_chapter_slug($series_id,$slug) {
+	global $wpdb;
+	
+	$table = $wpdb->prefix."comic_chapter";
+	if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$slug."' AND series_id = '".$series_id."'"))
+		return true;
+	else
+		return false;
+	}
+	
+	function scanlators_chapter($scanlators_name) {
+	    global $wpdb;
+		$tableA = $wpdb->prefix."comic_chapter";
+		$tableB = $wpdb->prefix."comic_series";
+	  		$select = "SELECT ".$tableB.".slug as series_slug, ".$tableB.".title as series_title, ".$tableA.".number as chapter_number, ".$tableA.".pubdate as chapter_date, ".$tableA.".title as chapter_title 
+	  		FROM ".$tableA.", ".$tableB."  
+	  		WHERE 
+	  		    ".$tableA.".scanlator_slug LIKE '%".$scanlators_name."%' 
+	  		AND ".$tableB.".id = ".$tableA.".series_id 
+	  		ORDER BY ".$tableA.".id DESC";
+	  		
+	  		$results = $wpdb->get_results( $select );
+		return $results;
+	}
+	
+	function check_chapter_number($series_id,$number) {
+	    global $wpdb;
+		
+		$table = $wpdb->prefix."comic_chapter";
+		if($wpdb->get_var("SELECT number FROM `".$table."` WHERE number = '".$number."' AND series_id = '".$series_id."'"))
+			return true;
+		else
+			return false;
+	}	
+	
+	function chapter_create($title = '', $number, $summary = '', $series_id, $date, $slug,$scanlator = '',$scanlator_slug = '',$volume = 0,$folder = '',$returner = false) {
+	    global $wpdb;
+		
+		if($volume = '') $volume = 0;
 		
 		$table = $wpdb->prefix."comic_chapter";
 	  	$wpdb->insert( $table , 
@@ -137,10 +284,14 @@ Class kommiku_database {
 	  		   'summary' => $summary,
 	  		   'series_id' => $series_id,
 			   'pubdate' => $date,
-			   'slug' => $slug
+			   'slug' => $slug,
+			   'scanlator' => $scanlator,
+			   'scanlator_slug' => $scanlator_slug,
+			   'volume' => $volume,
+			   'folder' => $folder
 	  		 ), 
 	  	
-	  	array( '%s', '%s', '%s', '%d', '%s', '%s' )  
+	  	array( '%s', '%s', '%s', '%d', '%s', '%s','%s', '%s', '%d', '%s' )  
 	  	       
 	  	    );
 	  	 if($returner == true)
@@ -172,7 +323,7 @@ Class kommiku_database {
 	
 	}
 	
-	function series_create($title, $slug, $summary = '', $chapterless = 0) {
+	function series_create($title, $slug, $summary = '', $chapterless = 0, $categories = "",$author,$illustrator,$read,$creation = '',$alt_name = '', $status = 'ongoing', $rating = 0,$story_type = 0,$img = '') {
 	    global $wpdb;
 			
 		$table = $wpdb->prefix."comic_series";
@@ -181,15 +332,33 @@ Class kommiku_database {
 	  	array( 'title' => $title, 
 	  		   'slug' => $slug, 
 	  		   'summary' => $summary,
-	  		   'chapterless' => $chapterless
+	  		   'chapterless' => $chapterless,
+	  		   'categories' => $categories,
+	  		   'author' => $author,
+	  		   'illustrator' => $illustrator,
+	  		   'read' => $read,
+	  		   'creation' => $creation,
+	  		   'alt_name' => $alt_name,
+	  		   'status' => $status,
+			   'rating' => $rating,
+			   'type' => $story_type,
+			   'img' => $img
 	  		 ), 
 	  	
 	  	array( '%s', 
 	  	       '%s',
 	  	       '%s',
-	  	       '%d'
-	  	       )  
+	  	       '%d',
+	  	       '%s',
+	  	       '%s',
+	  	       '%s',
+	  	       '%d',
+	  	       '%s',
+	  	       '%s',
+	  	       '%d',
+			   '%d',
 	  	       
+	  	       )  
 	  	    );
 	
 	}
@@ -280,8 +449,30 @@ Class kommiku_database {
 	
 	function series_list() {
 		global $wpdb;
-		$table = $wpdb->prefix."comic_series";
-	  		$select = "SELECT * FROM `".$table."` ORDER BY `title` ASC";
+	  		$select = "SELECT
+					c.id as id,
+					c.title as series_name,
+					c.slug as series_slug,
+					c.title as title,
+					c.slug as slug,
+					a.title as chapter_name,
+					a.slug as chapter_slug,
+					a.pubdate as last_update,
+					c.status as status
+					FROM `".$wpdb->prefix."comic_chapter` a,
+					(SELECT series_id, max(number) as number
+					FROM `".$wpdb->prefix."comic_chapter`
+					GROUP BY series_id) b, 
+					`".$wpdb->prefix."comic_series` c
+					WHERE b.series_id = a.series_id AND b.number = a.number AND b.series_id = c.id
+					";
+	  		$results = $wpdb->get_results( $select );
+			return $results;
+	}
+	
+	function series_admin_list() {
+		global $wpdb;
+	  		$select = "SELECT * FROM `".$wpdb->prefix."comic_series`";
 	  		$results = $wpdb->get_results( $select );
 			return $results;
 	}
@@ -290,9 +481,8 @@ Class kommiku_database {
 	    global $wpdb;
 	    if (!is_numeric($series_id)) return;
 		$table = $wpdb->prefix."comic_chapter";
-	  		$select = "SELECT * FROM ".$table." WHERE series_id = '".$series_id."' ORDER BY number DESC";
+	  		$select = "SELECT * FROM ".$table." WHERE series_id = '".$series_id."' ORDER BY number";
 	  		$results = $wpdb->get_results( $select );
-	  		sort($results,SORT_NUMERIC);
 			return $results;
 	}
 	
@@ -482,7 +672,8 @@ Class kommiku_database {
 		$story      	 = '',
 		$number,
 		$series_id,
-		$chapter_id	
+		$chapter_id,
+		$wp_post_slug = ''
 	) {
 	    global $wpdb;
 		
@@ -496,15 +687,88 @@ Class kommiku_database {
 	  		   'story' => $story,
 	  		   'number' => $number,
 	  		   'series_id' => $series_id,
-	  		   'chapter_id' => $chapter_id
+	  		   'chapter_id' => $chapter_id,
+			   'wp_post_slug' => $wp_post_slug
 	  		 ), 
 			array( 'id' => $id ),
-			array( '%s', '%s','%s','%s','%s','%d','%d','%d' ), 
+			array( '%s', '%s','%s','%s','%s','%d','%d','%d', '%s' ), 
 			array( '%d' ) );
 	
 	}
 	
-	function chapter_update($id = NULL,$title = '',$number,$summary,$series_id,$date,$slug) {
+	function scanlator_create($title, $slug, $text = '', $link = '') {
+	    global $wpdb;
+			
+		$table = $wpdb->prefix."comic_scanlator";
+	  	$wpdb->insert( $table , 
+	 
+	  	array( 'title' => $title, 
+	  		   'slug' => $slug,
+	  		   'text' => $text,
+			   'link' => $link
+	  		 ), 
+	  	
+	  	array( '%s', 
+	  	       '%s',
+	  	       '%s',
+			   '%s'
+	  	       )  
+	  	       
+	  	    );
+	
+	}
+	
+	function scanlator_list() {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_scanlator";
+	  		$select = "SELECT * FROM ".$table;
+	  		$results = $wpdb->get_results( $select );
+			return $results;
+	}
+	
+	function scanlator_detail($id) {
+	    global $wpdb;
+	  
+	    if(is_numeric($id)){
+		$table = $wpdb->prefix."comic_scanlator";
+	  		$select = "SELECT * FROM ".$table." WHERE id = '".$id."'";
+	  		$results = $wpdb->get_row( $select , ARRAY_A );
+			return $results;
+		}
+	}
+	
+	function scanlator_update($id,$title,$slug,$text,$link) {
+	    global $wpdb;
+	    
+	    if(is_numeric($id)) {
+			$table = $wpdb->prefix."comic_scanlator";
+		  	$wpdb->update( $table , 
+			  	array( 'title' => $title, 
+			  		   'slug' => $slug, 
+			  		   'text' => $text,
+					   'link' => $link
+			  		 ), 
+			  	array( 'id' => $id ),
+			  	array( '%s', '%s', '%s', '%s' ),  
+				array( '%d' ) );
+		}
+	}
+	
+	function scanlator_delete($scanlator = NULL) {
+	    global $wpdb;
+	    
+	   if(!is_numeric($scanlator))
+		$scanlator    = $_GET['scanlator'];
+		
+		if(is_numeric($scanlator)) {
+		$table = $wpdb->prefix."comic_scanlator";
+	  		$select = "DELETE FROM ".$table." WHERE id = '".$scanlator."'";
+		    $wpdb->query($select);
+		    
+		}
+	}
+	
+	function chapter_update($id = NULL,$title = '',$number,$summary,$series_id,$date,$slug,$scanlator,$scanlator_slug,$volume,$folder) {
 	    global $wpdb;
 	    
 	    if(!$id)
@@ -519,19 +783,20 @@ Class kommiku_database {
 			  		   'summary' => $summary,
 			  		   'series_id' => $series_id,
 					   'pubdate' => $date,
-					   'slug' => $slug
+					   'slug' => $slug,
+					   'scanlator' => $scanlator,
+					   'scanlator_slug' => $scanlator_slug,
+					   'volume' => $volume,
+					   'folder' => $folder
 			  		 ), 
 			  	array( 'id' => $id ),
-			  	array( '%s', '%s', '%s', '%d', '%s', '%s' ),  
+			  	array( '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%s', '%s' ),  
 				array( '%d' ) );
 		}
 	}
 	
-	function series_update($id = NULL,$title,$slug,$summary,$chapterless) {
+	function series_update($id,$title,$slug,$summary,$chapterless,$categories,$author,$illustrator,$read,$creation,$alt_name,$status,$rating,$story_type = 0,$img = '') {
 	    global $wpdb;
-	    
-	    if(!$id)
-	    	$id = $_GET['series'];
 	    
 	    if(is_numeric($id)) {
 			$table = $wpdb->prefix."comic_series";
@@ -539,16 +804,25 @@ Class kommiku_database {
 			  	array( 'title' => $title, 
 			  		   'slug' => $slug, 
 			  		   'summary' => $summary,
-			  		   'chapterless' => $chapterless
+			  		   'chapterless' => $chapterless,
+			  		   'categories' => $categories,
+			  		   'author' => $author,
+			  		   'illustrator' => $illustrator,
+			  		   'read' => $read,
+			  		   'creation' => $creation,
+			  		   'alt_name' => $alt_name,
+			  		   'status' => $status,
+					   'rating' => $rating,
+					   'type' => $story_type,
+					   'img' => $img
 			  		 ), 
 			  	array( 'id' => $id ),
-			  	array( '%s', '%s', '%s', '%d' ),  
+			  	array( '%s', '%s', '%s', '%d', '%s', '%s', '%s', '%d', '%s', '%s', '%d', '%d', '%d', '%s' ),  
 				array( '%d' ) );
 		}
 	}
 	
-	//Delete
-		
+	//Delete	
 	function page_delete($id = NULL, $chapter = NULL, $series = NULL) {
 	    global $wpdb;
 	
@@ -566,13 +840,8 @@ Class kommiku_database {
 		}
 	}
 	
-	function chapter_delete($chapter_id = NULL,$series_id = NULL) {
+	function chapter_delete($chapter_id,$series_id) {
 	    global $wpdb;
-
-	   if(!is_numeric($series_id))
-		$series_id      = $_GET['series'];
-	   if(!is_numeric($chapter_id))
-		$chapter_id     = $_GET['chapter'];
 	    
 		if(is_numeric($chapter_id) && is_numeric($series_id)) {
 		$table = $wpdb->prefix."comic_chapter";
