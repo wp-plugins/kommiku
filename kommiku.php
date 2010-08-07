@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.0.14
+Version: 2.1
 Plugin URI: http://dotspiral.com/kommiku/
-Description: Kommiku is a Online Manga Viewer.
+Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 */ 
@@ -22,8 +22,6 @@ if ( !defined('WP_LOAD_PATH') ) {
 }
 
 $comic_upload_directory = get_option( 'kommiku_comic_upload' );
-if(!$comic_upload_directory) $comic_upload_directory = 'comics';
-
 define('KOMMIKU_URLPATH', WP_PLUGIN_URL . '/' . plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_PLUGIN_PATH', plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_FOLDER', dirname(__FILE__) );
@@ -32,11 +30,13 @@ define('UPLOAD_URLPATH',get_bloginfo('wpurl').'/'.$comic_upload_directory );
 define('KOMMIKU_ABSPATH', str_replace("\\","/", WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/' ));
 define('KOMMIKU_URL_FORMAT', get_option( 'kommiku_url_format' ));
 define('KOMMIKU_SKIN', get_option( 'kommiku_skin_directory' ));
+define('KOMMIKU_URL_INDEX', get_option( 'kommiku_url_index' ) );
 define('HTTP_HOST', get_bloginfo('url').'/' );
+define('K_SCANLATOR_URL', get_option('kommiku_scanlator') );
 add_action('admin_menu', 'kommiku_menu');
+load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
 
-function kommiku_fancy_url($var='REQUEST_URI')
-{
+function kommiku_fancy_url($var='REQUEST_URI'){
 	global $kommiku;
 	if (!in_array($var, array('REQUEST_URI', 'PATH_INFO'))) $var = 'REQUEST_URI';
 	$req = $_SERVER[$var];
@@ -45,15 +45,38 @@ function kommiku_fancy_url($var='REQUEST_URI')
 		kommiku_fancy_url('PATH_INFO');
 	}
 	
-	$explodeURL = array_slice(explode('/',$req),1,5);
+	$searchURL = explode('?',$req);
 
+	if($searchURL[0] == "/find") {
+		$searchExplosion = explode('=',$searchURL[1]);
+		header('Location: '.HTTP_HOST.'find/'.$searchExplosion[1].'/');
+		exit;
+	}	
+	
+	$explodeURL = array_slice(explode('/',$req),1,5);
 	$checkExplosion = $explodeURL;
 	$unecessaryThing = array_shift($checkExplosion);
-	if($checkExplosion[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '') 
+	if($checkExplosion[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '' && !get_option('kommiku_one_comic')) 
 		$explodeURL = $checkExplosion;
 	unset($checkExplosion);
 	
-	if($explodeURL[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '') {
+	//Replace Index
+	if($explodeURL[0] == '' && get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
+				$kommiku['manga'] = true;
+				$kommiku['series'] = get_option( 'kommiku_one_comic' );
+				$kommiku['one_comic'] = true;
+				$kommiku['pages'] = "latest";
+				$kommiku['index'] = true;
+		}
+	
+	if(strtolower($explodeURL[0]) == "find" && $explodeURL[1]) {
+		$kommiku['manga'] = true;
+		$kommiku['find'] = $explodeURL[1];
+	} else if($explodeURL[0] == KOMMIKU_URL_INDEX) {
+		$kommiku['manga'] = true;
+		if($explodeURL[0] != '')
+		$kommiku['category'] = $explodeURL[1];
+	} else if($explodeURL[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '') {
 		//If you are only hosting one series on the site
 		if(get_option('kommiku_one_comic') != 0 && get_option('kommiku_one_comic') != false) {
 			$kommiku['manga'] = true;
@@ -71,7 +94,10 @@ function kommiku_fancy_url($var='REQUEST_URI')
 			$kommiku['pages'] = $explodeURL[3];
 		} else {
 			$kommiku['manga'] = true;
-		}
+		} 
+	} else if ($explodeURL[0] == K_SCANLATOR_URL && get_option('kommiku_scanlator_enabled')) {
+		$kommiku['scanlator'] = true;
+		$kommiku['scanlator_slug'] = $explodeURL[1];	
 	} else if((count($explodeURL) <= 4) && (count($explodeURL) >= 1) && ($explodeURL[0] != '')) {
 		if(get_option('kommiku_no_slug')) {
 			if(get_option('kommiku_one_comic') != 'false' && is_numeric($explodeURL[0]))  {
@@ -102,10 +128,56 @@ function kommiku_header() {
 		return;
 }
 
-function kommiku_css() {
-		echo KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/style.css';
+
+//Blocks
+function kommiku_sidebar_category_list() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/sidebar_category_list.php';
 		return;
 }
+
+function kommiku_series_table_list() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/series_table_list.php';
+		return;
+}
+
+function kommiku_series_information() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/series_information.php';
+		return;
+}
+
+function kommiku_chapter_table_list() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/chapter_table_list.php';
+		return;
+}
+
+function kommiku_page_navigation() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/page_navigation.php';
+		return;
+}
+//End of blocks
+
+function kommiku_css() {
+
+	if(file_exists(KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/style.css'))
+		echo KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/style.css';
+	else 
+		echo KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/stylesheets/main.css';
+
+	return;
+}
+
+function kommiku_title() {
+		global $kommiku;
+		echo $kommiku['seotitle'];
+		return;
+}
+
+define('K_A_K', get_option( 'K_A_K' ));
 
 function kommiku_footer() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;
@@ -115,12 +187,59 @@ function kommiku_footer() {
 
 function kommiku_source()
 {
-	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;	
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;	
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 				
+	if($kommiku['scanlator']) {
+		$scanlator = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."comic_scanlator` WHERE slug = '".$kommiku['scanlator_slug']."'", ARRAY_A);
+		if($scanlator && $kommiku['scanlator_slug'] != '') {
+			$kommiku['seotitle'] = K_SCANLATOR_URL.": ". $scanlator['title'];
+			$kommiku['description'] = "Information on ".K_SCANLATOR_URL.": ".$scanlator['title'];	
+			$scanlator['releases'] = $db->scanlators_chapter($scanlator['slug']);
+			include KOMMIKU_FOLDER.'/extension/scanlator/body_scanlator_detail.php';
+		} else {
+			$kommiku['description'] = "A page or directory displaying a List of ".K_SCANLATOR_URL;	
+			$kommiku['seotitle'] = K_SCANLATOR_URL."Listings";
+			include KOMMIKU_FOLDER.'/extension/scanlator/body_scanlator.php';
+		}
+		exit;
+	}	
+				
 	if($kommiku['manga'])	{
 						
+		if($kommiku['find']) {
+			$kommiku['find'] = urldecode($kommiku['find']);
+			$kommiku['results'] = $db->find_series($kommiku['find']);
+			$kommiku['description'] = "Page containing search result for: ".$kommiku['find'];	
+			$kommiku['keyword'] = "Manga, Comics, ".$kommiku['find'];		
+			$kommiku['seotitle'] = 'Search Results for "'.$kommiku['find'].'"';
+			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_search.php';
+			exit;
+		}		
+				
+		if($kommiku['category'] == 'complete') {
+			$kommiku['keyword'] = "Manga, Comics, Tosho, Toshokan, Library, Completed Series";
+			$kommiku['description'] = "Completed stories by various authors and illustrators.";
+		} else if($kommiku['category']) {
+			$category = $db->category_detail($kommiku['category']);
+			$category["url"] = HTTP_HOST.KOMMIKU_URL_INDEX.'/'.$category["slug"].'/';
+			$category["name"] = ucfirst($category["name"]);
+			$category["list"] = $db->category_read();
+			$kommiku['keyword'] = "Manga, Comics, Tosho, Toshokan, Library";
+			$kommiku['description'] = "Dead page is Dead.";
+			if ($category["name"]) {
+				$kommiku['keyword'] .= ', '.$category["name"];
+				$kommiku['seotitle'] = 'Category: '.$category["name"];
+				$kommiku['description'] = "Category: ".$category["name"].". Series Listing.";
+			} else {
+				$kommiku['seotitle'] = 'OMG! 404?! '; 
+			}
+			$search_results = $db->search_category($kommiku['category']);
+			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_category.php';
+			exit;
+		}
+				
 		if(!empty($kommiku['series'])) {
 			if(!$kommiku['series_id'])
 				$kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"); 
@@ -131,31 +250,37 @@ function kommiku_source()
 			$kommiku['url']['series'] = KOMMIKU_URL_FORMAT.'/'.$series['slug'].'/';
 		}
 		
-		if(!empty($series['chapterless'])) {
+		if(!empty($series['chapterless']) && !$kommiku['index']) {
 			$kommiku['pages'] = $kommiku['chapter'];
 			$kommiku['chapter'] = 0; //or False?
 		} 
 		
-		if(isset($kommiku['chapter'])) {
-			if(is_numeric($kommiku['chapter'])) {
-				$kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND number = '".$kommiku['chapter']."'"); 
+		//Replace Index - 2
+		if($kommiku['pages'] == "latest") {
+			$kommiku['page_id']  = $wpdb->get_var("SELECT max(id) FROM `".$wpdb->prefix."comic_page`");
+			$kommiku['chapter_id']  = $wpdb->get_var("SELECT max(id) FROM `".$wpdb->prefix."comic_chapter`"); 			
+		}
+		
+		if(isset($kommiku['chapter']) || is_numeric($kommiku['chapter_id'])) {
+			if(is_numeric($kommiku['chapter']) || is_numeric($kommiku['chapter_id'])) {
+				if(!$kommiku['chapter_id']) $kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND number = '".$kommiku['chapter']."'"); 
 				$chapter = $db->chapter_detail($kommiku['chapter_id']);
 				$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
 				$kommiku['slug']['chapter'] = $chapter['slug'];	
 				$kommiku['number']['chapter'] = $chapter['number'];
+				$kommiku["breacrumb"] = "Chapter ".$kommiku["number"]["chapter"]." ";
 				$kommiku['title']['chapter'] = $chapter['title'];
 				$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
 			}
-			$series_chapter = $db->series_chapter($kommiku['series_id']);
-			sort($series_chapter);
+			$kommiku['series_chapter'] = $db->series_chapter($kommiku['series_id']);
 		}
 				
 		if(empty($kommiku['chapter_id'])) {
 			$kommiku['chapter_id'] = 0;
 		} 	
-		
+				
 		if(isset($kommiku['pages']) && ($chapter || $series['chapterless']) && $kommiku['pages'] != '') {
-			$kommiku['page_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_page` WHERE series_id = '".$kommiku['series_id']."' AND slug = '".$kommiku['pages']."' AND chapter_id = '".$kommiku['chapter_id']."'"); 
+			if(!$kommiku['page_id']) $kommiku['page_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_page` WHERE series_id = '".$kommiku['series_id']."' AND slug = '".$kommiku['pages']."' AND chapter_id = '".$kommiku['chapter_id']."'"); 
 			$page = $db->page_detail($kommiku['page_id']);
 			$chapter_pages = $db->chapter_pages($kommiku['series_id'],$kommiku['chapter_id']);
 			$kommiku['seotitle'] .= " page ".$page['slug'];
@@ -175,54 +300,34 @@ function kommiku_source()
 			$kommiku['url']['page'] = $series['url'].$chapter['url'].$page['slug']."/";
 		}
 		
-		$series_list = $db->series_list();
-		if($series_list)
-			foreach ($db->series_list() as $row) {
-				$kommiku['series_listing'] .= '<option value="'.$row->slug.'">'.$row->title.'</option>';
-				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$row->title.'</a></li>';
+		$kommiku['alphabets'] = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
+		$kommiku['series_list_raw'] = $db->series_list();
+		if($kommiku['series_list_raw'] )
+			foreach ($kommiku['series_list_raw'] as $row) {
+			$chapterTitle = stripslashes($row->title);
+				if(strtolower($row->slug) == strtolower($kommiku['series']))
+					$seriesOption .= '<option selected=selected value="'.$row->slug.'">'.$chapterTitle.'</option>';
+				else
+					$seriesOption .= '<option value="'.$row->slug.'">'.$chapterTitle.'</option>';
+				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$chapterTitle.'</a></li>';
 			};	
 								
 		//Page, Chapter, Series		
-		if(!empty($kommiku['series_id']) && isset($kommiku['chapter_id']) && !empty($kommiku['page_id'])){
-			$isPage = true; include KOMMIKU_FOLDER.'/reader.php';			
-			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';			
-		//Series, Chapter
-		} else if(!empty($kommiku['series']) && isset($kommiku['chapter'])){
-			if(get_option('kommiku_no_chapter')) {
-				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_warning.php';
-			} else if($kommiku['page']) {
-				$isPage = true; include KOMMIKU_FOLDER.'/reader.php';			
-				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';
-			} else {
-				$isChapter = true;
-				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
-			}
+		if((!empty($kommiku['series']) && isset($kommiku['chapter']) && $kommiku['page']) || 
+			(!empty($kommiku['series_id']) && isset($kommiku['chapter_id']) && !empty($kommiku['page_id']))){
+			$isPage = true; 
+			include KOMMIKU_FOLDER.'/reader.php';		
+			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';
 		//Series
 		} else if(!empty($kommiku['series']) && $kommiku['series'] != 'index.php') {
 			$isChapter = true; 
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
 		//Main Page with no Series Selected
 		} else {
-			$chapterUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
-			`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
-			`".$wpdb->prefix."comic_chapter`.`pubdate` as pubdate,
-			`".$wpdb->prefix."comic_series`.`title` as series_name
-			FROM `".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
-			WHERE `".$wpdb->prefix."comic_chapter`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
-			ORDER BY `".$wpdb->prefix."comic_chapter`.`pubdate` DESC LIMIT 0 , 15";
-			$pageUquery = "SELECT `".$wpdb->prefix."comic_series`.`slug` as series_slug, 
-			`".$wpdb->prefix."comic_chapter`.`slug` as chapter_slug, 
-			`".$wpdb->prefix."comic_page`.`slug` as page_slug, 
-			`".$wpdb->prefix."comic_page`.`pubdate` as pubdate,
-			`".$wpdb->prefix."comic_series`.`title` as series_name,
-			`".$wpdb->prefix."comic_series`.`chapterless` as chapterless
-			FROM `".$wpdb->prefix."comic_page`,`".$wpdb->prefix."comic_chapter`,`".$wpdb->prefix."comic_series` 
-			WHERE `".$wpdb->prefix."comic_page`.`series_id` = `".$wpdb->prefix."comic_series`.`id`
-			AND `".$wpdb->prefix."comic_page`.`chapter_id` = `".$wpdb->prefix."comic_chapter`.`id`
-			ORDER BY `".$wpdb->prefix."comic_page`.`pubdate` DESC LIMIT 0 , 15";
-			$chapterUpdates = $wpdb->get_results($chapterUquery);
+			$chapterUpdates = $db->chapter_update_list();
 			$pageUpdates = $wpdb->get_results($pageUquery);
 			$kommiku['seotitle'] .= "Story Listing";
+			$category["list"] = $db->category_read();
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_index.php';
 		}
 		
@@ -233,15 +338,11 @@ function kommiku_source()
 	
 }
 
-function kommiku_menu() {
-	add_menu_page('Kommiku', 'Comic', 8, KOMMIKU_FOLDER, 'kommiku', KOMMIKU_URLPATH.'comic.png'); //Thanks Lokis :)
-	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'List', 8, 'kommiku', 'kommiku'); 
-	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Settings', 8, 'kommiku_settings', 'kommiku_settings'); 
-	}
+define('V32c7148e', K_A_K);
 	
 function kommiku() {
 		global $wpdb,$series,$page,$chapter,$db,$status,$settings;	
-		
+				
 		if(!is_dir(UPLOAD_FOLDER))
 			mkdir(UPLOAD_FOLDER, 0755);
 			error_reporting(E_ALL ^ E_NOTICE);
@@ -309,25 +410,80 @@ function kommiku() {
 			}	
 			
 		} else if($_POST['action']) {
-			$_CLEAN['title']          = $db->clean($_POST['title']);
-			$_CLEAN['slug']           = $db->clean($_POST['slug']);
-			$_CLEAN['summary']        = $db->clean($_POST['summary']);
-			$_CLEAN['number']         = $db->clean($_POST['number']);
-			$_CLEAN['series_id']      = $db->clean($_POST['series_id']);
-			$_CLEAN['chapter_id']     = $db->clean($_POST['chapter_id']);
-			$_CLEAN['show_date']      = $db->clean($_POST['show_date']);
-			$_CLEAN['show_title']     = $db->clean($_POST['show_title']);
-			$_CLEAN['show_first']     = $db->clean($_POST['show_first']);
-			$_CLEAN['show_one']       = $db->clean($_POST['show_one']);
-			$_CLEAN['show_last']      = $db->clean($_POST['show_last']);
-			$_CLEAN['show_comment']   = $db->clean($_POST['show_comment']);
-			$_CLEAN['seodescription'] = $db->clean($_POST['seodescription']);
-			$_CLEAN['seokeyword']     = $db->clean($_POST['seokeyword']);
-			$_CLEAN['story']          = $db->clean($_POST['story']);
+			$_CLEAN['title']          = $_POST['title'];
+			$_CLEAN['name']           = $_POST['name'];
+			$_CLEAN['slug']           = $_POST['slug'];
+			$_CLEAN['summary']        = $_POST['summary'];
+			$_CLEAN['description']    = $_POST['description'];
+			$_CLEAN['number']         = $_POST['number'];
+			$_CLEAN['series_id']      = $_POST['series_id'];
+			$_CLEAN['chapter_id']     = $_POST['chapter_id'];
+			$_CLEAN['seodescription'] = $_POST['seodescription'];
+			$_CLEAN['seokeyword']     = $_POST['seokeyword'];
+			$_CLEAN['story']          = $_POST['story'];
+			$_CLEAN['scanlator']	  = $_POST['scanlator'];
+			$_CLEAN['author']         = $_POST['author'];
+			$_CLEAN['illustrator']	  = $_POST['illustrator'];
+			$_CLEAN['link'] 		  = $_POST['link'];
+			$_CLEAN['creation'] 	  = $_POST['creation'];
+			$_CLEAN['alt_name'] 	  = $_POST['alt_name'];
+			$_CLEAN['story_type'] 	  = $_POST['story_type'];
+			$_CLEAN['text'] 		  = $_POST['text'];
 			
-			//
-			//Create a New Series
-			//
+			if($_POST['what'] == "scanlator") { 
+				$table = $wpdb->prefix."comic_scanlator";
+				$oldScanlator = $db->scanlator_detail($_POST['scanlator_id']);
+				
+				if($wpdb->get_var("SELECT title FROM `".$table."` WHERE title = '".$_CLEAN['title']."'") == $_CLEAN['title'])  
+					if ($_POST['action'] == "update" && $oldScanlator['title'] != $_CLEAN['title'])
+						$scanlator['fail']['title'] = true;
+					
+				if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'") == $_CLEAN['slug']) 
+					if ($_POST['action'] == "update" && $oldScanlator['slug'] != $_CLEAN['slug'])
+						$scanlator['fail']['slug'] = true;
+						
+				if(!$scanlator['fail']) {
+						$db->scanlator_update($_POST['scanlator_id'],$_POST['title'],$_CLEAN['slug'],stripslashes($_CLEAN['text']),stripslashes($_CLEAN['link']));
+						$status['pass'] = 'The scanlator has been updated';
+					
+					kommiku_scanlator_edit();
+				} else {
+					if ($scanlator['fail']['title']) $status['error'] .= 'The scanlator name has already been taken.<br/>';
+					if ($scanlator['fail']['slug']) $status['error'] .= 'The scanlator slug has already been taken.<br/>';
+					$scanlator['title'] = $_POST['title'];
+					$scanlator['slug'] = $_POST['slug'];
+					$scanlator['text'] = stripslashes($_POST['text']);
+					$scanlator['link'] = stripslashes($_POST['link']);
+					kommiku_scanlator_edit();
+				}
+			}
+			
+			if($_POST['what'] == "category") { 
+				$table = $wpdb->prefix."comic_category";
+				$oldScanlator = $db->category_detail($_POST['slug']);
+				
+				if($wpdb->get_var("SELECT title FROM `".$table."` WHERE title = '".$_CLEAN['title']."'") == $_CLEAN['title'])  
+					if ($_POST['action'] == "update" && $oldScanlator['title'] != $_CLEAN['title'])
+						$category['fail']['name'] = true;
+					
+				if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'") == $_CLEAN['slug']) 
+					if ($_POST['action'] == "update" && $oldScanlator['slug'] != $_CLEAN['slug'])
+						$category['fail']['slug'] = true;
+						
+				if(!$category['fail']) {
+						$db->category_update($_POST['id'],$_CLEAN['name'],stripslashes($_CLEAN['description']),$_CLEAN['slug']);
+						$status['pass'] = 'The Category has been updated';
+					
+					kommiku_category_edit();
+				} else {
+					if ($category['fail']['name']) $status['error'] .= 'The category name has already been taken.<br/>';
+					if ($category['fail']['slug']) $status['error'] .= 'The category slug has already been taken.<br/>';
+					$category['name'] = $_POST['name'];
+					$category['slug'] = $_POST['slug'];
+					$category['description'] = stripslashes($_POST['description']);
+					kommiku_category_edit();
+				}
+			}
 			
 			if($_POST['what'] == "series") { 
 				$table = $wpdb->prefix."comic_series";
@@ -352,17 +508,72 @@ function kommiku() {
 											
 				if(!$series['fail']['slug'] && !$series['fail']['title']) {
 					
+					$series = $db->series_detail($_POST['series_id']);
+					$seriesFolder .= '/'.strtolower($series["slug"]).'/';
+					
+					$series['title'] = $_POST['title'];
+					$series['slug'] = $_POST['slug'];
+					$series['summary'] = stripslashes($_POST['summary']);
+					$series['chapterless'] = $_POST['chapterless'];
+					$series['author'] = $_POST['author'];
+					$series['illustrator'] = $_POST['illustrator'];
+					
+					if(is_numeric($_POST['type']))
+						$story_type = $_POST['type'];
+					else
+						$story_type = 0;
+					
+					if((!empty($_FILES["img"])) && ($_FILES['img']['error'] == 0)) {
+						//Check if the file is JPEG image and it's size is less than 350Kb
+						$basefilename = basename($_FILES['img']['name']);
+						$ext = substr($basefilename, strrpos($basefilename, '.') + 1);
+						$filename = 'icon.'.$ext;
+						
+						if ((strtolower($ext) == "jpeg") || 
+							(strtolower($ext) == "jpg") || 
+							(strtolower($ext) == "png") || 
+							(strtolower($ext) == "gif") && 
+							($_FILES["img"]["size"] < 2048000)) 
+						{
+							//Determine the path to which we want to save this file
+								$newname = UPLOAD_FOLDER.$seriesFolder.$filename;
+							//Go Ahead and Move :D	
+								$_CLEAN['img'] = $filename;
+								$series['img'] = $_CLEAN['img'];
+
+						} else {
+							$_CLEAN['img'] = $series['img'];
+						}
+			   		
+					} else {
+
+						//No File Uploaded
+						if (!$_POST['action'])  
+							$page['fail']['nofile'] = true;
+						 else 
+							$_CLEAN['img'] = $series['img'];
+					}
+					
+					if($newname){
+						if(!is_dir(UPLOAD_FOLDER))
+							mkdir(UPLOAD_FOLDER, 0755);
+							
+						if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder)))
+							mkdir(UPLOAD_FOLDER.strtolower($seriesFolder), 0755);
+							
+						move_uploaded_file($_FILES['img']['tmp_name'],$newname);	
+					}
+						
 					if($_POST['action'] == "create") {
-						$db->series_create($_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$_POST['chapterless']);
+						$db->series_create($_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$chapterless,$categories,$author,$illustrator,$read,$creation,$alt_name,$status,$rating,$story_type,$_CLEAN['img']);
 						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($_POST['slug'])))
 							mkdir(UPLOAD_FOLDER.'/'.strtolower($_POST['slug']), 0755);
 						$status['pass'] = 'The Series has been successfully created';
 						$seriesID =	$wpdb->get_var("SELECT id FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'");
-						$db->historyu('series','create',$phpdate,$_CLEAN['title'],$_CLEAN['slug'],'0','0','0','0');
 						unset($series);
 						kommiku_model_series();
 					} else if($_POST['action'] == "update" && is_numeric($_POST['series_id'])) {
-						$db->series_update($_POST['series_id'],$_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$chapterless);
+						$db->series_update($_POST['series_id'],$_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$chapterless,$_POST['categories'],$_CLEAN['author'],$_CLEAN['illustrator'],$_POST['read'],$_CLEAN['creation'],$_CLEAN['alt_name'],$_POST['status'],$_POST['mature'],$story_type,$_CLEAN['img']);
 						$status['pass'] = 'The Series has been updated';
 
 						if ($_POST['show_page_update']) {
@@ -416,23 +627,33 @@ function kommiku() {
 				$chapter = $db->chapter_detail($_POST['chapter_id']);
 				
 				if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {
-					$_OLD['number'] = $wpdb->get_var("SELECT number FROM `".$table."` WHERE id = '".$chapter['id']."'"); 
-					if($_OLD['number'] == $_CLEAN['number'])
+					$_OLD['slug'] = $wpdb->get_var("SELECT slug FROM `".$table."` WHERE id = '".$chapter['id']."'"); 
+					if($_OLD['slug'] == $_CLEAN['slug'])
 						$noRename = true;
 				}				 
 				
 				if($wpdb->get_var("SELECT number FROM ".$table." WHERE number = '".$_CLEAN['number']."' AND series_id = '".$_CLEAN['series_id']."'") == $_CLEAN['number'])  
 					if (($_POST['action'] != 'update') || ($_POST['action'] == "update" && $_OLD['number'] != $_CLEAN['number']))
 						$chapter['fail']['number']['duplicate'] = true;
+				
+				if($wpdb->get_var("SELECT slug FROM ".$table." WHERE slug = '".$_CLEAN['slug']."' AND series_id = '".$_CLEAN['series_id']."'") == $_CLEAN['slug'])  
+					if (($_POST['action'] != 'update') || ($_POST['action'] == "update" && $_OLD['slug'] != $_CLEAN['slug']))
+						$chapter['fail']['slug']['duplicate'] = true;
 						
 				if (!is_numeric($_POST['number'])) 
 					$chapter['fail']['number']['character'] = true;
+				
+				if (!is_numeric($_POST['slug'])) 
+					$chapter['fail']['number']['slug'] = true;
 					
+				if (!is_numeric($_POST['volume']) && $_POST['volume'] != 0) 
+					$chapter['fail']['volume'] = true;
+
 				if(!$chapter['fail']) {
+
 					if($_POST['action'] == "create") {
-						$db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['number']);
-						$chapterID = $wpdb->get_var("SELECT id FROM `".$table."` WHERE number = '".$_POST['number']."'");
-						$db->historyu('chapter','create',$phpdate,$series['title'],$series['slug'],$_CLEAN['title'],$_POST['number'],'0','0');
+
+						$chapterID = $db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['slug'],$scalator,$scalator_slug,0,$folder,true);
 						
 						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number']))
 							mkdir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number'], 0755);
@@ -440,8 +661,13 @@ function kommiku() {
 						$status['pass'] = 'The Chapter has been successfully created';
 						kommiku_model_chapter();
 					} else if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {						
-						$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['number']);
+						$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$chapter['pubdate'],$_POST['slug'],$_POST['scanlator'],$_POST['scanlator_slug'],$_POST['volume'],$folder);
 						$status['pass'] = 'The Chapter has been successfully updated';
+						$chapter['scanlator'] = $_POST['scanlator'];
+						$chapter['scanlator_slug'] = $_POST['scanlator_slug'];
+						$chapter['volume'] = $_POST['volume'];
+						$chapter['slug'] = $_POST['slug'];
+						$chapter['number'] = $_POST['number'];
 						$OldChapterFolder = str_replace('.0','',$_OLD['number']).'/';
 						$NewChapterFolder = str_replace('.0','',$_POST['number']).'/';
 						if(!$noRename)
@@ -451,6 +677,7 @@ function kommiku() {
 				} else {
 					if ($chapter['fail']['number']['duplicate']) $status['error'] .= 'The Chapter number has already been taken.<br/>';
 					if ($chapter['fail']['number']['character']) $status['error'] .= 'The Chapter number has to be in decimals or numbers.<br/>';
+					if($chapter['fail']['number'])  $status['error'] .= 'The "Volume Input" must be Numeric';
 					$chapter['title'] = $_POST['title'];
 					$chapter['number'] = $_POST['number'];
 					$chapter['summary'] = $_POST['summary'];
@@ -563,13 +790,11 @@ function kommiku() {
 									mkdir(UPLOAD_FOLDER.strtolower($seriesFolder), 0755);
 								if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder))
 									mkdir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder, 0755);
-
-								$table = $wpdb->prefix."comic_page";
-								$db->page_create($_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_CLEAN['story'],$_POST['number'],$page['series_id'],$_POST['chapter_id']);
-								$table = $wpdb->prefix."comic_page";
-								$page['id'] = $wpdb->get_var("SELECT id FROM `".$table."` WHERE number = '".$_POST['number']."' AND series_id = '".$_POST['series_id']."' AND chapter_id = '".$_POST['chapter_id']."'");
-								$db->historyu('page','create',$phpdate,$series['title'],$series['slug'],$chapter['title'],$chapter['number'],$_CLEAN['title'],$_CLEAN['slug']);
 								
+								$table = $wpdb->prefix."comic_page";
+								$db->page_create($_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_POST['story'],$_POST['number'],$page['series_id'],$_POST['chapter_id'],'');
+								$table = $wpdb->prefix."comic_page";
+								$page['id'] = $wpdb->get_var("SELECT id FROM `".$table."` WHERE number = '".$_POST['number']."' AND series_id = '".$_POST['series_id']."' AND chapter_id = '".$_POST['chapter_id']."'");								
 								
 								if ($handle = opendir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder)) {
 									while (false !== ($file = readdir($handle))) {
@@ -581,14 +806,18 @@ function kommiku() {
 								}
 								
 							} else {
-								$status['pass'] = 'Could not move file'.UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$filename;
+								$status['pass'] = 'Error 1: Could not move file'.UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$filename;
 							}
 						} else {
-							$status['pass'] = 'The Page could not be created '.UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$filename;
+							$status['pass'] = 'No file were uploaded. But a page was created.';
+							$table = $wpdb->prefix."comic_page";
+							$db->page_create($_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_POST['story'],$_POST['number'],$page['series_id'],$_POST['chapter_id'],'');
+							$table = $wpdb->prefix."comic_page";
+							$page['id'] = $wpdb->get_var("SELECT id FROM `".$table."` WHERE number = '".$_POST['number']."' AND series_id = '".$_POST['series_id']."' AND chapter_id = '".$_POST['chapter_id']."'");								
 						}
 					} else if (is_numeric($_POST['page_id']) && $_POST['action'] == "update") {
 						//Uploaded a File? Delete The Last File!
-						$status['pass'] = 'The Page has been updated';
+						$status['pass'] = 'The Image/Page has been updated';
 						if ($newname) {
 							error_reporting(E_ALL ^ E_WARNING); 
 							if(!unlink(UPLOAD_FOLDER.$seriesFolder.$chapterFolder.$oldPage['img']))
@@ -600,19 +829,22 @@ function kommiku() {
 								mkdir(UPLOAD_FOLDER.strtolower($seriesFolder), 0755);
 							if(!is_dir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder))
 								mkdir(UPLOAD_FOLDER.strtolower($seriesFolder).$chapterFolder, 0755);
-							move_uploaded_file($_FILES['img']['tmp_name'],$newname); 
-							
-								if ($handle = opendir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder)) {
-									while (false !== ($file = readdir($handle))) {
-										if ($file != "." && $file != "..") {
-											$status['pass'] = $file.'<br/>';
+							if(move_uploaded_file($_FILES['img']['tmp_name'],$newname))
+								$status['pass'] .= ' | Image moved!';
+							else
+								$status['pass'] .= ' | Image Failed!';
 										}
-									}
-									closedir($handle);
-								}
-							
-										}
-						$db->page_update($oldPage['id'],$_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_CLEAN['story'],$_CLEAN['number'],$page['series_id'],$page['chapter_id']);
+						
+
+						if($wpdb->get_var("SELECT * FROM `".$wpdb->prefix."posts` WHERE post_status = 'publish' AND post_name = '".$_POST['wp_post_slug']."'")) {
+							$wp_post_slug = $_POST['wp_post_slug'];
+						} else if($_POST['wp_post_slug'] != '') {
+							$wp_post_slug = '';
+							$status['error'] .= '<br/>No such Wordpress Post';
+						}
+									
+						$db->page_update($oldPage['id'],$_CLEAN['title'],$_CLEAN['slug'],$_CLEAN['img'],$page['pubdate'],$_CLEAN['story'],$_CLEAN['number'],$page['series_id'],$page['chapter_id'],$wp_post_slug);
+					
 					}
 					kommiku_model_createpage();
 				} else {
@@ -629,13 +861,15 @@ function kommiku() {
 		} else {
 			
 			if(!$_GET['sub'] && !$_POST['action']) {
-				// echo $test; /home/anraiki/public_html/wp-content/plugins/kommiku-viewer/upload/
 				kommiku_model_series();
 			}
 				
 			if($_GET['sub'] == 'delete' && is_numeric($_GET['series'])) {
 				kommiku_model_delete();
 			}
+				
+			if($_GET['sub'] == "scanlator_edit")
+				kommiku_scanlator_edit();
 				
 			if($_GET['sub'] == "listchapter" && is_numeric($_GET['series'])) 
 				kommiku_model_chapter();
@@ -649,6 +883,9 @@ function kommiku() {
 			if($_GET['sub'] == "createpage" && is_numeric($_GET['series']))
 				kommiku_model_createpage();
 
+			if($_GET['sub'] == "category_edit")
+				kommiku_category_edit();
+				
 	}
 }
 
@@ -687,7 +924,7 @@ class story_lister extends WP_Widget {
 		$series_list = $db->series_list();
 		if($series_list)
 			foreach ($series_list as $row) {
-				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$row->title.'</a></li>';
+				$seriesOption .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.stipslashes($row->title).'</a></li>';
 			};	
 		
 		/* Our variables from the widget settings. */
@@ -701,9 +938,9 @@ class story_lister extends WP_Widget {
 			echo $before_title . $title . $after_title;
 
 		//Grab Series
-		if($kommiku['series_list']) {
+		if($seriesOption) {
 			echo "<ul>";
-			echo $kommiku['series_list'];
+			echo $seriesOption;
 			echo "</ul>";
 			}
 			
@@ -838,7 +1075,7 @@ class chapter_lister extends WP_Widget {
 }
 
 function kommiku_model_series() {
-	global $series,$db,$status;		
+	global $series,$db,$status;	
 	include KOMMIKU_FOLDER.'/admin/list_series.php';
 	}
 	
@@ -857,34 +1094,123 @@ function kommiku_model_page() {
 	include KOMMIKU_FOLDER.'/admin/list_page.php';
 	}
 	
+function kommiku_category_edit() {
+	global $db, $category, $status;
+	include KOMMIKU_FOLDER.'/admin/category_edit.php';
+	}	
+	
+function kommiku_scanlator_edit() {
+	global $db, $scanlator, $status;
+	include KOMMIKU_FOLDER.'/extension/scanlator/scanlator_edit.php';
+	}
+	
+function kommiku_category() {
+	global $settings,$status,$wpdb;
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
+		$db = new kommiku_database();
+		
+	include KOMMIKU_FOLDER.'/admin/category.php';
+	}
+	
 function kommiku_model_createpage() {
 	global $db, $page, $status;
 	include KOMMIKU_FOLDER.'/admin/list_page_create.php';
 	}
 
+function kommiku_ftp_dump() {
+		define('B36421ec14', K_A_K);
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
+		$db = new kommiku_database();
+		include KOMMIKU_FOLDER.'/extension/ftp-dumper-p.php';
+	}
+	
+function kommiku_scanlator() {
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
+		$db = new kommiku_database();
+		include KOMMIKU_FOLDER.'/extension/scanlator/scanlator.php';
+	}
+	
 function kommiku_settings() {
 	global $settings,$status,$wpdb;
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 			
 		if ($_POST['what'] == "settings" && $_POST['action'] == "update") {
-			
 			$settings['one_comic'] = $db->clean($_POST['one_comic']);
 			$settings['url'] = $db->clean($_POST['url']);
 			$settings['upload'] = $db->clean($_POST['upload']);
 			$settings['skin'] = $db->clean($_POST['skin']);
-
+			
+			if($_POST['scanlator_url']){
+				update_option('kommiku_scanlator', $_POST['scanlator_url']);
+				$settings['scanlator_url'] = $_POST['scanlator_url'];
+			} else {
+				update_option('kommiku_scanlator', 'author');
+				$settings['scanlator_url'] = 'author';
+			}
+			
+			if($_POST['scanlator_enable'] == 1){
+				if (!$wpdb->query("Show columns from `".$wpdb->prefix."comic_scanaltor` like 'title'")) {
+					$structure = "CREATE TABLE `".$wpdb->prefix."comic_scanlator` (
+					`id` INT NOT NULL AUTO_INCREMENT ,
+					`title` VARCHAR( 32 ) NOT NULL ,
+					`slug` VARCHAR( 32 ) NOT NULL ,
+					`text` TEXT NOT NULL,
+					UNIQUE KEY id (id)
+					) ;";
+					$wpdb->query($structure);
+				}
+				update_option('kommiku_scanlator_enabled', true);
+				$settings['scanlator_enable'] = $_POST['scanlator_enable'];
+			} else {
+				update_option('kommiku_scanlator_enabled', false);
+				$settings['scanlator_enable'] = false;
+			}
+			
+			if($_POST['directory']){
+				update_option('directory', urlencode($_POST['directory']));
+				$settings['directory'] = $_POST['directory'];
+			} else {
+				if(!get_option( 'kommiku_url_index' ))
+				add_option("kommiku_url_index", 'directory');
+			
+				update_option('directory', 'directory');
+				$settings['directory'] = 'directory';
+			}
+			
+			if($_POST['override_index'] == 1){
+				update_option('kommiku_override_index', true);
+				$settings['kommiku_override_index'] = true;
+			} else {
+				update_option('kommiku_override_index', false);
+				$settings['kommiku_override_index'] = false;
+			}
+			
+			if(!get_option( 'kommiku_skin_directory' ))
+				add_option("kommiku_skin_directory", 'default');
+			
 			if($_POST['url'] == "")
 				update_option('kommiku_no_slug', 'true');
 			else
 				update_option('kommiku_no_slug', 'false');
+			
+			
+			if($_POST['apikey']) {
+				update_option('K_A_K', $_POST['apikey']);
+				$settings['key'] = $_POST['apikey'];
+				if(!get_option( 'K_A_K' ))
+					add_option("K_A_K", $_POST['apikey']);
+			} else {
+				update_option('K_A_K', '');
+				$settings['key'] = $_POST['apikey'];
+			}
 			
 			if($settings['one_comic'] != "")
 				update_option('kommiku_one_comic', $settings['one_comic']);
 			else
 				update_option('kommiku_one_comic', 'false');
 								
-			//Remove Trialing and LEading Slash
+			//Remove Trialing and Leading Slash
 			$settings['url'] = $db->trail($settings['url']);
 			$settings['upload'] = $db->trail($settings['upload']);
 			
@@ -901,40 +1227,117 @@ function kommiku_settings() {
 						update_option('kommiku_comic_upload', $settings['upload']);
 					}
 				
-				if(!is_dir(KOMMIKU_FOLDER.'/themes/'.$settings['skin'])) {
-					if($settings['error']) $settings['error'] .= '<br/>';
-					$settings['error'] .= 'The skin does not exist';
+				if(is_dir(KOMMIKU_FOLDER.'/themes/'.$settings['skin'])) {
+						$settings['pass'] = "Your skin has been updated";
+						update_option('kommiku_skin_directory', $settings['skin']);
+					} else {
+						if($settings['error']) $settings['error'] .= '<br/>';
+						$settings['error'] .= 'The skin does not exist';
 					}
 					
 				if(!$settings['fail']) $settings['pass'] = "Your Settings has been updated";
 				update_option('kommiku_url_format', $settings['url']);
 			}
-		
-			if ($_POST['what'] == 'settings' && $_POST['action'] == 'checktable') {
-				if($wpdb->query("Show columns from `".$wpdb->prefix."comic_chapter` like 'pub_date'")) {
-					$query = "ALTER TABLE `".$wpdb->prefix."comic_chapter` DROP `pub_date`";
-					$wpdb->query($query);
-					$query = "ALTER TABLE `".$wpdb->prefix."comic_chapter` DROP `slug`";
-					$wpdb->query($query);
-					$query = "ALTER TABLE `".$wpdb->prefix."comic_chapter` ADD `pubdate` VARCHAR( 30 ) NOT NULL , ADD `slug` VARCHAR( 100 ) NOT NULL";
-					$wpdb->query($query);
-					$post['pass'] .= 'Seems like you have a outdated Column Name in a Table. It has been Fixed';
-				} else if(!$wpdb->query("Show columns from `".$wpdb->prefix."comic_chapter` like 'pubdate'")) {
-					$query = "ALTER TABLE `".$wpdb->prefix."comic_chapter` ADD `pubdate` VARCHAR( 30 ) NOT NULL , ADD `slug` VARCHAR( 100 ) NOT NULL";
-					$wpdb->query($query);
-					$post['pass'] .= 'Seems like you have a outdated Table. It has been Fixed';
-				}		
-				if($post['pass']) $post['pass'] .= "<br/>";
-				$post['pass'] .= 'Tables are Okay! Checking is all done!';
-			}
-			
 			
 	include KOMMIKU_FOLDER.'/admin/settings.php';
+}
+	
+
+function install() {
+	global $wpdb, $kommiku_version;
+	
+	//Plug Options
+	$kommiku_options = array('kommiku_version','kommiku_comic_upload','kommiku_url_format','kommiku_lang','kommiku_skin_directory','kommiku_one_comic','kommiku_no_slug','kommiku_override_index','kommiku_url_index');
+	$kommiku_default_values = array('2.1.rc1','comics','manga','english','default','false','false','false','directory');
+	foreach($kommiku_options as $option)	{
+		$i++;
+		if(!get_option( $option )) {
+			add_option ( $option, $kommiku_default_values[$i] );
+		}
 	}
 	
-//shortcodes!
+	//Main Kommiku Folder!
+	if(!is_dir(WP_LOAD_PATH."/".get_option( 'kommiku_comic_upload' )))
+		mkdir(WP_LOAD_PATH."/".get_option( 'kommiku_comic_upload' ), 0755);
 
-	add_shortcode( 'kommiku_series_list' , 'series_list' );
+	//Create and Update the Tables
+	$table = 'comic_series';		
+	$attribute[$table] = array('id' => 'int(9) NOT NULL AUTO_INCREMENT',
+				'title' => 'title varchar(100) NOT NULL',
+				'slug' => 'varchar(100) NOT NULL',
+				'summary' => 'text NOT NULL',
+				'chapterless' => 'tinyint(1) NOT NULL',
+				'categories' => 'text NOT NULL',
+				'author' => 'varchar(32) NOT NULL',
+				'illustrator' => 'varchar(32) NOT NULL',
+				'read' => 'int(1 NOT NULL)',
+				'creation' => 'varchar(32) NOT NULL',
+				'alt_name' => 'text NOT NULL',
+				'status' => 'int(1) NOT NULL',
+				'rating' => 'int(1) NOT NULL',
+				'type' => 'int(1) NOT NULL',
+				'img' => 'varchar(255) NOT NULL');
+	$columns[$table] = array_keys($attribute[$table]);
+	
+	$table = 'comic_chapter';		
+	$attribute[$table] = array('id' => 'INT(9) NOT NULL AUTO_INCREMENT',
+				'title' => 'VARCHAR(100) NOT NULL',
+				'number' => 'INT(5) NOT NULL',
+				'summary' => 'TEXT NOT NULL',
+				'series_id' => 'INT(9) NOT NULL',
+				'pubdate' => 'VARCHAR(30) NOT NULL',
+				'slug' => 'VARCHAR(100) NOT NULL',
+				'scanlator' => 'VARCHAR(100) NOT NULL',
+				'scanlator_slug' => 'VARCHAR(100) NOT NULL',
+				'volume' => 'int(3) NOT NULL',
+				'folder' => 'VARCHAR(100) NOT NULL');
+	$columns[$table] = array_keys($attribute[$table]);
+	
+	$table = 'comic_page';		
+	$attribute[$table] = array('id' => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+				'title' => 'VARCHAR(100) NOT NULL',
+				'slug' => 'VARCHAR(100) NOT NULL',
+				'img' => 'VARCHAR(255) NOT NULL',
+				'pubdate' => 'VARCHAR(30) NOT NULL',
+				'number' => 'int(3) NOT NULL',
+				'story' => 'TEXT NOT NULL',
+				'series_id' => 'INT(9) NOT NULL',
+				'chapter_id' => 'INT(9) NOT NULL',
+				'wp_post_slug' => 'VARCHAR(160) NOT NULL');
+	$columns[$table] = array_keys($attribute[$table]);
+	
+	$table = 'comic_category';		
+	$attribute[$table] = array('id' => 'INT(3) NOT NULL AUTO_INCREMENT',
+				'title' => 'VARCHAR( 32 ) NOT NULL',
+				'slug' => 'VARCHAR( 32 ) NOT NULL',
+				'summary' => 'TEXT NOT NULL');
+	$columns[$table] = array_keys($attribute[$table]);
+	
+	$table = 'comic_scanlator';		
+	$attribute[$table] = array('id' => 'INT(9) NOT NULL AUTO_INCREMENT',
+				'title' => 'VARCHAR( 32 ) NOT NULL',
+				'slug' => 'TEXT NOT NULL',
+				'summary' => 'VARCHAR( 32 ) NOT NULL');
+	$columns[$table] = array_keys($attribute[$table]);
+	
+	$tables = array_keys($columns);
+	foreach ($tables as $table){
+		foreach ($columns[$table] as $column) {
+			if(!$wpdb->query("Show columns from `".$wpdb->prefix.$table."` like '".$column."'")) {
+				if($column == 'id') {
+					$query = "CREATE TABLE ".$wpdb->prefix.$table." (id ".$attribute[$table]['id'].", UNIQUE KEY id (id));";
+				} else {
+					$query = "ALTER TABLE `".$wpdb->prefix.$table."` ADD `".$column."` ".$attribute[$table][$column].";";	
+				}
+				$wpdb->query($query);	
+			}
+		}
+	}
+}
+
+register_activation_hook(__FILE__, 'install');
+	
+add_shortcode( 'kommiku_series_list' , 'series_list' );
 	function series_list() {
 		global $wpdb;
 		$table = $wpdb->prefix."comic_series";
@@ -945,124 +1348,39 @@ function kommiku_settings() {
 				$theLIST .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$row->title.'</a></li>';
 			};	
 			
-		echo $theLIST;
+		return $theLIST;
 	}
 
-
+	add_shortcode( 'kommiku_chapter_update_list' , 'chapter_update_list' );
+	function chapter_update_list() {
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
+		$db = new kommiku_database();
+		$chapterUpdateList = $db->chapter_update_list();
+		if($chapterUpdateList)
+			foreach ($chapterUpdateList as $item) {
+				$theLIST .= '<li>'.strftime('[%m.%d]',strtotime($item->pubdate)).' <a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$item->series_slug.'/'.$item->chapter_slug.'/">'.$item->series_name.' - Chapter '.$item->chapter_slug.'</a></li>';
+			};	
+			
+		return $theLIST;
+	}
+		
+		
+		
+function kommiku_menu() {
+	add_menu_page('Kommiku', 'Comic', 8, KOMMIKU_FOLDER, 'kommiku', KOMMIKU_URLPATH.'comic.png'); //Thanks Lokis :)
+	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'List', 8, 'kommiku', 'kommiku'); 
+	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Settings', 8, 'kommiku_settings', 'kommiku_settings'); 
 	
-function install()
-	{
-	    global $wpdb, $kommiku_version;
-	    
-		$version = get_option( 'kommiku_version' );
-		
-				if (!$wpdb->get_var("SELECT * FROM `".$wpdb->prefix."comic_series`")) { 
-				    $table = $wpdb->prefix."comic_page";
-						    $structure = "CREATE TABLE $table (
-						        id INT(9) NOT NULL AUTO_INCREMENT,
-						        title VARCHAR(100) NOT NULL,
-						        slug VARCHAR(100) NOT NULL,
-						        img VARCHAR(255) NOT NULL,
-						        pubdate VARCHAR(30) NOT NULL,
-								number int(3) NOT NULL,
- 						        story TEXT NOT NULL,
-						        series_id INT(9) NOT NULL,
-						        chapter_id INT(9) NOT NULL,
-							UNIQUE KEY id (id)
-						    );";
-						    $wpdb->query($structure);
-						
-					    $table = $wpdb->prefix."comic_series";
-						    $structure = "CREATE TABLE $table (
-						        id INT(9) NOT NULL AUTO_INCREMENT,
-						        title VARCHAR(100) NOT NULL,
-						        slug VARCHAR(100) NOT NULL,
-						        summary TEXT NOT NULL,
-						        chapterless bool NOT NULL,
-							UNIQUE KEY id (id)
-						    );";
-						    $wpdb->query($structure);
-						
-						$table = $wpdb->prefix."comic_chapter";
-						    $structure = "CREATE TABLE $table (
-						        id INT(9) NOT NULL AUTO_INCREMENT,
-						        title VARCHAR(100) NOT NULL,
-						        number VARCHAR(5) NOT NULL,
-						        summary TEXT NOT NULL,
-						        series_id INT(9) NOT NULL,
-								pubdate VARCHAR(30) NOT NULL,
-								slug VARCHAR(100), 
-							UNIQUE KEY id (id)
-						    );";
-						    $wpdb->query($structure);
-						
-						$table = $wpdb->prefix."comic_history";
-						    $structure = "CREATE TABLE $table (
-						        id INT(11) NOT NULL AUTO_INCREMENT,
-						        what VARCHAR(12) NOT NULL,
-						        action VARCHAR(12) NOT NULL,
-						        pubdate VARCHAR(30) NOT NULL,
-						        series_name VARCHAR(30) NOT NULL,
-						        series_slug VARCHAR(30) NOT NULL,
-						        chapter_name VARCHAR(30) NOT NULL,
-						        chapter_number INT(9) NOT NULL,	
-						        page_name VARCHAR(30) NOT NULL,	
-						        page_slug VARCHAR(12) NOT NULL,		
-						        show_to_update TINYINT(4) NOT NULL,					        
-							UNIQUE KEY id (id)
-						    );";
-						    $wpdb->query($structure);
-						    
-						$table = $wpdb->prefix."comic_options";
-						    $structure = "CREATE TABLE $table (
-						        id INT(9) NOT NULL AUTO_INCREMENT,
-						        type VARCHAR(9) NOT NULL,
-						        type_id INT(9) NOT NULL,
-						        option_name VARCHAR(30) NOT NULL,
-						        value TEXT NOT NULL,
-							UNIQUE KEY id (id)
-						    );";
-						    $wpdb->query($structure);
-						    
-			}
-		
-		if(!get_option( 'kommiku_comic_upload' ))
-			add_option("kommiku_comic_upload", 'comics');
-			
-		if(!get_option( 'kommiku_version' ))
-			add_option("kommiku_version", "2.0.3");
-			
-		if(!get_option( 'kommiku_url_format' ))
-			add_option("kommiku_url_format", 'manga');
-			
-		if(!get_option( 'kommiku_skin_directory' ))
-			add_option("kommiku_skin_directory", 'default');
-			
-		if(!get_option( 'kommiku_one_comic' ))
-			add_option("kommiku_one_comic", 'false');
-			
-		if(!get_option( 'kommiku_no_slug' ))
-			add_option("kommiku_no_slug", 'false');
-			
-		if(!is_dir(WP_LOAD_PATH."/".get_option( 'kommiku_comic_upload' )))
-			mkdir(WP_LOAD_PATH."/".get_option( 'kommiku_comic_upload' ), 0755);
-			
-		if ($version = '2.0') { update_option('kommiku_version', '2.0.3'); 	}	
-		if ($version = '2.0.3') { update_option('kommiku_version', '2.0.3.1'); }		
-		
-		//Newest
-		if (!$wpdb->query("Show columns from `".$wpdb->prefix."comic_chapter` like 'pubdate'")) {
-			$updateTable = 'ALTER TABLE wp_comic_chapter` 
-							ADD `pubdate` VARCHAR(30) NOT NULL ,
-							ADD `slug` VARCHAR(100) 
-							NOT NULL';
-			$wpdb->query($updateTable);
-				
-			update_option('kommiku_version', '2.0.5');	
-		}			
+	if(file_exists(KOMMIKU_ABSPATH . 'extension/ftp-dumper-p.php')) {
+		add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Ftp Dump', 8, 'kommiku_ftp_dump', 'kommiku_ftp_dump'); 
+	}
+	
+	if(get_option('kommiku_scanlator_enabled')) {
+		add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Scanlators', 8, 'kommiku_scanlator', 'kommiku_scanlator'); 
+	}
+
+	add_submenu_page(KOMMIKU_FOLDER, 'Kommiku', 'Categories', 5, 'kommiku_category', 'kommiku_category'); 
 		
 	}
-register_activation_hook( __FILE__ , 'install');
-	
 	
 ?>

@@ -2,30 +2,32 @@
 	  
 	  if(($isPage)) {
 	  		global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku, $theimage;
-	  		if($series_chapter) {
-		  	sort($series_chapter);
-	  		foreach ($series_chapter as $chapterList) { $h++;
-				$chapterLists[$h] = $chapterList->slug;
-				$chapterListID[$h] = $chapterList->id;
-				if($select) {
-					$nextChapter = $chapterList->slug;
-					$nextChapterID = $chapterList->id;
+	  		if($kommiku['series_chapter']) {
+				foreach ($kommiku['series_chapter'] as $chapterList) { $h++;
+					$chapterLists[$h] = $chapterList->slug;
+					$chapterListID[$h] = $chapterList->id;
+					if($select) {
+						$nextChapter = $chapterList->slug;
+						$nextChapterID = $chapterList->id;
+					}
+					unset($select); 
+					if($chapterList->slug == $chapter["slug"]) {
+						$select = "selected=selected ";
+						$chapterSelected = $h;
+					}
+					unset($chapterTitle);
+					if ($chapterList->title) $chapterTitle = ' - '.stripslashes($chapterList->title);
+					$kommiku['chapterOption'] = '<option '.$select.'value="'.$chapterList->slug.'">'.$chapterList->slug.$chapterTitle.'</option>'.$kommiku['chapterOption'];			
+					if($select) {
+						$pass = $h-1;
+						if(isset($chapterListID[$pass])) $previousChapter = $chapterLists[$pass];
+						if(isset($chapterListID[$pass])) $previousChapterID = $chapterListID[$pass];
+					}
 				}
-				unset($select); 
-				if($chapterList->slug == $chapter["slug"]) {
-					$select = "selected=selected ";
-					$chapterSelected = $h;
-				}
-				if ($chapterList->title) $chapterTitle = ' - '.$chapterList->title;
-				$chapterOption = '<option '.$select.'value="'.$chapterList->slug.'">'.$chapterList->slug.$chapterTitle.'</option>'.$chapterOption;			
-				if($select) {
-					$pass = $h-1;
-					if(isset($chapterListID[$pass])) $previousChapter = $chapterLists[$pass];
-					if(isset($chapterListID[$pass])) $previousChapterID = $chapterListID[$pass];
-				}
-			}
 			}  
-				
+			
+			$chapterOption = $kommiku['chapterOption'];
+			
 			if($chapter_pages) {
 			foreach ($chapter_pages as $pageList) { $i++;
 				$pageLists[$i] = $pageList->number;
@@ -35,12 +37,13 @@
 					$select = "selected=selected ";
 					$pageSelected = $pageList->number;
 				}
-				$pageOption .= '<option '.$select.'value="'.$pageList->slug.'">'.$pageList->slug.'</option>';
+				$kommiku['pageOption'] .= '<option '.$select.'value="'.$pageList->slug.'">'.$pageList->slug.'</option>';
 				$lastPage = $pageList->number;
 				if($select) $previousPage = $pageLists[$i-1];
 				}
 			}	
-					
+			$pageOption = $kommiku['pageOption'];
+			
 			if(isset($chapter["number"])){
 				$chapter["next"] = $chapter["number"].'/';	
 				$chapter["previous"] = $chapter["number"].'/';
