@@ -17,22 +17,23 @@
 }
 
 #page-img, .narrowcolumn {
-	width:665px;
+	width:850px;
+	text-align:center;
 }
 
 .narrowcolumn {
-	margin: 15px auto;
+	margin: 0px auto;
 	padding: 0;
 	float: none;	
 }
 
 #page-img {
 	overflow: hidden;	
-	margin-top: 15px;
-}
+	margin:20px 0;
+	}
 
 #imageWrapper {
-	margin: 15px 0;	
+	margin: 15px 0;		float:left;
 }
 
 .manga-navi {
@@ -46,4 +47,18 @@
 .nextLink {
 	float: right;
 	display:inline;
+}
+
+.description {
+	text-align: left;	
+}
+
+.description h2 {
+	border: 0;	
+}
+
+.description p {
+	text-align: left;
+	margin: 10px;
+	padding:0 15px;	
 }
