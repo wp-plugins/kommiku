@@ -1,4 +1,4 @@
-# Translation of the WordPress plugin Kommiku Viewer 2.1.2 by Henry Tran.
+# Translation of the WordPress plugin Kommiku Viewer 2.1.3 by Henry Tran.
 # Copyright (C) 2010 Henry Tran
 # This file is distributed under the same license as the Kommiku Viewer package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kommiku Viewer 2.1.2\n"
+"Project-Id-Version: Kommiku Viewer 2.1.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/kommiku\n"
-"POT-Creation-Date: 2010-08-07 19:35+0000\n"
+"POT-Creation-Date: 2010-08-07 23:37+0000\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,40 +61,40 @@ msgstr ""
 msgid "But I am your friend :("
 msgstr ""
 
-#: admin/category_edit.php:38
+#: admin/category_edit.php:39
 msgid "Update?"
 msgstr ""
 
-#: admin/category_edit.php:43 admin/list_page_create.php:70
+#: admin/category_edit.php:44 admin/list_page_create.php:70
 msgid "Update"
 msgstr ""
 
-#: admin/category_edit.php:56
+#: admin/category_edit.php:57
 msgid "Category Name"
 msgstr ""
 
-#: admin/category_edit.php:59
+#: admin/category_edit.php:60
 msgid "Name"
 msgstr ""
 
-#: admin/category_edit.php:68 admin/list_page_create.php:144
+#: admin/category_edit.php:69 admin/list_page_create.php:144
 #: admin/settings.php:103
 msgid "Permalink:"
 msgstr ""
 
-#: admin/category_edit.php:68
+#: admin/category_edit.php:69
 msgid "category"
 msgstr ""
 
-#: admin/category_edit.php:79 admin/category_edit.php:82
+#: admin/category_edit.php:80 admin/category_edit.php:83
 msgid "Description"
 msgstr ""
 
-#: admin/category_edit.php:84
+#: admin/category_edit.php:85
 msgid "Add a description of the Category"
 msgstr ""
 
-#: admin/category_edit.php:102
+#: admin/category_edit.php:103
 msgid "Delete this Category"
 msgstr ""
 
@@ -557,194 +557,202 @@ msgstr ""
 msgid "OMG! 404?! "
 msgstr ""
 
-#: kommiku.php:332
+#: kommiku.php:334
 msgid "Story Listing"
 msgstr ""
 
-#: kommiku.php:367
+#: kommiku.php:369
 msgid ""
 "The Image could not be deleted (or it doesn't exist) but the record was "
 "deleted (or maybe it was already gone?)"
 msgstr ""
 
-#: kommiku.php:368
+#: kommiku.php:370
 #, php-format
 msgid " - Chapter %d"
 msgstr ""
 
-#: kommiku.php:374
+#: kommiku.php:376
 msgid "The Page has been deleted"
 msgstr ""
 
-#: kommiku.php:391
+#: kommiku.php:393
 msgid "The Chapter has been deleted"
 msgstr ""
 
-#: kommiku.php:406
+#: kommiku.php:408
 msgid "The Series has been deleted"
 msgstr ""
 
-#: kommiku.php:451
+#: kommiku.php:454
 msgid "The scanlator name has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:452
+#: kommiku.php:455
 msgid "The scanlator slug has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:479
+#: kommiku.php:488
 msgid "The category name has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:480
+#: kommiku.php:489
 msgid "The category slug has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:571
+#: kommiku.php:490
+msgid "The category title can not be empty<br/>"
+msgstr ""
+
+#: kommiku.php:582
 msgid "The Series has been successfully created"
 msgstr ""
 
-#: kommiku.php:577
+#: kommiku.php:588
 msgid "The Series has been updated"
 msgstr ""
 
-#: kommiku.php:587
+#: kommiku.php:598
 msgid "The series name has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:588
+#: kommiku.php:599
 msgid "The series slug has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:653
+#: kommiku.php:664
 msgid "The Chapter has been successfully created"
 msgstr ""
 
-#: kommiku.php:670
+#: kommiku.php:668
+msgid "The Chapter has been successfully updated"
+msgstr ""
+
+#: kommiku.php:681
 msgid "The Chapter number has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:671
+#: kommiku.php:682
 msgid "The Chapter number has to be in decimals or numbers.<br/>"
 msgstr ""
 
-#: kommiku.php:672
+#: kommiku.php:683
 msgid "The \"Volume Input\" must be Numeric"
 msgstr ""
 
-#: kommiku.php:801
+#: kommiku.php:809
 msgid "Error 1: Could not move file"
 msgstr ""
 
-#: kommiku.php:804
+#: kommiku.php:812
 msgid "No file were uploaded. But a page was created."
 msgstr ""
 
-#: kommiku.php:812
+#: kommiku.php:820
 msgid "The Image/Page has been updated"
 msgstr ""
 
-#: kommiku.php:825
+#: kommiku.php:833
 msgid " | Image moved!"
 msgstr ""
 
-#: kommiku.php:827
+#: kommiku.php:835
 msgid " | Image Failed!"
 msgstr ""
 
-#: kommiku.php:835
+#: kommiku.php:843
 msgid "<br/>No such Wordpress Post"
 msgstr ""
 
-#: kommiku.php:843
+#: kommiku.php:851
 msgid "The Page number has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:844
+#: kommiku.php:852
 msgid "The Page number has to be in decimals or numbers.<br/>"
 msgstr ""
 
-#: kommiku.php:845
+#: kommiku.php:853
 msgid "The Slug for the Page on this Chapter has already been taken"
 msgstr ""
 
-#: kommiku.php:846
+#: kommiku.php:854
 msgid "There was no file to upload"
 msgstr ""
 
-#: kommiku.php:847
+#: kommiku.php:855
 msgid "The file is too large"
 msgstr ""
 
-#: kommiku.php:848
+#: kommiku.php:856
 msgid "The file couldn't be moved!? Please check permission on your folders"
 msgstr ""
 
-#: kommiku.php:898 kommiku.php:984
+#: kommiku.php:906 kommiku.php:992
 msgid "A widget that lists the Stories under the Kommiku plugin."
 msgstr ""
 
-#: kommiku.php:904
+#: kommiku.php:912
 msgid "Kommiku: Story Lister"
 msgstr ""
 
-#: kommiku.php:963
+#: kommiku.php:971
 msgid "Example"
 msgstr ""
 
-#: kommiku.php:963
+#: kommiku.php:971
 msgid "John Doe"
 msgstr ""
 
-#: kommiku.php:968 kommiku.php:1058
+#: kommiku.php:976 kommiku.php:1066
 msgid "Title:"
 msgstr ""
 
-#: kommiku.php:990
+#: kommiku.php:998
 msgid "Kommiku: Chapter Lister"
 msgstr ""
 
-#: kommiku.php:1053
+#: kommiku.php:1061
 msgid "Kommiku Chapter Updates"
 msgstr ""
 
-#: kommiku.php:1062
+#: kommiku.php:1070
 msgid "How many updates to show?"
 msgstr ""
 
-#: kommiku.php:1215
+#: kommiku.php:1223
 msgid "The 'Upload Directory' you are trying to rename already exist."
 msgstr ""
 
-#: kommiku.php:1224
+#: kommiku.php:1232
 msgid "Your skin has been updated"
 msgstr ""
 
-#: kommiku.php:1228
+#: kommiku.php:1236
 msgid "The skin does not exist"
 msgstr ""
 
-#: kommiku.php:1231
+#: kommiku.php:1239
 msgid "Your Settings has been updated"
 msgstr ""
 
-#: kommiku.php:1364
+#: kommiku.php:1372
 msgid "List"
 msgstr ""
 
-#: kommiku.php:1365
+#: kommiku.php:1373
 msgid "Settings"
 msgstr ""
 
-#: kommiku.php:1368
+#: kommiku.php:1376
 msgid "Ftp Dump"
 msgstr ""
 
-#: kommiku.php:1372
+#: kommiku.php:1380
 msgid "Scanlators"
 msgstr ""
 
-#: kommiku.php:1375
+#: kommiku.php:1383
 msgid "Categories"
 msgstr ""
 
