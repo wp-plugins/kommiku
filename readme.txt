@@ -13,7 +13,9 @@ Kommiku is a Online Media Viewer. The main purpose is to browse through stories 
 
 Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"), [Eslend](http://eslend.com/ "Eslend: a web-manga | a web-comic"), [Eclipse Scanlation](http://eclipse-scans.net/eso/ "Eclipse Scanlators")
 
-*If you like this plug-in, speak a different language other than English, and would like to contribute to Kommiku. I would like you to [email me](mailto:anri.tora@gmail.com) so I can transcribe this plug-in for other people as well.
+* If you like this plug-in, speak a different language other than English, and would like to contribute to Kommiku. I would like you to [email me](mailto:anri.tora@gmail.com) so I can transcribe this plug-in for other people as well.
+
+* NOTE: This plug-in was build on a root directory. Problem may occur if you installed Wordpress on a 2nd level directory such as: "http://example.com/blog/". If you are willing, I will help you install this on the 2nd directory so I can help the rest of the people who may have the same problem.
 
 == Installation ==
 * Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
@@ -31,8 +33,10 @@ Especially the theme folder!
 Some of the function in Kommiku have been deprecated. Please email me anri.tora@gmail.com if there are any problems. 
 
 == Screenshots ==
-1. screenshot-1.jpg 
-What the viewer looks like. You may view a demo at http://eslend.com/
+1. screenshot-1.jpg
+ 
+What the viewer looks like. 
+You may view a demo at http://eslend.com/
 
 
 == Frequently Asked Questions ==
