@@ -1,4 +1,5 @@
 <?php	
+$series = $db->series_detail();
 $page_list = $db->page_list($page['series_id'],$page['chapter_id']);
 if(!$chapter) $chapter = $db->chapter_detail();
 if($page_list)
@@ -30,7 +31,7 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 		
 if (is_numeric($_GET["series"])) $chapterless = $db->chapterless();
 if ($chapterless == 0) { 
-	$chapterTitle = ' &raquo; <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$chapter["id"].'">Chapter '.$chapter_number.'</a>';	
+	$chapterTitle = ' &raquo; <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$chapter["id"].'">'.__("Chapter",'kommiku').' '.$chapter_number.'</a>';	
 	$chapterURL = '&chapter='.$chapter["id"]; 
 	$chapterWord = 'Chapter';
 	$sub = '&sub=listchapter';
@@ -113,7 +114,7 @@ if ($chapterless == 0) {
 									</div>
 									<div class="clear"></div>
 									<div style="width: 100%; float: right; text-align: right;">
-											<input type="submit" value="<?__('Update Chapter', 'kommiku')?>" accesskey="c" tabindex="5" class="button-primary" name="series_update"/>
+											<input type="submit" value="<?_e('Update Chapter', 'kommiku')?>" accesskey="c" tabindex="5" class="button-primary" name="series_update"/>
 									</div>
 									<div class="clear"></div>
 							</div>								    

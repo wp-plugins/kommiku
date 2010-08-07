@@ -6,10 +6,11 @@
 				<input type="submit" value="Search"/>
 			</form>
 	</td></tr>
+	<tr class="headline"><td style="width: 45%; padding-left: 15px;" class="series"><strong><a href="<?=HTTP_HOST?><?=KOMMIKU_URL_INDEX?>/">Directory</a></strong></td></tr>
 	<?php if($category["list"]){ ?>
-	<tr class="headline"><td style="width: 45%;" class="series">Categories</td></tr>
-	<?php foreach ($category["list"] as $item)
-		echo '<tr><td class="series" style="padding-left: 15px;"><a href="'.HTTP_HOST.'directory/'.$item->slug.'/">'.$item->title.'</a></td></tr>';
+		<tr class="headline"><td style="width: 45%; padding-left: 15px;" class="series"><strong>Categories</strong></td></tr>
+		<?php foreach ($category["list"] as $item)
+			echo '<tr><td class="series" style="padding-left: 15px;"><a href="'.HTTP_HOST.KOMMIKU_URL_INDEX.'/'.$item->slug.'/">'.$item->title.'</a></td></tr>';
 	}?>
 	</tbody>
 </table>

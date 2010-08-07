@@ -1,7 +1,4 @@
 <?php	
-#if(!is_numeric($_GET['series']) && !is_numeric($_GET['chapter']) && !$_GET['pg'] )
-#die('The EF?!');
-
 $action = '&action=create';
 $chapter_id = $_GET['chapter'];
 if(($page['id'] || $_GET['pg']) && $_GET['series']) {

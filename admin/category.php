@@ -62,8 +62,8 @@ if($_POST['what'] == "category") {
 $alphabets = $kommiku['alphabets'];
 if($list = $db->category_read())
 	foreach ($db->category_read() as $row) {
-		$singleLetter = ucwords($row->name[0]);
-		$letter[$singleLetter][] = '<li><A href="'.$url.'admin.php?page=kommiku&sub=category_edit&category='.$row->slug.'">'.$row->name.'</a></li>';
+		$singleLetter = ucwords($row->title[0]);
+		$letter[$singleLetter][] = '<li><a href="'.$url.'admin.php?page=kommiku&sub=category_edit&category='.$row->slug.'">'.$row->title.'</a></li>';
 		};	
 ?>	
 

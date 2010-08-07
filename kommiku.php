@@ -6,6 +6,7 @@ Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
+Text Domain: kommiku
 */ 
 
 if ( !defined('WP_LOAD_PATH') ) {
@@ -34,7 +35,6 @@ define('KOMMIKU_URL_INDEX', get_option( 'kommiku_url_index' ) );
 define('HTTP_HOST', get_bloginfo('url').'/' );
 define('K_SCANLATOR_URL', get_option('kommiku_scanlator') );
 add_action('admin_menu', 'kommiku_menu');
-load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
 
 $kommiku['alphabets'] = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
 
@@ -187,11 +187,12 @@ function kommiku_footer() {
 		return;
 }
 
-function kommiku_source()
-{
+function kommiku_source(){
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;	
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
+				
+load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
 				
 	if($kommiku['scanlator']) {
 		$scanlator = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."comic_scanlator` WHERE slug = '".$kommiku['scanlator_slug']."'", ARRAY_A);
@@ -1255,7 +1256,7 @@ function install() {
 	//Create and Update the Tables
 	$table = 'comic_series';		
 	$attribute[$table] = array('id' => 'int(9) NOT NULL AUTO_INCREMENT',
-				'title' => 'title varchar(100) NOT NULL',
+				'title' => 'varchar(100) NOT NULL',
 				'slug' => 'varchar(100) NOT NULL',
 				'summary' => 'text NOT NULL',
 				'chapterless' => 'tinyint(1) NOT NULL',

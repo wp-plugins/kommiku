@@ -13,11 +13,11 @@ $alphabets = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
 ?>	
 
 
-<div id="content" style="width: 95%; padding: 20px;">
+<div id="content" class="narrowcolumn home">
 	<?php if ($category["title"]) { ?>
 	<h3 style="margin-bottom: 10px;">Category: <a href="<?=$category["url"]?>"><?=$category["title"]?></a></h3>
 	<?php  
-	  	$explosion = explode("\r\n",stripslashes($category["summary"]));
+	  	$explosion = explode("\r\n",stripslashes($category["description"]));
 		foreach ($explosion as $paragraph) {
 			echo '<p>'. $paragraph .'</p>';	
 		} 

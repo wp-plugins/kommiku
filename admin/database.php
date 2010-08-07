@@ -184,7 +184,7 @@ Class kommiku_database {
 	    global $wpdb;
 	    
 			$table = $wpdb->prefix."comic_category";
-	  		$select = "SELECT * FROM ".$table." ORDER BY name";
+	  		$select = "SELECT * FROM ".$table." ORDER BY title";
 	  		$results = $wpdb->get_results( $select );
 			return $results;
 		

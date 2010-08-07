@@ -23,7 +23,7 @@ switch(rand(0,3)) {
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><A href="<?php echo $url; ?>admin.php?page=kommiku_category"><?_e('Category List', 'kommiku')?></a> &raquo; <a href="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>"><?=$category['name']?></a></h2>
+	<h2><a href="<?php echo $url; ?>admin.php?page=kommiku_category"><?_e('Category List', 'kommiku')?></a> &raquo; <a href="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>"><?=$category['title']?></a></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
@@ -65,7 +65,7 @@ switch(rand(0,3)) {
 			<div style="margin-bottom: 10px;">
 				<div class="inside">
 					<div id="edit-slug-box">
-						<strong><?_e('Permalink:', 'kommiku')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.KOMMIKU_URL_INDEX.'/'._e("category", 'kommiku').'/'; ?>
+						<strong><?_e('Permalink:', 'kommiku')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.KOMMIKU_URL_INDEX.'/'.__("category", 'kommiku').'/'; ?>
 						<input type="text" value="<?=$category['slug']?>" name="slug" style="width: 10%; background: #FFFBCC;" /> /
 						</span>
 					</div>
