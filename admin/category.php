@@ -69,7 +69,7 @@ if($list = $db->category_read())
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><?php echo '<a href="'.$url.'admin.php?page=kommiku_category">'; ?><?_e('Category List')?></a></h2>
+	<h2><?php echo '<a href="'.$url.'admin.php?page=kommiku_category">'; ?><?_e('Category List', 'kommiku')?></a></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
@@ -77,7 +77,7 @@ if($list = $db->category_read())
 		<div class="inner-sidebar" id="side-info-column">
 			<div class="meta-box-sortables ui-sortable" id="side-sortables">				
 				<div class="postbox">
-					<h3 style="cursor: default;"><span><?_e('Name a Category')?></span></h3>
+					<h3 style="cursor: default;"><span><?_e('Name a Category', 'kommiku')?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<form method="post" action="admin.php?page=kommiku_category" name="post">
@@ -87,15 +87,15 @@ if($list = $db->category_read())
 								<div style="background: none;">
 										<div style="margin-bottom: 10px;">
 											<div class="misc-pub-section ">
-												<span <?php if($category['fail']['name'])echo 'style="color: #ff0000;"'; ?>><?_e('Category Name:')?></span> <input name="name" type="text" value="<?php if($_GET['action'] != 'delete') echo $category['name']; ?>" style="width: 150px; float: right; text-align: left;" />
+												<span <?php if($category['fail']['name'])echo 'style="color: #ff0000;"'; ?>><?_e('Category Name:', 'kommiku')?></span> <input name="name" type="text" value="<?php if($_GET['action'] != 'delete') echo $category['name']; ?>" style="width: 150px; float: right; text-align: left;" />
 												<div class="clear"></div> 
 											</div>
 											<div class="misc-pub-section ">
-												<span <?php if($category['fail']['slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Category Slug:')?></span> <input name="slug" type="text" value="<?php if($_GET['action'] != 'delete') echo $category['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
+												<span <?php if($category['fail']['slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Category Slug:', 'kommiku')?></span> <input name="slug" type="text" value="<?php if($_GET['action'] != 'delete') echo $category['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 												<div class="clear"></div> 
 											</div>
 											<div class="misc-pub-section ">
-												<?_e('Summary:')?> <textarea name="description" type="text" style="width: 150px; float: right; text-align: left;" /><?php if($_GET['action'] != 'delete') echo stripslashes($category['description']); ?></textarea>
+												<?_e('Summary:', 'kommiku')?> <textarea name="description" type="text" style="width: 150px; float: right; text-align: left;" /><?php if($_GET['action'] != 'delete') echo stripslashes($category['description']); ?></textarea>
 												<div class="clear"></div> 
 											</div>
 										</div>
@@ -115,7 +115,7 @@ if($list = $db->category_read())
 		<div id="post-body-content">
 			<div>
 				<div class="postbox">
-					<h3 style="cursor: default;"><span><?_e('Go to a Letter')?></span></h3>
+					<h3 style="cursor: default;"><span><?_e('Go to a Letter', 'kommiku')?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<div id="namediv" style="margin: 0;">

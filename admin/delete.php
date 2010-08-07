@@ -53,7 +53,7 @@ else
 		<div id="post-body-content">
 			<div>
 				<div class="postbox">
-					<h3 style="cursor: default;"><span><?_e('Delete?! Are you sure?')?></span></h3>
+					<h3 style="cursor: default;"><span><?_e('Delete?! Are you sure?', 'kommiku')?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<div id="titlediv" style="margin: 0;">
@@ -62,21 +62,21 @@ else
 									<?php if (is_numeric($series['id']) && is_numeric($chapter['id']) && is_numeric($page['id'])) { 
 										//Series with Chapter. On Page ?>
 										<li><h4><?php echo $series['title'].' - Chapter '.$chapter_number.' - Page '.$page['number']; ?></h4></li>
-										<li><?_e('Are you sure you want to delete this Page?')?></li>
+										<li><?_e('Are you sure you want to delete this Page?', 'kommiku')?></li>
 									<? } if (is_numeric($series['id']) && is_numeric($chapter['id']) && !is_numeric($page['id'])) { 
 										//Series. On Chapter ?>
 										<li><h4><?php echo $series['title'].' - Chapter '.$chapter_number; ?></h4></li>
-										<li><?_e('Are you sure you want to delete this Chapter?')?></li>
-										<li><?_e('All <strong>Pages</strong> within the Chapters will all be deleted')?></li>
+										<li><?_e('Are you sure you want to delete this Chapter?', 'kommiku')?></li>
+										<li><?_e('All <strong>Pages</strong> within the Chapters will all be deleted', 'kommiku')?></li>
 									<? } if (is_numeric($series['id']) && !is_numeric($chapter['id']) && !is_numeric($page['id'])) { 
 										//Just deleteing the Series? ?>
 										<li><h4><?php echo $series['title'] ?></h4></li>
-										<li><?_e('Are you sure you want to delete this Series?')?></li>
-										<li><?_e("The <strong>Series</strong>, and <strong>ALL it's Content</strong> will all be deleted")?></li>
+										<li><?_e('Are you sure you want to delete this Series?', 'kommiku')?></li>
+										<li><?_e("The <strong>Series</strong>, and <strong>ALL it's Content</strong> will all be deleted", 'kommiku')?></li>
 									<? } if (is_numeric($series['id']) && !is_numeric($chapter['id']) && is_numeric($page['id']) && $series['chapterless']) {
 										//Chapterless Series. On Page  ?>
 										<li><h4><?php echo $series['title'].' - Page '.$page['number']; ?></h4></li>
-										<li><?_e('Are you sure you want to delete this Page?')?></li>
+										<li><?_e('Are you sure you want to delete this Page?', 'kommiku')?></li>
 									<?php } ?>
 									</ul>
 								</div>
@@ -85,13 +85,13 @@ else
 					</div>
 				</div>
 				<div class="postbox">
-					<h3 style="cursor: default;"><span><?_e('The Delete Button')?></span></h3>
+					<h3 style="cursor: default;"><span><?_e('The Delete Button', 'kommiku')?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<div style="background: none;">
 								<div class="clear"></div>
 								<div style="width: 100%; float: right; text-align: right">
-									<input name="delete" value="<?_e('Delete It!')?>" type="submit" style="float: right; margin: 5px;" class="button-primary"/>
+									<input name="delete" value="<?_e('Delete It!', 'kommiku')?>" type="submit" style="float: right; margin: 5px;" class="button-primary"/>
 								</div>
 								<div class="clear"></div>
 							</div>							

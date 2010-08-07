@@ -85,7 +85,7 @@
 				if($title) {
 					$title = 'title="'.$title.'" ';
 				} else { 
-					$title =  'title="'.__("Read the previous page").'"';
+					$title =  'title="'.__("Read the previous page", 'kommiku').'"';
 				}					
 				echo '<a '.$class.$title.'href="'.$previousLink.'">'.$wrapper.'</a>';
 			} else if($link) {
@@ -126,7 +126,7 @@
 				if($title) {
 					$title = 'title="'.$title.'" '; 
 				} else {
-					$title = 'title="'.__("Read the next page").'"';
+					$title = 'title="'.__("Read the next page", 'kommiku').'"';
 				}
 				echo '<a '.$class.$title.'href="'.$nextLink.'">'.$wrapper.'</a>';
 			} else if($link) {
@@ -155,7 +155,7 @@
 				if($title) {
 					$title = 'title="'.$title.'" '; 
 				} else {
-					$title = 'title="'.__("Read the next page").'"';
+					$title = 'title="'.__("Read the next page", 'kommiku').'"';
 				}
 				echo '<a '.$class.$title.'href="'.$nextLink.'">'.$wrapper.'</a>';
 			} else {
