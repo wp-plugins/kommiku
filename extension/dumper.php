@@ -30,10 +30,7 @@ if (!$chapterFolder && $chapterNumber)
     
 //Check that we have a file
 if((!empty($_FILES["zip"])) && ($_FILES['zip']['error'] == 0)) {
-    if(class_exist('ZipArcher'))
-		$zipclass = new ZipArchive();
-	else
-		die("The ZipArchive Library (zlib) is not enable. Can not extract without the library.");
+	$zipclass = new ZipArchive() or	die("The ZipArchive Library (zlib) is not enable. Can not extract without the library.");
     $ext = substr($_FILES['zip']['name'], strrpos($_FILES['zip']['name'], '.') + 1);
     
     //Get Max File Size from Option

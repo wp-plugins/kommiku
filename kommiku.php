@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.2
+Version: 2.1.3
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
@@ -23,6 +23,7 @@ if ( !defined('WP_LOAD_PATH') ) {
 }
 
 $comic_upload_directory = get_option( 'kommiku_comic_upload' );
+if(!$comic_upload_directory) $comic_upload_directory = 'comic';
 define('KOMMIKU_URLPATH', WP_PLUGIN_URL . '/' . plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_PLUGIN_PATH', plugin_basename( dirname(__FILE__) ) . '/' );
 define('KOMMIKU_FOLDER', dirname(__FILE__) );
@@ -64,11 +65,11 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	
 	//Replace Index
 	if($explodeURL[0] == '' && get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
-				$kommiku['manga'] = true;
-				$kommiku['series'] = get_option( 'kommiku_one_comic' );
-				$kommiku['one_comic'] = true;
-				$kommiku['pages'] = "latest";
-				$kommiku['index'] = true;
+			$kommiku['manga'] = true;
+			$kommiku['series'] = get_option( 'kommiku_one_comic' );
+			$kommiku['one_comic'] = true;
+			$kommiku['pages'] = "latest";
+			$kommiku['index'] = true;
 		}
 	
 	if(strtolower($explodeURL[0]) == "find" && $explodeURL[1]) {
@@ -87,7 +88,6 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 			$kommiku['chapter'] = $explodeURL[1];
 			$kommiku['pages'] = $explodeURL[2];
 		} else if($explodeURL[1] != '') {
-		//Else normal style!!
 			global $wpdb;
 			$kommiku['series'] = strtolower($explodeURL[1]);
 			if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
@@ -276,9 +276,8 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 				$kommiku['title']['chapter'] = $chapter['title'];
 				$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
 			}
-			$kommiku['series_chapter'] = $db->series_chapter($kommiku['series_id']);
 		}
-				
+			
 		if(empty($kommiku['chapter_id'])) {
 			$kommiku['chapter_id'] = 0;
 		} 	
@@ -314,7 +313,10 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 					$seriesOption .= '<option value="'.$row->slug.'">'.$chapterTitle.'</option>';
 				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$chapterTitle.'</a></li>';
 			};	
-								
+			
+		if($kommiku['series_id'])
+			$kommiku['series_chapter'] = $db->series_chapter($kommiku['series_id']);
+			
 		//Page, Chapter, Series		
 		if((!empty($kommiku['series']) && isset($kommiku['chapter']) && $kommiku['page']) || 
 			(!empty($kommiku['series_id']) && isset($kommiku['chapter_id']) && !empty($kommiku['page_id']))){
@@ -415,7 +417,7 @@ function kommiku() {
 			$_CLEAN['slug']           = $_POST['slug'];
 			$_CLEAN['summary']        = $_POST['summary'];
 			$_CLEAN['description']    = $_POST['description'];
-			$_CLEAN['number']         = $_POST['number'];
+			$_CLEAN['number']         = strval(intval($_POST['number']));
 			$_CLEAN['series_id']      = $_POST['series_id'];
 			$_CLEAN['chapter_id']     = $_POST['chapter_id'];
 			$_CLEAN['seodescription'] = $_POST['seodescription'];
@@ -429,6 +431,7 @@ function kommiku() {
 			$_CLEAN['alt_name'] 	  = $_POST['alt_name'];
 			$_CLEAN['story_type'] 	  = $_POST['story_type'];
 			$_CLEAN['text'] 		  = $_POST['text'];
+			$_CLEAN['id']             = intval($_POST['id']);
 			
 			if($_POST['what'] == "scanlator") { 
 				$table = $wpdb->prefix."comic_scanlator";
@@ -460,29 +463,37 @@ function kommiku() {
 			
 			if($_POST['what'] == "category") { 
 				$table = $wpdb->prefix."comic_category";
-				$oldScanlator = $db->category_detail($_POST['slug']);
+				$old = $db->category_detail($_CLEAN['slug']);
+				
+				if(!$_CLEAN['title']) {
+					$category['fail']['name']['empty'] = true;
+				}
 				
 				if($wpdb->get_var("SELECT title FROM `".$table."` WHERE title = '".$_CLEAN['title']."'") == $_CLEAN['title'])  
-					if ($_POST['action'] == "update" && $oldScanlator['title'] != $_CLEAN['title'])
+					if ($_POST['action'] == "update" && $old['title'] != $_CLEAN['title'])
 						$category['fail']['name'] = true;
 					
 				if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'") == $_CLEAN['slug']) 
-					if ($_POST['action'] == "update" && $oldScanlator['slug'] != $_CLEAN['slug'])
+					if ($_POST['action'] == "update" && $old['slug'] != $_CLEAN['slug'])
 						$category['fail']['slug'] = true;
 						
-				if(!$category['fail']) {
-						$db->category_update($_POST['id'],$_CLEAN['name'],stripslashes($_CLEAN['description']),$_CLEAN['slug']);
-						$status['pass'] = 'The Category has been updated';
 					
-					kommiku_category_edit();
+						
+				if(!$category['fail']) {
+					$db->category_update($_CLEAN['id'],$_CLEAN['title'],stripslashes($_CLEAN['summary']),$_CLEAN['slug']);
+					$status['pass'] = 'The Category has been updated';
+					$category['title'] = $_POST['title'];
+					$category['summary'] = $_POST['summary'];
 				} else {
 					if ($category['fail']['name']) $status['error'] .= __('The category name has already been taken.<br/>', 'kommiku');
 					if ($category['fail']['slug']) $status['error'] .= __('The category slug has already been taken.<br/>', 'kommiku');
+					if ($category['fail']['name']['empty']) $status['error'] .= __('The category title can not be empty<br/>', 'kommiku');
 					$category['name'] = $_POST['name'];
 					$category['slug'] = $_POST['slug'];
 					$category['description'] = stripslashes($_POST['description']);
-					kommiku_category_edit();
+					
 				}
+					kommiku_category_edit();
 			}
 			
 			if($_POST['what'] == "series") { 
@@ -612,14 +623,15 @@ function kommiku() {
 				kommiku_model_chapter();
 			}
 			
-			if(is_numeric($_POST['series_id']) && $_POST['what'] == "chapter" && $_POST['action'] != "dump") { 		
+			if(is_numeric($_POST['series_id']) && $_POST['what'] == "chapter" && $_POST['action']) { 		
 				$table = $wpdb->prefix."comic_chapter";
 				
-				$series = $db->series_detail($_POST['series_id']);
-				$chapter = $db->chapter_detail($_POST['chapter_id']);
+				$series = $db->series_detail(intval($_POST['series_id']));
+				$chapter = $db->chapter_detail(intval($_POST['chapter_id']));
 				
-				if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {
-					$_OLD['slug'] = $wpdb->get_var("SELECT slug FROM `".$table."` WHERE id = '".$chapter['id']."'"); 
+				if($_POST['action'] == "update" && is_numeric(intval($_POST['chapter_id']))) {
+					$_OLD['slug'] = $chapter['slug'] ;
+					$_OLD['number'] = $chapter['number'];
 					if($_OLD['slug'] == $_CLEAN['slug'])
 						$noRename = true;
 				}				 
@@ -638,14 +650,13 @@ function kommiku() {
 				if (!is_numeric($_POST['slug'])) 
 					$chapter['fail']['number']['slug'] = true;
 					
-				if (!is_numeric($_POST['volume']) && $_POST['volume'] != 0) 
+				if (!is_numeric($_POST['volume']) && isset($_POST['volume'])) 
 					$chapter['fail']['volume'] = true;
 
 				if(!$chapter['fail']) {
 
 					if($_POST['action'] == "create") {
-
-						$chapterID = $db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['slug'],$scalator,$scalator_slug,0,$folder,true);
+						$chapterID = $db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$phpdate,$_POST['slug'],$scanlator,$scanlator_slug,0,$folder,true);
 						
 						if(!is_dir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number']))
 							mkdir(UPLOAD_FOLDER.'/'.strtolower($series['slug']).'/'.$_POST['number'], 0755);
@@ -654,7 +665,7 @@ function kommiku() {
 						kommiku_model_chapter();
 					} else if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {						
 						$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_POST['series_id'],$chapter['pubdate'],$_POST['slug'],$_POST['scanlator'],$_POST['scanlator_slug'],$_POST['volume'],$folder);
-						$status['pass'] = 'The Chapter has been successfully updated';
+						$status['pass'] = __('The Chapter has been successfully updated');
 						$chapter['scanlator'] = $_POST['scanlator'];
 						$chapter['scanlator_slug'] = $_POST['scanlator_slug'];
 						$chapter['volume'] = $_POST['volume'];
@@ -719,13 +730,10 @@ function kommiku() {
 					$chapter = $db->chapter_detail($_POST['chapter_id']);
 					}
 				
-				if(is_numeric($chapter['number'])) 
-					$chapterFolder = $chapter['number'].'/';
-				else
-					$chapterFolder = '';
-					
-				if (!isset($chapterFolder) && $chapter['number'])
-					die($chapterFolder.' not being set');
+				if(isset($chapter['folder']) && $chapter['folder'] != '')
+					$chapterFolder = $chapter['folder'];
+				else if($chapter['slug']) 
+					$chapterFolder = $chapter['slug'].'/';
 				
 				//Check slug //doube check for UPDATE
 				if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."' AND series_id = '".$_POST['series_id']."' AND chapter_id = '".$_POST['chapter_id']."'") == $_CLEAN['slug'])  
@@ -916,7 +924,7 @@ class story_lister extends WP_Widget {
 		$series_list = $db->series_list();
 		if($series_list)
 			foreach ($series_list as $row) {
-				$seriesOption .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.stipslashes($row->title).'</a></li>';
+				$seriesOption .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.stripslashes($row->title).'</a></li>';
 			};	
 		
 		/* Our variables from the widget settings. */

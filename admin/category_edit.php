@@ -28,6 +28,7 @@ switch(rand(0,3)) {
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
 	<div class="metabox-holder has-right-sidebar">
+	<form method="post" action="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>" name="post" enctype="multipart/form-data">
 		<input type="hidden" value="<?=$category['id']?>" name="id"/>
 		<input type="hidden" value="category" name="what"/>	
 		<input type="hidden" value="update" name="action"/>	
@@ -57,7 +58,7 @@ switch(rand(0,3)) {
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="name" class="screen-reader-text"><?_e('Name', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$category['name']?>" tabindex="1" size="30" name="name"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$category['title']?>" tabindex="1" size="30" name="title"/>
 					</div>
 				</div>
 			</div>			
@@ -80,7 +81,7 @@ switch(rand(0,3)) {
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="summary" class="screen-reader-text"><?_e('Description', 'kommiku')?></label>
-						<textarea tabindex="2" name="description" style="width: 99.5%;" rows="5"><?=stripslashes($category['description'])?></textarea>									
+						<textarea tabindex="2" name="summary" style="width: 99.5%;" rows="5"><?=stripslashes($category['summary'])?></textarea>									
 						<p><?_e('Add a description of the Category', 'kommiku')?></p>
 					</div>
 				</div>

@@ -911,6 +911,7 @@ li.content-column {
 
 #imageWrapper {
 	margin: 15px auto;
+	text-align:center;
 }
 
 #imageWrapper img {

@@ -27,7 +27,7 @@ switch($series['read']) {
 ?>
 
 <?php //Image ?>
-<?php if($series['img']) {echo '<img style="float: right; padding: 15px;" src="'.UPLOAD_URLPATH.'/'.strtolower($series['slug']).'/'.$series['img'].'"/>'; $topwidth = "75%"; } else { $topwidth = "75%"; }?>
+<?php if($series['img']) {echo '<img style="float: right; max-width:165px; padding: 0 15px;" src="'.UPLOAD_URLPATH.'/'.strtolower($series['slug']).'/'.$series['img'].'"/>'; $topwidth = "75%"; } else { $topwidth = "75%"; }?>
 
 <?php //Table with Information ?>
 <table width="<?=$topwidth?>" border="0" cellpadding="0" cellspacing="0">
@@ -39,4 +39,5 @@ switch($series['read']) {
 	<?php if($series['categories']) {?><tr><td class="infoTabOne"><strong>Categorize in:</strong></td><td><?=$series['categories']?></td><?php } ?>
 	<?php if($series['creation']) {?><tr><td class="infoTabOne"><strong>Date Created:</strong></td><td><?=$series['creation']?></td><?php } ?>
 	<?php if($readDirection) {?><tr><td class="infoTabOne"><strong>Reading Direction:</strong></td><td><?=$readDirection?></td><?php } ?>		
+	<?php if($series['summary']) {?><tr><td class="infoTabOne"><strong>Summary:</strong></td><td><?=$series['summary']?></td><?php } ?>
 </table>

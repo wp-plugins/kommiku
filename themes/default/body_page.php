@@ -2,7 +2,7 @@
 
 <div class="home" id="content">
 	<div class="breadcrumb">
-		<h2 class="kommiku-bread"><a href="<?=HTTP_HOST?><?=$kommiku['url']['series']?>"><?=$kommiku["title"]["series"]?></a></h2>
+		<h2 class="kommiku-bread"><a href="<?=HTTP_HOST?><?=$kommiku['url']['series']?>"><?=stripslashes($kommiku["title"]["series"])?></a></h2>
 	</div>
 	
 	<table cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">

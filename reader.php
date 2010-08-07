@@ -140,8 +140,8 @@
 		function img($class = NULL,$title = NULL) {
 			global $nextPage, $nextLink, $series, $chapter, $page;
 			
-			if($page["chapter_id"]) {
-				$urlC = $chapter["number"].'/';	
+			if($page["slug"]) {
+				$urlC = $chapter["slug"].'/';	
 			}
 			
 			if($series && $page && $page["img"]) {
