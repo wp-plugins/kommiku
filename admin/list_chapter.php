@@ -187,10 +187,13 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 												<option <?php if($series['type'] == '6') echo 'selected="selected"'; ?>value="6"><?_e('Novel', 'kommiku')?></option>
 											</select>
 										</div>	
+										<?php //For Mature Series?
+											if($matureEnable) { ?>
 										<div class="misc-pub-section">
 											<span <?php if($series['fail']['rating'])echo 'style="color: #ff0000;"'; ?>><?_e('Age Rating:', 'kommiku')?></span> <input name="rating" type="text" value="<?php echo $series['rating']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
+										<?php } ?>
 										<div class="misc-pub-section "><?_e('Series Book Cover:', 'kommiku')?> 
 										<?php if($series['img']) echo '<strong>[Exist]</strong>'; ?>
 										<br/><br/>
