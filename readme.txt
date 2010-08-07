@@ -49,6 +49,9 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
+= 2.1.1 =
+* Small Error in database upgrade D:
+
 = 2.1 =
 * Rework the Theme 
 * Rework the Upgrading Function

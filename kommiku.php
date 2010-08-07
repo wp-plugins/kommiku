@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1
+Version: 2.1.1
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
@@ -1262,7 +1262,7 @@ function install() {
 				'categories' => 'text NOT NULL',
 				'author' => 'varchar(32) NOT NULL',
 				'illustrator' => 'varchar(32) NOT NULL',
-				'read' => 'int(1 NOT NULL)',
+				'read' => 'int(1) NOT NULL',
 				'creation' => 'varchar(32) NOT NULL',
 				'alt_name' => 'text NOT NULL',
 				'status' => 'int(1) NOT NULL',
