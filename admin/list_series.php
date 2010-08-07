@@ -1,19 +1,20 @@
 <?php	
 $alphabets = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
-	if($db->series_list())
-	foreach ($db->series_list() as $row) {
+$series_admin_list = $db->series_admin_list();
+	if($series_admin_list)
+	foreach ($series_admin_list as $row) {
 		$singleLetter = ucwords($row->title[0]);
 		if(is_numeric($singleLetter)) { $singleLetter = '0-9'; }
 		if($row->chapterless) $chapterless = 'listpage';
 			else $chapterless = 'listchapter';
-		$letter[$singleLetter][] = '<li><A href="'.$url.'admin.php?page=kommiku&sub='.$chapterless.'&series='.$row->id.'">'.$row->title.'</a></li>';
+		$letter[$singleLetter][] = '<li><a href="'.$url.'admin.php?page=kommiku&sub='.$chapterless.'&series='.$row->id.'">'.$row->title.'</a></li>';
 		};	
 
 ?>	
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><?php echo '<A href="'.$url.'admin.php?page=kommiku">'; ?>Series Listing</a></h2>
+	<h2><?php echo '<a href="'.$url.'admin.php?page=kommiku">'; ?><?_e('Series Listing')?></a></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
@@ -21,7 +22,7 @@ $alphabets = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
 		<div class="inner-sidebar" id="side-info-column">
 			<div class="meta-box-sortables ui-sortable" id="side-sortables">				
 				<div class="postbox">
-					<h3 style="cursor: default;"><span>Create a Series</span></h3>
+					<h3 style="cursor: default;"><span><?_e('Create a Series')?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<form method="post" action="admin.php?page=kommiku" name="post">
