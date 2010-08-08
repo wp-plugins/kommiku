@@ -51,11 +51,11 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
-= 2.1.5 =
-* Stupid Auto-update Failed!
+= 2.1.6 =
+* Okay. For reals now! Auto-updater fix!
 
 = 2.1.x =
-* More Bug Fixes
+* Stupid Auto-update Failed!
 * Revamp the Pathing System: Faster and more Simpler!
 * Series, Chapters, and Pages can now be properly Deleted.
 * Series, Chapters, and Pages can now be propery Updated and Renamed.

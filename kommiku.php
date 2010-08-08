@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.5
+Version: 2.1.6
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.5' );
+define('KOMMIKU_VERSION', '2.1.6' );
 
 
 if ( !defined('WP_LOAD_PATH') ) {
@@ -349,7 +349,7 @@ function kommiku() {
 		global $wpdb,$series,$page,$chapter,$db,$status,$settings;	
 		
 		//Auto Updater
-		if(KOMMIKU_VERSION == get_option('kommiku_version')){
+		if(KOMMIKU_VERSION != get_option('kommiku_version')){
 			kommiku_install();
 		}
 
@@ -1337,7 +1337,7 @@ function kommiku_install() {
 			$chapters = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix.$tableB."` WHERE `series_id` = '".$story->id."'");
 			if($chapters) {
 				foreach($chapters as $chapter) {
-					if($chapter->slug && $story->slug) {
+					if(isset($chapter->slug) && isset($story->slug)) {
 						$query = "UPDATE `".$wpdb->prefix.$tableB."` SET `folder` = '/".$story->slug."/".$chapter->slug."/' WHERE `id` = '".$chapter->id."'";
 						$wpdb->query($query);
 					}
@@ -1346,6 +1346,7 @@ function kommiku_install() {
 			}
 		}
 	}
+	return;
 }
 register_activation_hook(__FILE__, 'kommiku_install');
 	
