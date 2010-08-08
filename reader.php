@@ -17,7 +17,7 @@
 					}
 					unset($chapterTitle);
 					if ($chapterList->title) $chapterTitle = ' - '.stripslashes($chapterList->title);
-					$chapters[$chapterList->number] = '<option '.$select.'value="'.$chapterList->slug.'">'.$chapterList->slug.$chapterTitle.'</option>';			
+					$chapter_items[$chapterList->number] = '<option '.$select.'value="'.$chapterList->slug.'">'.$chapterList->slug.$chapterTitle.'</option>';			
 					if($select) {
 						$pass = $h-1;
 						if(isset($chapterListID[$pass])) $previousChapter = $chapterLists[$pass];
@@ -25,10 +25,10 @@
 					}
 				}
 			}  
-			natsort($chapters);
-			krsort($chapters);
-			foreach($chapters as $chapter){
-				$kommiku['chapterOption'] .= $chapter;
+			natsort($chapter_items);
+			krsort($chapter_items);
+			foreach($chapter_items as $chapter_item){
+				$kommiku['chapterOption'] .= $chapter_item;
 			}
 			$chapterOption = $kommiku['chapterOption'];
 			
