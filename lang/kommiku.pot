@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kommiku Viewer 2.1.3\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/kommiku\n"
-"POT-Creation-Date: 2010-08-07 23:37+0000\n"
+"POT-Creation-Date: 2010-08-08 19:17+0000\n"
 "PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -561,206 +561,215 @@ msgstr ""
 msgid "Story Listing"
 msgstr ""
 
-#: kommiku.php:369
+#: kommiku.php:374
 msgid ""
 "The Image could not be deleted (or it doesn't exist) but the record was "
 "deleted (or maybe it was already gone?)"
 msgstr ""
 
-#: kommiku.php:370
-#, php-format
-msgid " - Chapter %d"
-msgstr ""
-
-#: kommiku.php:376
+#: kommiku.php:379
 msgid "The Page has been deleted"
 msgstr ""
 
-#: kommiku.php:393
+#: kommiku.php:390
 msgid "The Chapter has been deleted"
 msgstr ""
 
-#: kommiku.php:408
+#: kommiku.php:404
 msgid "The Series has been deleted"
 msgstr ""
 
-#: kommiku.php:454
+#: kommiku.php:450
 msgid "The scanlator name has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:455
+#: kommiku.php:451
 msgid "The scanlator slug has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:488
+#: kommiku.php:484
 msgid "The category name has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:489
+#: kommiku.php:485
 msgid "The category slug has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:490
+#: kommiku.php:486
 msgid "The category title can not be empty<br/>"
 msgstr ""
 
-#: kommiku.php:582
+#: kommiku.php:573
 msgid "The Series has been successfully created"
 msgstr ""
 
-#: kommiku.php:588
-msgid "The Series has been updated"
+#: kommiku.php:593
+msgid "The Series has been renamed.<br/>"
 msgstr ""
 
-#: kommiku.php:598
+#: kommiku.php:596
+msgid "The series could not be renamed: <br/>"
+msgstr ""
+
+#: kommiku.php:600
+msgid "The Series has been updated.<br/>"
+msgstr ""
+
+#: kommiku.php:608
 msgid "The series name has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:599
+#: kommiku.php:609
 msgid "The series slug has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:664
+#: kommiku.php:673
 msgid "The Chapter has been successfully created"
 msgstr ""
 
-#: kommiku.php:668
+#: kommiku.php:676
+msgid ""
+"Could not create Chapter because the directory for this chapter already "
+"exist: "
+msgstr ""
+
+#: kommiku.php:680
 msgid "The Chapter has been successfully updated"
 msgstr ""
 
-#: kommiku.php:681
+#: kommiku.php:690
 msgid "The Chapter number has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:682
+#: kommiku.php:691
 msgid "The Chapter number has to be in decimals or numbers.<br/>"
 msgstr ""
 
-#: kommiku.php:683
+#: kommiku.php:692
 msgid "The \"Volume Input\" must be Numeric"
 msgstr ""
 
-#: kommiku.php:809
+#: kommiku.php:807
 msgid "Error 1: Could not move file"
 msgstr ""
 
-#: kommiku.php:812
+#: kommiku.php:810
 msgid "No file were uploaded. But a page was created."
 msgstr ""
 
-#: kommiku.php:820
+#: kommiku.php:818
 msgid "The Image/Page has been updated"
 msgstr ""
 
-#: kommiku.php:833
+#: kommiku.php:825
 msgid " | Image moved!"
 msgstr ""
 
-#: kommiku.php:835
+#: kommiku.php:827
 msgid " | Image Failed!"
 msgstr ""
 
-#: kommiku.php:843
+#: kommiku.php:834
 msgid "<br/>No such Wordpress Post"
 msgstr ""
 
-#: kommiku.php:851
+#: kommiku.php:842
 msgid "The Page number has already been taken.<br/>"
 msgstr ""
 
-#: kommiku.php:852
+#: kommiku.php:843
 msgid "The Page number has to be in decimals or numbers.<br/>"
 msgstr ""
 
-#: kommiku.php:853
+#: kommiku.php:844
 msgid "The Slug for the Page on this Chapter has already been taken"
 msgstr ""
 
-#: kommiku.php:854
+#: kommiku.php:845
 msgid "There was no file to upload"
 msgstr ""
 
-#: kommiku.php:855
+#: kommiku.php:846
 msgid "The file is too large"
 msgstr ""
 
-#: kommiku.php:856
+#: kommiku.php:847
 msgid "The file couldn't be moved!? Please check permission on your folders"
 msgstr ""
 
-#: kommiku.php:906 kommiku.php:992
+#: kommiku.php:897 kommiku.php:983
 msgid "A widget that lists the Stories under the Kommiku plugin."
 msgstr ""
 
-#: kommiku.php:912
+#: kommiku.php:903
 msgid "Kommiku: Story Lister"
 msgstr ""
 
-#: kommiku.php:971
+#: kommiku.php:962
 msgid "Example"
 msgstr ""
 
-#: kommiku.php:971
+#: kommiku.php:962
 msgid "John Doe"
 msgstr ""
 
-#: kommiku.php:976 kommiku.php:1066
+#: kommiku.php:967 kommiku.php:1057
 msgid "Title:"
 msgstr ""
 
-#: kommiku.php:998
+#: kommiku.php:989
 msgid "Kommiku: Chapter Lister"
 msgstr ""
 
-#: kommiku.php:1061
+#: kommiku.php:1052
 msgid "Kommiku Chapter Updates"
 msgstr ""
 
-#: kommiku.php:1070
+#: kommiku.php:1061
 msgid "How many updates to show?"
 msgstr ""
 
-#: kommiku.php:1223
+#: kommiku.php:1214
 msgid "The 'Upload Directory' you are trying to rename already exist."
 msgstr ""
 
-#: kommiku.php:1232
+#: kommiku.php:1223
 msgid "Your skin has been updated"
 msgstr ""
 
-#: kommiku.php:1236
+#: kommiku.php:1227
 msgid "The skin does not exist"
 msgstr ""
 
-#: kommiku.php:1239
+#: kommiku.php:1230
 msgid "Your Settings has been updated"
 msgstr ""
 
-#: kommiku.php:1372
+#: kommiku.php:1383
 msgid "List"
 msgstr ""
 
-#: kommiku.php:1373
+#: kommiku.php:1384
 msgid "Settings"
 msgstr ""
 
-#: kommiku.php:1376
+#: kommiku.php:1387
 msgid "Ftp Dump"
 msgstr ""
 
-#: kommiku.php:1380
+#: kommiku.php:1391
 msgid "Scanlators"
 msgstr ""
 
-#: kommiku.php:1383
+#: kommiku.php:1394
 msgid "Categories"
 msgstr ""
 
-#: reader.php:88
+#: reader.php:91
 msgid "Read the previous page"
 msgstr ""
 
-#: reader.php:129 reader.php:158
+#: reader.php:130 reader.php:163
 msgid "Read the next page"
 msgstr ""
 
