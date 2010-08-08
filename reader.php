@@ -143,8 +143,10 @@ if(($isPage)) {
 		
 		if($chapter["folder"]) {
 			$url = $chapter["folder"];	
-		} else {
+		} else if($series['chapterless'] != 0) {
 			$url = '/'.strtolower($series["slug"]).'/';
+		} else {
+			die('Something is wrong here!');
 		}
 		
 		$theimage = UPLOAD_URLPATH.$url.$page["img"];

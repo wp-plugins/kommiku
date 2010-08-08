@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.4
+Version: 2.1.5
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.4' );
+define('KOMMIKU_VERSION', '2.1.5' );
 
 
 if ( !defined('WP_LOAD_PATH') ) {
@@ -65,12 +65,12 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	
 	//Replace Index
 	if($explodeURL[0] == '' && get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
-			$kommiku['manga'] = true;
-			$kommiku['series'] = get_option( 'kommiku_one_comic' );
-			$kommiku['one_comic'] = true;
-			$kommiku['pages'] = "latest";
-			$kommiku['index'] = true;
-		}
+		$kommiku['manga'] = true;
+		$kommiku['series'] = get_option( 'kommiku_one_comic' );
+		$kommiku['one_comic'] = true;
+		$kommiku['pages'] = "latest";
+		$kommiku['index'] = true;
+	}
 	
 	if(strtolower($explodeURL[0]) == "find" && $explodeURL[1]) {
 		$kommiku['manga'] = true;
@@ -316,7 +316,7 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 			
 		if($kommiku['series_id'])
 			$kommiku['series_chapter'] = $db->series_chapter($kommiku['series_id']);
-			
+
 		//Page, Chapter, Series		
 		if((!empty($kommiku['series']) && isset($kommiku['chapter']) && $kommiku['page']) || 
 			(!empty($kommiku['series_id']) && isset($kommiku['chapter_id']) && !empty($kommiku['page_id']))){
@@ -1347,7 +1347,7 @@ function kommiku_install() {
 		}
 	}
 }
-register_activation_hook(__FILE__, 'install');
+register_activation_hook(__FILE__, 'kommiku_install');
 	
 add_shortcode( 'kommiku_series_list' , 'series_list' );
 	function series_list() {

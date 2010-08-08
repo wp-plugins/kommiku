@@ -51,7 +51,10 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
-= 2.1.4 =
+= 2.1.5 =
+* Stupid Auto-update Failed!
+
+= 2.1.x =
 * More Bug Fixes
 * Revamp the Pathing System: Faster and more Simpler!
 * Series, Chapters, and Pages can now be properly Deleted.
@@ -60,8 +63,6 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 * Spanish Translation Updated.
 * More Translation Updates. Now Spanish translation are outdated D:
 * Oh God! No more bugs please!
-
-= 2.1.x =
 * Small Error in database upgrade D:
 * More Database Upgrade Errors
 * Category not Listing Fixed

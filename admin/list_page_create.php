@@ -34,7 +34,13 @@ if ($chapterless == 0) {
 	$sub = '&sub=listpage';
 }
 
-
+if($chapter['folder'])
+	$url = $chapter['folder'];
+else if($series['chapterless'])
+	$url = '/'.$series['slug'].'/';
+else if($chapter && $series)
+	die('Your Kommiku database is outdated!');
+	
 switch(rand(0,3)) {
 	case 0:
 		$deleteWord = __("Don't Do it!", 'kommiku');
@@ -58,7 +64,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><A href="<?php echo $url; ?>admin.php?page=kommiku"><?_e('Series Listing', 'kommiku')?></a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a> <?php echo $chapterTitle.$pageTitle; ?></h2>
+	<h2><a href="<?php echo $url; ?>admin.php?page=kommiku"><?_e('Series Listing', 'kommiku')?></a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a> <?php echo $chapterTitle.$pageTitle; ?></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
@@ -156,7 +162,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 				<h3 style="cursor: default;"><span><?_e('The Page', 'kommiku')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px; overflow-x: scroll; text-align: center;">
-						<?php echo '<img src="'.UPLOAD_URLPATH.'/'.strtolower($series['slug']).'/'.$db->trailingslash($chapter_number).$page['img'].'" />'; ?>
+						<?php echo '<img src="'.UPLOAD_URLPATH.$url.$page['img'].'" />'; ?>
 					</div>
 				</div>
 			</div>
