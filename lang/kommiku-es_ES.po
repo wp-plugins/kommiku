@@ -7,12 +7,12 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Kommiku Viewer 2.1.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/kommiku\n"
-"POT-Creation-Date: 2010-08-07 23:37+0000\n"
-"PO-Revision-Date: 2010-08-07 16:38-0800\n"
-"Last-Translator: Henry <anri.tora@gmail.com>\n"
+"POT-Creation-Date: 2010-08-07 16:46+0000\n"
+"PO-Revision-Date: 2010-08-08 08:28-0600\n"
+"Last-Translator: Tokzu <tokzu_su@hotmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Español\n"
 "X-Poedit-Country: México\n"
@@ -25,7 +25,7 @@ msgstr "Lista de Categor&iacute;as"
 
 #: admin/category.php:80
 msgid "Name a Category"
-msgstr "Nombra una Categor&ia"
+msgstr "Nombra una Categor&iacute;a"
 
 #: admin/category.php:90
 msgid "Category Name:"
@@ -37,8 +37,8 @@ msgstr "Ficha de la Categor&iacute;a:"
 
 #: admin/category.php:98
 #: admin/list_chapter.php:62
-#: admin/list_chapter.php:135
-#: admin/list_page.php:94
+#: admin/list_chapter.php:139
+#: admin/list_page.php:93
 #: admin/list_series.php:42
 msgid "Summary:"
 msgstr "Resumen:"
@@ -50,69 +50,69 @@ msgstr "Ir a una Letra"
 
 #: admin/category_edit.php:7
 #: admin/list_chapter.php:13
-#: admin/list_page.php:16
-#: admin/list_page_create.php:40
+#: admin/list_page.php:15
+#: admin/list_page_create.php:43
 msgid "Don't Do it!"
 msgstr "&iexcl;No lo hagas!"
 
 #: admin/category_edit.php:10
 #: admin/list_chapter.php:16
-#: admin/list_page.php:19
-#: admin/list_page_create.php:43
+#: admin/list_page.php:18
+#: admin/list_page_create.php:46
 msgid "It's a TRAP!"
 msgstr "&iexcl;Es una TRAMPA!"
 
 #: admin/category_edit.php:13
 #: admin/list_chapter.php:19
-#: admin/list_page.php:22
-#: admin/list_page_create.php:46
+#: admin/list_page.php:21
+#: admin/list_page_create.php:49
 msgid "Why???!"
 msgstr "&iexcl;&iquest;&iquest;&iquest;Por qué???!"
 
 #: admin/category_edit.php:16
 #: admin/list_chapter.php:22
-#: admin/list_page.php:25
-#: admin/list_page_create.php:49
+#: admin/list_page.php:24
+#: admin/list_page_create.php:52
 msgid "But I am your friend :("
 msgstr "Pero yo soy tu amigo :("
 
-#: admin/category_edit.php:39
+#: admin/category_edit.php:38
 msgid "Update?"
 msgstr "&iquest;Actualizar?"
 
-#: admin/category_edit.php:44
-#: admin/list_page_create.php:70
+#: admin/category_edit.php:43
+#: admin/list_page_create.php:73
 msgid "Update"
 msgstr "Actualizar"
 
-#: admin/category_edit.php:57
+#: admin/category_edit.php:56
 msgid "Category Name"
 msgstr "Nombre de la Categor&iacute;a"
 
-#: admin/category_edit.php:60
+#: admin/category_edit.php:59
 msgid "Name"
 msgstr "Nombre"
 
-#: admin/category_edit.php:69
-#: admin/list_page_create.php:144
+#: admin/category_edit.php:68
+#: admin/list_page_create.php:147
 #: admin/settings.php:103
 msgid "Permalink:"
 msgstr "Enlace Permanente:"
 
-#: admin/category_edit.php:69
+#: admin/category_edit.php:68
 msgid "category"
 msgstr "categor&iacute;a"
 
-#: admin/category_edit.php:80
-#: admin/category_edit.php:83
+#: admin/category_edit.php:79
+#: admin/category_edit.php:82
 msgid "Description"
 msgstr "Descripci&oacute;n"
 
-#: admin/category_edit.php:85
+#: admin/category_edit.php:84
 msgid "Add a description of the Category"
 msgstr "Agrega una descripci&oacute;n de la Categor&iacute;a"
 
-#: admin/category_edit.php:103
+#: admin/category_edit.php:102
 msgid "Delete this Category"
 msgstr "Borrar esta Categor&iacute;a"
 
@@ -150,8 +150,8 @@ msgid "Delete It!"
 msgstr "&iexcl;B&oacute;rralo!"
 
 #: admin/list_chapter.php:31
-#: admin/list_page.php:46
-#: admin/list_page_create.php:61
+#: admin/list_page.php:45
+#: admin/list_page_create.php:64
 #: admin/list_series.php:17
 msgid "Series Listing"
 msgstr "Listado de Series"
@@ -162,13 +162,13 @@ msgstr "Crear un Cap&iacute;tulo"
 
 #: admin/list_chapter.php:50
 #: admin/list_chapter.php:92
-#: admin/list_page.php:82
+#: admin/list_page.php:81
 msgid "Chapter Name:"
 msgstr "Nombre del Cap&iacute;tulo:"
 
 #: admin/list_chapter.php:54
 #: admin/list_chapter.php:96
-#: admin/list_page.php:86
+#: admin/list_page.php:85
 msgid "Chapter #:"
 msgstr "Cap&iacute;tulo #:"
 
@@ -188,225 +188,224 @@ msgstr "Subir un Cap&iacute;tulo"
 msgid "Slug:"
 msgstr "Ficha:"
 
-#: admin/list_chapter.php:121
+#: admin/list_chapter.php:104
+msgid "Language:"
+msgstr "Lenguaje:"
+
+#: admin/list_chapter.php:125
 msgid "Series Detail"
 msgstr "Detalles de la Serie"
 
-#: admin/list_chapter.php:127
+#: admin/list_chapter.php:131
 #: admin/list_series.php:34
 msgid "Series Name:"
 msgstr "Nombre de la Serie:"
 
-#: admin/list_chapter.php:131
+#: admin/list_chapter.php:135
 #: admin/list_series.php:38
 msgid "Series Slug:"
 msgstr "Ficha de la Serie:"
 
-#: admin/list_chapter.php:140
+#: admin/list_chapter.php:144
 msgid "Author:"
 msgstr "Autor:"
 
-#: admin/list_chapter.php:144
+#: admin/list_chapter.php:148
 msgid "Illustrator:"
 msgstr "Artista:"
 
-#: admin/list_chapter.php:149
+#: admin/list_chapter.php:153
 msgid "Date Created:"
 msgstr "Fecha de Creaci&oacute;n:"
 
-#: admin/list_chapter.php:153
+#: admin/list_chapter.php:157
 msgid "Other Names:"
 msgstr "Otros Nombres:"
 
-#: admin/list_chapter.php:157
+#: admin/list_chapter.php:161
 msgid "Categories:"
 msgstr "Categor&iacute;as:"
 
-#: admin/list_chapter.php:161
+#: admin/list_chapter.php:165
 msgid "Read Direction:"
 msgstr "Direcci&oacute;n de Lectura:"
 
-#: admin/list_chapter.php:163
+#: admin/list_chapter.php:167
 msgid "Left to Right"
 msgstr "Izquierda a Derecha"
 
-#: admin/list_chapter.php:164
+#: admin/list_chapter.php:168
 msgid "Right to Left"
 msgstr "Derecha a Izquierda"
 
-#: admin/list_chapter.php:165
+#: admin/list_chapter.php:169
 msgid "Top to Bottom"
 msgstr "Arriba a Abajo"
 
-#: admin/list_chapter.php:169
+#: admin/list_chapter.php:173
 msgid "Status: "
 msgstr "Estado:"
 
-#: admin/list_chapter.php:171
-#: admin/list_chapter.php:186
+#: admin/list_chapter.php:175
+#: admin/list_chapter.php:190
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: admin/list_chapter.php:172
+#: admin/list_chapter.php:176
 msgid "Ongoing"
 msgstr "En Proceso"
 
-#: admin/list_chapter.php:173
+#: admin/list_chapter.php:177
 msgid "On-Hold"
 msgstr "Pausado"
 
-#: admin/list_chapter.php:174
+#: admin/list_chapter.php:178
 msgid "Dropped"
 msgstr "Abandonado"
 
-#: admin/list_chapter.php:175
+#: admin/list_chapter.php:179
 msgid "Complete"
 msgstr "Completado"
 
-#: admin/list_chapter.php:179
+#: admin/list_chapter.php:183
 msgid "Story Type:"
 msgstr "Tipo de Historia:"
 
-#: admin/list_chapter.php:181
+#: admin/list_chapter.php:185
 msgid "(_blank)"
 msgstr "(_blank)"
 
-#: admin/list_chapter.php:182
+#: admin/list_chapter.php:186
 msgid "Manga"
 msgstr "Manga"
 
-#: admin/list_chapter.php:183
+#: admin/list_chapter.php:187
 msgid "Manhwa"
 msgstr "Manhwa"
 
-#: admin/list_chapter.php:184
+#: admin/list_chapter.php:188
 msgid "Manhua"
 msgstr "Manhua"
 
-#: admin/list_chapter.php:185
+#: admin/list_chapter.php:189
 msgid "Comic"
 msgstr "Comic"
 
-#: admin/list_chapter.php:187
+#: admin/list_chapter.php:191
 msgid "Novel"
 msgstr "Novela"
 
-#: admin/list_chapter.php:193
+#: admin/list_chapter.php:195
 msgid "Age Rating:"
 msgstr "Clasificaci&oacute;n de Edad:"
 
-#: admin/list_chapter.php:197
+#: admin/list_chapter.php:198
 msgid "Series Book Cover:"
 msgstr "Portada de la Serie:"
 
-#: admin/list_chapter.php:220
+#: admin/list_chapter.php:221
 msgid "Delete Series!"
 msgstr "&iexcl;Borrar Serie!"
 
-#: admin/list_chapter.php:235
+#: admin/list_chapter.php:236
 msgid "Chapter Listings"
 msgstr "Listado de Cap&iacute;tulos"
 
-#: admin/list_chapter.php:247
+#: admin/list_chapter.php:248
 msgid "There are no chapters in this series."
 msgstr "No hay cap&iacute;tulos en esta serie."
 
-#: admin/list_page.php:34
-#, fuzzy
-msgid "Chapter"
-msgstr "Cap&iacute;tulo:"
-
-#: admin/list_page.php:54
-#: admin/list_page.php:60
+#: admin/list_page.php:53
+#: admin/list_page.php:59
 msgid "Create a Page"
 msgstr "Crear una P&aacute;gina"
 
-#: admin/list_page.php:75
+#: admin/list_page.php:74
 msgid "Chapter Detail"
 msgstr "Detalles del Cap&iacute;tulo"
 
-#: admin/list_page.php:90
+#: admin/list_page.php:89
 msgid "Chapter Slug"
 msgstr "Ficha del Cap&iacute;tulo"
 
-#: admin/list_page.php:99
+#: admin/list_page.php:98
 msgid "Scanlator:"
 msgstr "Scanlator:"
 
-#: admin/list_page.php:103
+#: admin/list_page.php:102
 msgid "Scanlator Slug:"
 msgstr "Ficha del Scanlator:"
 
-#: admin/list_page.php:111
+#: admin/list_page.php:110
 msgid "Volume:"
 msgstr "Volumen:"
 
-#: admin/list_page.php:117
+#: admin/list_page.php:116
 msgid "Update Chapter"
 msgstr "Actualizar Cap&iacute;tulo"
 
-#: admin/list_page.php:134
+#: admin/list_page.php:133
 msgid "Delete"
 msgstr "Borrar"
 
-#: admin/list_page.php:147
+#: admin/list_page.php:146
 msgid "Page Listing"
 msgstr "Listado de P&aacute;ginas"
 
-#: admin/list_page.php:161
+#: admin/list_page.php:160
 msgid "There are no page in this Chapter."
 msgstr "No hay p&aacute;ginas en este Cap&iacute;tulo"
 
-#: admin/list_page_create.php:27
+#: admin/list_page_create.php:30
 msgid "Publish"
 msgstr "Publicar"
 
-#: admin/list_page_create.php:78
+#: admin/list_page_create.php:81
 msgid "Publishing"
 msgstr "Publicaci&oacute;n"
 
-#: admin/list_page_create.php:86
+#: admin/list_page_create.php:89
 msgid "Series:"
 msgstr "Serie:"
 
-#: admin/list_page_create.php:92
+#: admin/list_page_create.php:95
 msgid "Chapter:"
 msgstr "Cap&iacute;tulo:"
 
-#: admin/list_page_create.php:98
+#: admin/list_page_create.php:101
 msgid "Page #:"
 msgstr "P&aacute;gina #:"
 
-#: admin/list_page_create.php:119
+#: admin/list_page_create.php:122
 msgid "Delete Page!"
 msgstr "&iexcl;Borrar P&aacute;gina!"
 
-#: admin/list_page_create.php:132
 #: admin/list_page_create.php:135
+#: admin/list_page_create.php:138
 msgid "Title"
 msgstr "T&iacute;tulo"
 
-#: admin/list_page_create.php:156
+#: admin/list_page_create.php:159
 msgid "The Page"
 msgstr "La P&aacute;gina"
 
-#: admin/list_page_create.php:165
+#: admin/list_page_create.php:168
 msgid "Story"
 msgstr "Historia"
 
-#: admin/list_page_create.php:168
+#: admin/list_page_create.php:171
 msgid "story"
 msgstr "historia"
 
-#: admin/list_page_create.php:170
+#: admin/list_page_create.php:173
 msgid "Add a comment, description, or summary."
-msgstr "Agrega un comentario, descripci&oacute;n y resumen."
+msgstr "Agrega un comentario, descripci&oacute;n o resumen."
 
-#: admin/list_page_create.php:176
+#: admin/list_page_create.php:179
 msgid "Wordpress Post Connect"
 msgstr "Enlazar a Anuncio de Wordpress"
 
-#: admin/list_page_create.php:181
+#: admin/list_page_create.php:184
 msgid "Connect a Wordpress Post to this Page."
 msgstr "Conecta un Anuncio de Wordpress a esta P&aacute;gina."
 
@@ -569,222 +568,212 @@ msgstr "&iexcl;Date las funciones especiales con la Llave API de Kommiku!"
 msgid "Only given to special people... however."
 msgstr "S&oacute;lo dada a gente especial... sin embargo."
 
-#: kommiku.php:217
-#: kommiku.php:219
+#: kommiku.php:216
+#: kommiku.php:218
 msgid "Search Results for: "
 msgstr "Resultados de la B&uacute;squeda para:"
 
-#: kommiku.php:234
+#: kommiku.php:233
 msgid "Dead page is Dead."
 msgstr "La p&aacute;gina muerta est&aacute; Muerta."
 
+#: kommiku.php:236
 #: kommiku.php:237
-#: kommiku.php:238
 msgid "Category: "
 msgstr "Categor&iacute;a:"
 
-#: kommiku.php:240
+#: kommiku.php:239
 msgid "OMG! 404?! "
 msgstr "&iexcl;OMG! &iexcl;&iquest;404?!"
 
-#: kommiku.php:334
+#: kommiku.php:331
 msgid "Story Listing"
 msgstr "Listado de Historias"
 
-#: kommiku.php:369
+#: kommiku.php:366
 msgid "The Image could not be deleted (or it doesn't exist) but the record was deleted (or maybe it was already gone?)"
 msgstr "La Imagen no puede ser borrada (o no existe), pero el registro fue borrado (&iquest;o quiz&aacute;s ya se hab&iacute;a ido?)"
 
-#: kommiku.php:370
+#: kommiku.php:367
 #, php-format
 msgid " - Chapter %d"
 msgstr "- Cap&iacute;tulo %d"
 
-#: kommiku.php:376
+#: kommiku.php:373
 msgid "The Page has been deleted"
 msgstr "La P&aacute;gina ha sido borrada"
 
-#: kommiku.php:393
+#: kommiku.php:390
 msgid "The Chapter has been deleted"
 msgstr "El Cap&iacute;tulo ha sido borrado"
 
-#: kommiku.php:408
+#: kommiku.php:405
 msgid "The Series has been deleted"
 msgstr "La Serie ha sido borrada"
 
-#: kommiku.php:454
+#: kommiku.php:450
 msgid "The scanlator name has already been taken.<br/>"
 msgstr "El nombre del scanlator ya ha sido tomado.<br/>"
 
-#: kommiku.php:455
+#: kommiku.php:451
 msgid "The scanlator slug has already been taken.<br/>"
 msgstr "La ficha del scanlator ya ha sido tomada.<br/>"
 
-#: kommiku.php:488
+#: kommiku.php:478
 msgid "The category name has already been taken.<br/>"
 msgstr "El nombre de la categor&iacute;a ya ha sido tomado.<br/>"
 
-#: kommiku.php:489
+#: kommiku.php:479
 msgid "The category slug has already been taken.<br/>"
 msgstr "La ficha de la categor&iacute;a ya ha sido tomada.<br/>"
 
-#: kommiku.php:490
-#, fuzzy
-msgid "The category title can not be empty<br/>"
-msgstr "El nombre de la categor&iacute;a ya ha sido tomado.<br/>"
-
-#: kommiku.php:582
+#: kommiku.php:570
 msgid "The Series has been successfully created"
 msgstr "La Serie ha sido creada con &eacute;xito"
 
-#: kommiku.php:588
+#: kommiku.php:576
 msgid "The Series has been updated"
 msgstr "La Serie ha sido actualizada"
 
-#: kommiku.php:598
+#: kommiku.php:586
 msgid "The series name has already been taken.<br/>"
 msgstr "El nombre de la serie ya ha sido tomado.<br/>"
 
-#: kommiku.php:599
+#: kommiku.php:587
 msgid "The series slug has already been taken.<br/>"
 msgstr "La ficha de la serie ya ha sido tomada.<br/>"
 
-#: kommiku.php:664
+#: kommiku.php:652
 msgid "The Chapter has been successfully created"
 msgstr "El Cap&iacute;tulo ha sido creado con &eacute;xito"
 
-#: kommiku.php:668
-#, fuzzy
-msgid "The Chapter has been successfully updated"
-msgstr "El Cap&iacute;tulo ha sido creado con &eacute;xito"
-
-#: kommiku.php:681
+#: kommiku.php:669
 msgid "The Chapter number has already been taken.<br/>"
 msgstr "El n&uacute;mero del Cap&iacute;tulo ya ha sido tomado.<br/>"
 
-#: kommiku.php:682
+#: kommiku.php:670
 msgid "The Chapter number has to be in decimals or numbers.<br/>"
 msgstr "El n&uacute;mero del Cap&iacute;tulo tiene que estar en decimales o n&uacute;meros.<br/>"
 
-#: kommiku.php:683
+#: kommiku.php:671
 msgid "The \"Volume Input\" must be Numeric"
 msgstr "La \"Entrada del Volumen\" debe ser Num&eacute;rica"
 
-#: kommiku.php:809
+#: kommiku.php:800
 msgid "Error 1: Could not move file"
 msgstr "Error 1: No se puede mover el archivo"
 
-#: kommiku.php:812
+#: kommiku.php:803
 msgid "No file were uploaded. But a page was created."
 msgstr "Ning&uacute;n archivo fue subido. Pero una p&aacute;gina fue creada."
 
-#: kommiku.php:820
+#: kommiku.php:811
 msgid "The Image/Page has been updated"
 msgstr "La Imagen/P&aacute;gina ha sido actualizada"
 
-#: kommiku.php:833
+#: kommiku.php:824
 msgid " | Image moved!"
 msgstr "| &iexcl;Imagen movida!"
 
-#: kommiku.php:835
+#: kommiku.php:826
 msgid " | Image Failed!"
 msgstr "| &iexcl;Imagen Fallida!"
 
-#: kommiku.php:843
+#: kommiku.php:834
 msgid "<br/>No such Wordpress Post"
 msgstr "<br/>No existe tal Anuncio de Wordpress"
 
-#: kommiku.php:851
+#: kommiku.php:842
 msgid "The Page number has already been taken.<br/>"
 msgstr "El n&uacute;mero de P&aacute;gina ya ha sido tomado.<br/>"
 
-#: kommiku.php:852
+#: kommiku.php:843
 msgid "The Page number has to be in decimals or numbers.<br/>"
 msgstr "El n&uacute;mero de P&aacute;gina tiene que ser decimal o num&eacute;rico.<br/>"
 
-#: kommiku.php:853
+#: kommiku.php:844
 msgid "The Slug for the Page on this Chapter has already been taken"
 msgstr "La Ficha para la P&aacute;gina de este Cap&iacute;tulo ya ha sido tomado"
 
-#: kommiku.php:854
+#: kommiku.php:845
 msgid "There was no file to upload"
 msgstr "No hay archivo para subir"
 
-#: kommiku.php:855
+#: kommiku.php:846
 msgid "The file is too large"
 msgstr "El archivo es demasiado grande"
 
-#: kommiku.php:856
+#: kommiku.php:847
 msgid "The file couldn't be moved!? Please check permission on your folders"
 msgstr "&iexcl;&iquest;El archivo no puede ser mvido?! Por favor revisa los permisos de tu carpetas"
 
-#: kommiku.php:906
-#: kommiku.php:992
+#: kommiku.php:897
+#: kommiku.php:983
 msgid "A widget that lists the Stories under the Kommiku plugin."
 msgstr "Un widget que enlista las Historias del plugin Kommiku."
 
-#: kommiku.php:912
+#: kommiku.php:903
 msgid "Kommiku: Story Lister"
 msgstr "Kommiku: Lista de Historias"
 
-#: kommiku.php:971
+#: kommiku.php:962
 msgid "Example"
 msgstr "Ejemplo"
 
-#: kommiku.php:971
+#: kommiku.php:962
 msgid "John Doe"
 msgstr "John Doe"
 
-#: kommiku.php:976
-#: kommiku.php:1066
+#: kommiku.php:967
+#: kommiku.php:1057
 msgid "Title:"
 msgstr "T&iacute;tulo:"
 
-#: kommiku.php:998
+#: kommiku.php:989
 msgid "Kommiku: Chapter Lister"
 msgstr "Kommiku: Lista de Cap&iacute;tulos"
 
-#: kommiku.php:1061
+#: kommiku.php:1052
 msgid "Kommiku Chapter Updates"
 msgstr "Kommiku: Actualizaciones de Cap&iacute;tulos"
 
-#: kommiku.php:1070
+#: kommiku.php:1061
 msgid "How many updates to show?"
 msgstr "&iquest;Cu&aacute;ntas actualizaciones a mostrar?"
 
-#: kommiku.php:1223
+#: kommiku.php:1214
 msgid "The 'Upload Directory' you are trying to rename already exist."
 msgstr "El \"Directorio de Subida\" que est&aacute;s intentando renombrar ya existe."
 
-#: kommiku.php:1232
+#: kommiku.php:1223
 msgid "Your skin has been updated"
 msgstr "Tu plantilla ha sido actualizada"
 
-#: kommiku.php:1236
+#: kommiku.php:1227
 msgid "The skin does not exist"
 msgstr "La plantilla no existe"
 
-#: kommiku.php:1239
+#: kommiku.php:1230
 msgid "Your Settings has been updated"
 msgstr "Tu configuraci&oacute;n ha sido actualizada"
 
-#: kommiku.php:1372
+#: kommiku.php:1363
 msgid "List"
 msgstr "Lista"
 
-#: kommiku.php:1373
+#: kommiku.php:1364
 msgid "Settings"
 msgstr "Configuraci&oacute;n"
 
-#: kommiku.php:1376
+#: kommiku.php:1367
 msgid "Ftp Dump"
 msgstr "Subir por FTP"
 
-#: kommiku.php:1380
+#: kommiku.php:1371
 msgid "Scanlators"
 msgstr "Scanlators"
 
-#: kommiku.php:1383
+#: kommiku.php:1374
 msgid "Categories"
 msgstr "Categor&iacute;as"
 
@@ -807,7 +796,7 @@ msgstr "http://dotspiral.com/kommiku/"
 
 #. Description of the plugin/theme
 msgid "Kommiku is a Online Media Viewer."
-msgstr "Kommiku es un Visualizador de Media En L&iacute;nea"
+msgstr "Kommiku es un Visualizador de Media en L&iacute;nea"
 
 #. Author of the plugin/theme
 msgid "Henry Tran"
@@ -817,5 +806,3 @@ msgstr "Henry Tran"
 msgid "http://dotspiral.com/"
 msgstr "http://dotspiral.com/"
 
-#~ msgid "Language:"
-#~ msgstr "Lenguaje:"

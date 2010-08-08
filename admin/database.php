@@ -361,6 +361,8 @@ Class kommiku_database {
 	  	       )  
 	  	    );
 	
+		return $wpdb->insert_id;
+	
 	}
 	
 	//Read
@@ -371,7 +373,7 @@ Class kommiku_database {
 			$series_id      = $_GET['series'];
 	    
 		if(is_numeric($series_id)) {
-		$chapterless = $wpdb->get_var("SELECT chapterless FROM `".$wpdb->prefix."comic_series` WHERE id = '".$series_id."'");
+			$chapterless = $wpdb->get_var("SELECT chapterless FROM `".$wpdb->prefix."comic_series` WHERE id = '".$series_id."'");
 		}
 		
 		return $chapterless;
@@ -388,9 +390,9 @@ Class kommiku_database {
 			
 		if(is_numeric($series_id) && is_numeric($chapter_id)){
 			$table = $wpdb->prefix."comic_page";
-		  		$select = "SELECT max(number) as max_number FROM ".$table." WHERE chapter_id = '".$chapter_id."' AND series_id = '".$series_id."'";
-	  			$results = $wpdb->get_row( $select , ARRAY_A );
-				return $results["max_number"]+1;
+		  	$select = "SELECT max(number) as max_number FROM ".$table." WHERE chapter_id = '".$chapter_id."' AND series_id = '".$series_id."'";
+	  		$results = $wpdb->get_row( $select , ARRAY_A );
+			return $results["max_number"]+1;
 		}
 	}	
 	function chapter_hupdate($y = 30){

@@ -18,19 +18,25 @@ if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']
 if (!is_numeric($_POST['number'])) 
 	$chapter['fail']['number']['character'] = true;
 		
+//Preset Vars
+$pubdate = date("Y-m-d H:i:s O");
+$uploader = $current_user->ID;
+$title = $_POST['title'];
+$chapterSlug = urlencode($_POST['slug']);
 $seriesFolder .= '/'.strtolower($series["slug"]).'/';
+$chapterFolder =  $seriesFolder.'/'.$chapterSlug.'/';
+$extractFolder = UPLOAD_FOLDER.$chapterFolder;
 
-//Chapter Number and Slug
-$chapterNumber = $_POST['number'];
+if(!is_float($_POST['number']) && is_numeric($_POST['number']))
+	$chapterNumber = intval($_POST['number']);
+	
 
-$chapterFolder = $_POST['slug'].'/';
 
-if (!$chapterFolder && $chapterNumber)
-    die($chapterFolder.' not Being set');
     
 //Check that we have a file
 if((!empty($_FILES["zip"])) && ($_FILES['zip']['error'] == 0)) {
-	$zipclass = new ZipArchive() or	die("The ZipArchive Library (zlib) is not enable. Can not extract without the library.");
+	if(!class_exists('ZipArchive')) die("The ZipArchive Library (zlib) is not enable. Can not extract without the library.");
+	$zipclass = new ZipArchive();	
     $ext = substr($_FILES['zip']['name'], strrpos($_FILES['zip']['name'], '.') + 1);
     
     //Get Max File Size from Option
@@ -49,18 +55,18 @@ if((!empty($_FILES["zip"])) && ($_FILES['zip']['error'] == 0)) {
 		$zipFile = true;
     } else if(($ext == "rar") && ($_FILES['zip']['error'] == 0)) {
         if(function_exists('rar_open')) {
-		$rar_file = rar_open($newname);
-		$files = rar_list($rar_file);
+			$rar_file = rar_open($newname);
+			$files = rar_list($rar_file);
 
-		foreach ($files as $file) {
-            $zipExt = substr($file->getName(), strrpos($file->getName(), '.') + 1);
-            if(!in_array(strtolower($zipExt),$allowFiles))
-                $zip['error']['invalid_files'] = true; 
-		}
-		$rarFile = true;
-		rar_close($rar_file);
+			foreach ($files as $file) {
+				$zipExt = substr($file->getName(), strrpos($file->getName(), '.') + 1);
+				if(!in_array(strtolower($zipExt),$allowFiles))
+					$zip['error']['invalid_files'] = true; 
+			}
+			$rarFile = true;
+			rar_close($rar_file);
 		} else {
-		die('Rar function does not exist on this server. You won\'t be able to Extract Rar Files without the Rar Module.');
+			die('Rar function does not exist on this server. You won\'t be able to Extract Rar Files without the Rar Module.');
 		}
 	}
     
@@ -89,14 +95,6 @@ if((!empty($_FILES["zip"])) && ($_FILES['zip']['error'] == 0)) {
     $status['error'] = "There were no files to upload";
 }
 
-//Preset Vars
-$extractFolder = UPLOAD_FOLDER.$seriesFolder.$chapterFolder;
-$pubdate = date("Y-m-d H:i:s O");
-$uploader = $current_user->ID;
-$language = $_POST['language'];
-$title = $_POST['title'];
-$slug = $_POST['slug'];
-
 //Extract
 if(file_exists($newname) && !$chapter['fail'] && $zipFile == true) {
 	$aZip = new ZipArchive();
@@ -104,7 +102,7 @@ if(file_exists($newname) && !$chapter['fail'] && $zipFile == true) {
 	$aZip->extractTo($extractFolder);
 	unlink($newname);
 	
-	$chapterID = $db->chapter_create($title,$chapterNumber,$summary,$_POST['series_id'],$pubdate,$slug,$scanlator,$scanlator_slug,0,true);
+	$chapterID = $db->chapter_create($title,$chapterNumber,$summary,$_POST['series_id'],$pubdate,$chapterSlug,$scanlator,$scanlator_slug,0,$chapterFolder,true) or die('Something went wrong when creating the Chapter.');
 	$fileExtracted = getFileList($extractFolder);
 	if(count($fileExtracted) == 1 || is_dir($fileExtracted[0]))
 		$fileExtracted = getFileList($fileExtracted[0]);
@@ -113,8 +111,6 @@ if(file_exists($newname) && !$chapter['fail'] && $zipFile == true) {
 		for ($count = 0 ; $count < count($fileExtracted); $count++) {
 	        $fileArray = $fileExtracted[$count];
 	        
-	        list($width, $height, $type, $attr) = getimagesize($fileArray); 
-
 	        if (!is_dir($fileArray) && $fileArray != "." && $fileArray != "..") {
 	            $baseFileName = basename($fileArray);
 				
@@ -123,12 +119,12 @@ if(file_exists($newname) && !$chapter['fail'] && $zipFile == true) {
 		}
 	$status['pass'] = "The zipped chapter has been dumped.";
 } else if (file_exists($newname) && !$chapter['fail'] && $rarFile == true) {
-		$rar_file = rar_open($newname) or die("Can't open Rar archive");
+		$rar_file = rar_open($newname);
 		$files = rar_list($rar_file);
 		foreach ($files as $file) {
 			$file->extract($extractFolder);
 		}
-		$chapterID = $db->chapter_create($title,$chapterNumber,$summary,$_POST['series_id'],$pubdate,$slug,$scanlator,$scanlator_slug,0,$folder,true);
+	$chapterID = $db->chapter_create($title,$chapterNumber,$summary,$_POST['series_id'],$pubdate,$chapterSlug,$scanlator,$scanlator_slug,0,$chapterFolder,$folder,true);
 	$fileExtracted = getFileList($extractFolder);
 	if(count($fileExtracted) == 1 || is_dir($fileExtracted[0]))
 		$fileExtracted = getFileList($fileExtracted[0]);
@@ -136,9 +132,7 @@ if(file_exists($newname) && !$chapter['fail'] && $zipFile == true) {
 	sort($fileExtracted);
 		for ($count = 0 ; $count < count($fileExtracted); $count++) {
 	        $fileArray = $fileExtracted[$count];
-	        
-	        list($width, $height, $type, $attr) = getimagesize($fileArray); 
-
+	 
 	        if (!is_dir($fileArray) && $fileArray != "." && $fileArray != "..") {
 	            $baseFileName = basename($fileArray);
 				

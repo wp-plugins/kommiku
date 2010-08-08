@@ -29,7 +29,7 @@ Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"),
 3. Activate the plugin. And you should be good to go :)
 
 == Upgrade Notice ==
-= 2.1.rc1 =
+= 2.1.4 =
 Always backup!
 Especially the theme folder!
 Some of the function in Kommiku have been deprecated. Please email me anri.tora@gmail.com if there are any problems. 
@@ -51,16 +51,23 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
-= 2.1. =
+= 2.1.4 =
 * More Bug Fixes
-* Category now Updates
-* Series now show Summary
-* Images now correctly upload to respective Slug. Not number.
+* Revamp the Pathing System: Faster and more Simpler!
+* Series, Chapters, and Pages can now be properly Deleted.
+* Series, Chapters, and Pages can now be propery Updated and Renamed.
+* Database Auto Updater now added.
+* Spanish Translation Updated.
+* More Translation Updates. Now Spanish translation are outdated D:
+* Oh God! No more bugs please!
 
 = 2.1.x =
 * Small Error in database upgrade D:
 * More Database Upgrade Errors
 * Category not Listing Fixed
+* Category now Updates
+* Series now show Summary
+* Images now correctly upload to respective Slug. Not number.
 
 = 2.1 =
 * Rework the Theme 
