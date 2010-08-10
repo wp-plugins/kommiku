@@ -1,31 +1,26 @@
 <?php	
 $action = '&action=create';
-$chapter_id = $_GET['chapter'];
-if(($page['id'] || $_GET['pg']) && $_GET['series']) {
+if($page['id'] || is_numeric($_GET['pg'])) {
+	if(!$page['id']) $page['id'] = strval(intval($_GET['pg']));
 	$page = $db->page_detail($page['id']);
 	$action = '&action=update&pg='.$page['id'];
 }
 
-if (is_numeric($_GET["series"])) {
-	$chapterless = $db->chapterless();
-	if ($chapterless) $chapter_id = 0;
+if (is_numeric($_GET["series"]) || $page['series_id']) {
+	if(!$page['series_id']) $page['series_id'] = strval(intval($_GET['series']));
+	$series = $db->series_detail($page['series_id']);
 }
 
-$series = $db->series_detail($page['series_id']);
-$chapter = $db->chapter_detail($page['chapter_id']);
-$folder = "/images/comic/".$series['slug'].'/'.$chapter['slug'];
-if ($listing) ksort($listing,SORT_NUMERIC);
+if (is_numeric($_GET["chapter"]) || $page['chapter_id']) {
+	if(!$page['chapter_id']) $page['chapter_id'] = strval(intval($_GET['chapter']));
+	$chapter = $db->chapter_detail($page['chapter_id']);
+}
 
-$pageNumber = $db->page_number($_GET['series'],$chapter_id);
-
-if(!isset($page['slug'])) $page['slug'] = $pageNumber;
-if(!is_numeric($page['number'])) $page['number'] = $pageNumber;
 if($page['id']) $pageTitle  = ' &raquo; Page '.$page['number'];
-if($series['chapterless'] == 0) $chapter_number = $chapter['slug'];
-if($chapter['id']) $chapterTitle = '&raquo; <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$chapter['id'].'">Chapter '.$chapter_number.'</a>';
+if($chapter['id']) $chapterTitle = '&raquo; <a href="'.$url.'admin.php?page=kommiku&sub=listpage&series='.$series['id'].'&chapter='.$chapter['id'].'">Chapter '.$chapter['slug'].'</a>';
 if($chapter['id']) $chapterURL = '&amp;chapter='.$chapter['id'];
 $publishWord = __("Publish", 'kommiku');
-if ($chapterless == 0) { 
+if ($series['chapterless'] == 0) { 
 	$chapterURL = '&chapter='.$chapter["id"]; 
 	$chapterWord = 'Chapter';
 	$sub = '&sub=listchapter';
@@ -35,9 +30,9 @@ if ($chapterless == 0) {
 }
 
 if($chapter['folder'])
-	$url = $chapter['folder'];
-else if($series['chapterless'])
-	$url = '/'.$series['slug'].'/';
+	$imgUrl = $chapter['folder'];
+else if($series['chapterless'] == 1)
+	$imgUrl = '/'.$series['slug'].'/';
 else if($chapter && $series)
 	die('Your Kommiku database is outdated!');
 	
@@ -56,12 +51,15 @@ switch(rand(0,3)) {
 		break;
 		
 		}
-		
-if(KOMMIKU_URL_FORMAT) $seriesUrl = KOMMIKU_URL_FORMAT.'/';
-$seriesSlug = strtolower($series['slug']).'/';
-if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
-?>	
 
+if(get_option('kommiku_one_comic' != 'false')) { 
+	$slugUrl = ''; 
+} else {
+	if(!$series['chapterless']) $chapterSlugUrl = $chapter['slug'].'/';
+	$slugUrl = $series['slug'].'/'.$chapterSlugUrl; 	
+}
+
+?>	
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
 	<h2><a href="<?php echo $url; ?>admin.php?page=kommiku"><?_e('Series Listing', 'kommiku')?></a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a> <?php echo $chapterTitle.$pageTitle; ?></h2>
@@ -114,7 +112,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 					</div>
 				</div>
 				
-				<?php if ($page['id'] || $_GET['pg']) { ?>
+				<?php if ($page['id'] || is_numeric($_GET['pg'])) { ?>
 				<div class="postbox">
 					<h3 style="cursor: default;"><span><?php echo $deleteWord; ?></span></h3>
 					<div class="inside">
@@ -147,7 +145,7 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 			<div style="margin-bottom: 10px;">
 				<div class="inside">
 					<div id="edit-slug-box">
-						<strong><?_e('Permalink:', 'kommiku')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.$seriesUrl.$seriesSlug.$db->trailingslash($chapter_number); ?>
+						<strong><?_e('Permalink:', 'kommiku')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.$slugUrl; ?>
 						<input type="text" value="<?php echo $page['slug']; ?>" name="slug" style="width: 10%; background: #FFFBCC;" />
 						</span>
 					</div>
@@ -157,16 +155,17 @@ if(get_option('kommiku_no_slug') == 'true') unset($series['slug']);
 			
 		<div class="metabox-holder">
 				
-		<?php if($page['img'] && $series['slug']){ ?>
+		<?php if($page['img']){ ?>
 			<div class="postbox">
 				<h3 style="cursor: default;"><span><?_e('The Page', 'kommiku')?></span></h3>
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px; overflow-x: scroll; text-align: center;">
-						<?php echo '<img src="'.UPLOAD_URLPATH.$url.$page['img'].'" />'; ?>
+						<?php echo '<img src="'.UPLOAD_URLPATH.$imgUrl.$page['img'].'" />'; ?>
 					</div>
 				</div>
 			</div>
 		<?php } ?>
+		
 			<div class="postbox">
 				<h3 style="cursor: default;"><span><?_e('Story', 'kommiku')?></span></h3>
 				<div class="inside">

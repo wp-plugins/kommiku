@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.6
+Version: 2.1.7
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.6' );
+define('KOMMIKU_VERSION', '2.1.7' );
 
 
 if ( !defined('WP_LOAD_PATH') ) {
@@ -637,7 +637,8 @@ function kommiku() {
 					
 					$series = $db->series_detail($_CLEAN['series_id']);
 					$chapter = $db->chapter_detail(intval($_POST['chapter_id']));
-										
+					$_OLD = $chapter;
+					
 					if($wpdb->get_var("SELECT number FROM ".$table." WHERE number = '".$_CLEAN['number']."' AND series_id = '".$_CLEAN['series_id']."'") == $_CLEAN['number'])  
 						if (($_POST['action'] != 'update') || ($_POST['action'] == "update" && $_OLD['number'] != $_CLEAN['number']))
 							$chapter['fail']['number']['duplicate'] = true;
@@ -649,7 +650,7 @@ function kommiku() {
 					if (!is_numeric($_POST['number'])) 
 						$chapter['fail']['number']['character'] = true;
 					
-					if (!is_numeric($_POST['slug'])) 
+					if (!$_POST['slug']) 
 						$chapter['fail']['number']['slug'] = true;
 						
 					if (!is_numeric($_POST['volume']) && isset($_POST['volume'])) 
