@@ -52,7 +52,7 @@ switch(rand(0,3)) {
 		
 		}
 
-if(get_option('kommiku_one_comic' != 'false')) { 
+if(get_option('kommiku_one_comic') != 'false') { 
 	$slugUrl = ''; 
 } else {
 	if(!$series['chapterless']) $chapterSlugUrl = $chapter['slug'].'/';
@@ -137,7 +137,7 @@ if(get_option('kommiku_one_comic' != 'false')) {
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="title" class="screen-reader-text"><?_e('Title', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" id="title" value="<?php echo $page['title']; ?>" tabindex="1" size="30" name="title"/>
+						<input style="width: 100%;" type="text" autocomplete="off" id="title" value="<?php echo stripslashes(htmlentities($page['title'])); ?>" tabindex="1" size="30" name="title"/>
 					</div>
 				</div>
 			</div>			

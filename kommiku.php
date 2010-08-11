@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.7
+Version: 2.1.8
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.7' );
+define('KOMMIKU_VERSION', '2.1.8' );
 
 
 if ( !defined('WP_LOAD_PATH') ) {
@@ -64,12 +64,18 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	unset($checkExplosion);
 	
 	//Replace Index
-	if($explodeURL[0] == '' && get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
-		$kommiku['manga'] = true;
-		$kommiku['series'] = get_option( 'kommiku_one_comic' );
+	if(get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
 		$kommiku['one_comic'] = true;
-		$kommiku['pages'] = "latest";
-		$kommiku['index'] = true;
+		$kommiku['override'] = true;
+		if($explodeURL[0] == ''){
+			$kommiku['manga'] = true;
+			$kommiku['series'] = get_option( 'kommiku_one_comic' );
+			$kommiku['pages'] = "latest";
+			$kommiku['index'] = true;
+		} else if ($explodeURL[0] == get_option( 'kommiku_one_comic' )) {
+			if($explodeURL[1]) $url = $explodeURL[1]."/";
+			header("Location: ".HTTP_HOST.$url);
+		}
 	}
 	
 	if(strtolower($explodeURL[0]) == "find" && $explodeURL[1]) {
@@ -84,7 +90,6 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 		if(get_option('kommiku_one_comic') != 0 && get_option('kommiku_one_comic') != false) {
 			$kommiku['manga'] = true;
 			$kommiku['series'] = get_option( 'kommiku_one_comic' );
-			$kommiku['one_comic'] = true;
 			$kommiku['chapter'] = $explodeURL[1];
 			$kommiku['pages'] = $explodeURL[2];
 		} else if($explodeURL[1] != '') {
@@ -105,7 +110,6 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 			if(get_option('kommiku_one_comic') != 'false' && is_numeric($explodeURL[0]))  {
 				$kommiku['manga'] = true;
 				$kommiku['series'] = get_option( 'kommiku_one_comic' );
-				$kommiku['one_comic'] = true;
 				$kommiku['chapter'] = $explodeURL[0];
 				$kommiku['pages'] = $explodeURL[1];
 			} else {
@@ -287,9 +291,13 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 			$page = $db->page_detail($kommiku['page_id']);
 			$chapter_pages = $db->chapter_pages($kommiku['series_id'],$kommiku['chapter_id']);
 			$kommiku['seotitle'] .= " page ".$page['slug'];
+			$kommiku['title']['page'] = stripslashes($page['title']);
+			if($kommiku['override'] && $series['chapterless']) {
+				$kommiku['seotitle'] = $page['slug'];
+				if($page['title']) $kommiku['seotitle'] .= ' - '.$kommiku['title']['page'];
+			}
 			$kommiku['slug']['page'] = $page['slug'];	
 			$kommiku['number']['page'] = $page['number'];
-			$kommiku['title']['page'] = $page['title'];
 			$kommiku['url']['page'] = $page['slug']."/";
 		} else if($chapter) {
 			$kommiku['pages'] = $wpdb->get_var("SELECT min(number) FROM `".$wpdb->prefix."comic_page` WHERE series_id = '".$kommiku['series_id']."' AND chapter_id = '".$kommiku['chapter_id']."'"); 
@@ -299,7 +307,7 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 			$kommiku['seotitle'] .= " : Page ".$page['slug'];
 			$kommiku['slug']['page'] = $page['slug'];	
 			$kommiku['number']['page'] = $page['number'];
-			$kommiku['title']['page'] = $page['title'];
+			$kommiku['title']['page'] = stripslashes($page['title']);
 			$kommiku['url']['page'] = $series['url'].$chapter['url'].$page['slug']."/";
 		}
 		
@@ -324,7 +332,7 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 			include KOMMIKU_FOLDER.'/reader.php';		
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';
 		//Series
-		} else if(!empty($kommiku['series']) && $kommiku['series'] != 'index.php') {
+		} else if(!empty($kommiku['series']) && $kommiku['series'] != 'index.php' && !$kommiku['one_comic']) {
 			$isChapter = true; 
 			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
 		//Main Page with no Series Selected
@@ -333,7 +341,10 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 			$pageUpdates = $wpdb->get_results($pageUquery);
 			$kommiku['seotitle'] .= __("Story Listing", 'kommiku');
 			$category["list"] = $db->category_read();
-			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_index.php';
+			if($kommiku['override'])
+				header('Location:'.HTTP_HOST);
+			else
+				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_index.php';
 		}
 		
 		exit;
@@ -493,6 +504,7 @@ function kommiku() {
 			}
 			
 			if($_POST['what'] == "series") { 
+			
 				//Updating? Set the $_OLD Vars!
 				if($_POST['action'] == "update" && is_numeric($_CLEAN['series_id'])) {
 					$_OLD = $db->series_detail($_CLEAN['series_id']);
@@ -511,15 +523,19 @@ function kommiku() {
 									
 				$seriesFolder .= '/'.$_CLEAN["slug"].'/';
 				
+				if($_POST['chapterless'] == 1) {
+					$chapterless = 1;
+				}
+				
 				$series['title'] = $_POST['title'];
 				$series['slug'] = urlencode($_POST['slug']);
 				$series['summary'] = stripslashes($_POST['summary']);
-				$series['chapterless'] = $_POST['chapterless'];
+				$series['chapterless'] = $chapterless;
 				$series['author'] = $_POST['author'];
 				$series['illustrator'] = $_POST['illustrator'];
-									
+				
 				if(!$series['fail']['slug'] && !$series['fail']['title']) {
-					
+				
 					if(is_numeric($_POST['type']))
 						$story_type = $_POST['type'];
 					else
@@ -571,7 +587,11 @@ function kommiku() {
 							if(mkdir(UPLOAD_FOLDER.'/'.$_CLEAN['slug'], 0755)) {
 								$db->series_create($_CLEAN['title'],$_CLEAN['slug'],$_POST['summary'],$chapterless,$categories,$author,$illustrator,$read,$creation,$alt_name,$status,$rating,$story_type,$_CLEAN['img']);
 								$status['pass'] = __('The Series has been successfully created', 'kommiku');
+							} else {
+								$status['error'] = __('The Series directory could not be created', 'kommiku');
 							}
+						} else {
+							$status['error'] = __('The Series directory already exist. Try deleting it through FTP then try creating again.', 'kommiku');
 						}
 						kommiku_model_series();
 					} else if($_POST['action'] == "update" && is_numeric($_CLEAN['series_id'])) {

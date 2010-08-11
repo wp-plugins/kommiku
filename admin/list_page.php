@@ -4,9 +4,9 @@ $page_list = $db->page_list($page['series_id'],$page['chapter_id']);
 if(!$chapter) $chapter = $db->chapter_detail();
 if($page_list)
 foreach ($page_list as $row) {
-	if ($row->title) $title = " - ".stripslashes($row->title);
-	$listing[$row->number] = '<li>#'.$row->number.' - <a href="'.$url.'admin.php?page=kommiku&sub=createpage&series='.$series["id"].'&chapter='.$chapter["id"].'&pg='.$row->id.'">'.$row->slug.'</a></li>';
-	unset($title);
+	if ($row->title) $ptitle = " - ".stripslashes($row->title);
+	$listing[$row->number] = '<li>#'.$row->number.' - <a href="'.$url.'admin.php?page=kommiku&sub=createpage&series='.$series["id"].'&chapter='.$chapter["id"].'&pg='.$row->id.'">'.$row->slug.$ptitle.'</a></li>';
+	unset($ptitle);
 	}	
 $chapter_number = str_replace('.0','',$chapter['number']);
 if ($listing) ksort($listing,SORT_NUMERIC);
