@@ -8,7 +8,7 @@ Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.9' );
+define('KOMMIKU_VERSION', '2.1.9.1' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -693,7 +693,7 @@ function kommiku() {
 					
 						if($_POST['action'] == "create") {
 							$db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_CLEAN['series_id'],$phpdate,sanitize_title($_POST['slug']),$scanlator,$scanlator_slug,0,$folder,false);
-							if(mkdir(UPLOAD_FOLDER.$folder, 0755))) {
+							if(mkdir(UPLOAD_FOLDER.$folder, 0755)) {
 								$status['pass'] = __('The Chapter has been successfully created', 'kommiku');
 							} else {
 								$status['pass'] = __('The Chapter "Folder" seems to have already exist but the Chapter was still Created.', 'kommiku');

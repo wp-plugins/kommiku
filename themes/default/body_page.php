@@ -30,10 +30,12 @@
 <script type="text/javascript">
 	document.onkeyup = KeyCheck;       
 	function KeyCheck(e){
-		var KeyID = (window.event) ? event.keyCode : e.keyCode;
+		var ev = e || window.event;
+		ev.preventDefault();
+		var KeyID = ev.keyCode;
 		switch(KeyID){
 			case 36: 
-			  window.location = '<?=HTTP_HOST?><?=$kommiku['url']['series']?><?=$kommiku['url']['chapter']?>'
+			  window.location = '<?=HTTP_HOST?><?=$kommiku['url']['series']?>'
 			  break;
 			case 33:
 			case 37:
