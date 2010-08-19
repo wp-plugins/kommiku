@@ -1,15 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.8
+Version: 2.1.9
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.8' );
-
+define('KOMMIKU_VERSION', '2.1.9' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -39,6 +38,7 @@ define('HTTP_HOST', get_bloginfo('url').'/' );
 define('K_SCANLATOR_URL', get_option('kommiku_scanlator') );
 add_action('admin_menu', 'kommiku_menu');
 $kommiku['alphabets'] = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
+
 function kommiku_fancy_url($var='REQUEST_URI'){
 	global $kommiku;
 	if (!in_array($var, array('REQUEST_URI', 'PATH_INFO'))) $var = 'REQUEST_URI';
@@ -192,12 +192,13 @@ function kommiku_footer() {
 }
 
 function kommiku_source(){
-	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;	
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category,$db;	
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
-				
-load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
-				
+
+	load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
+	
+	$kommiku['scanlator_feature'] = get_option('kommiku_scanlator_enabled');	
 	if($kommiku['scanlator']) {
 		$scanlator = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."comic_scanlator` WHERE slug = '".$kommiku['scanlator_slug']."'", ARRAY_A);
 		if($scanlator && $kommiku['scanlator_slug'] != '') {
@@ -311,7 +312,9 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 			$kommiku['url']['page'] = $series['url'].$chapter['url'].$page['slug']."/";
 		}
 		
-		$kommiku['series_list_raw'] = $db->series_list();
+		$kommiku['series_list_raw_chapters'] = $db->series_list();
+		$kommiku['series_list_raw_chapterless'] = $db->series_list_chapterless();
+		$kommiku['series_list_raw'] = array_merge($kommiku['series_list_raw_chapters'] , $kommiku['series_list_raw_chapterless']);
 		if($kommiku['series_list_raw'] )
 			foreach ($kommiku['series_list_raw'] as $row) {
 			$chapterTitle = stripslashes($row->title);
@@ -322,8 +325,10 @@ load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . 
 				$kommiku['series_list'] .= '<li><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->slug.'/">'.$chapterTitle.'</a></li>';
 			};	
 			
-		if($kommiku['series_id'])
-			$kommiku['series_chapter'] = $db->series_chapter($kommiku['series_id']);
+		if(!$series['chapterless'])
+			$kommiku['series_chapter'] = $db->series_chapter($series['id']);
+		else
+			$kommiku['series_pages'] = $db->series_pages($series['id']);
 
 		//Page, Chapter, Series		
 		if((!empty($kommiku['series']) && isset($kommiku['chapter']) && $kommiku['page']) || 
@@ -685,25 +690,18 @@ function kommiku() {
 						
 						
 					if(!$chapter['fail']) {
-
+					
 						if($_POST['action'] == "create") {
-							//Check if Directory exist
-							if(!is_dir(UPLOAD_FOLDER.$folder)) {
-								if(!mkdir(UPLOAD_FOLDER.$folder, 0755)) {
-									$chapterID = $db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_CLEAN['series_id'],$phpdate,$_POST['slug'],$scanlator,$scanlator_slug,0,$folder,true);
-									$status['pass'] = __('The Chapter has been successfully created', 'kommiku');
-								}
+							$db->chapter_create($_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_CLEAN['series_id'],$phpdate,sanitize_title($_POST['slug']),$scanlator,$scanlator_slug,0,$folder,false);
+							if(mkdir(UPLOAD_FOLDER.$folder, 0755))) {
+								$status['pass'] = __('The Chapter has been successfully created', 'kommiku');
 							} else {
-								$status['error'] .= __('Could not create Chapter because the directory for this chapter already exist: ','kommiku').UPLOAD_FOLDER.$folder;
-							}
+								$status['pass'] = __('The Chapter "Folder" seems to have already exist but the Chapter was still Created.', 'kommiku');
+							} 
 						} else if($_POST['action'] == "update" && is_numeric($_POST['chapter_id'])) {						
 							$db->chapter_update($_POST['chapter_id'],$_CLEAN['title'],$_POST['number'],$_CLEAN['summary'],$_CLEAN['series_id'],$chapter['pubdate'],$_POST['slug'],$_POST['scanlator'],$_POST['scanlator_slug'],$_POST['volume'],$folder);
 							$status['pass'] = __('The Chapter has been successfully updated');
-							$chapter['scanlator'] = $_POST['scanlator'];
-							$chapter['scanlator_slug'] = $_POST['scanlator_slug'];
-							$chapter['volume'] = $_POST['volume'];
-							$chapter['slug'] = $_POST['slug'];
-							$chapter['number'] = $_POST['number'];
+
 							if($noRename)
 								rename(UPLOAD_FOLDER.$_OLD['folder'], UPLOAD_FOLDER.$folder);
 						}
@@ -711,11 +709,18 @@ function kommiku() {
 						if ($chapter['fail']['number']['duplicate']) $status['error'] .= __('The Chapter number has already been taken.<br/>', 'kommiku');
 						if ($chapter['fail']['number']['character']) $status['error'] .= __('The Chapter number has to be in decimals or numbers.<br/>', 'kommiku');
 						if($chapter['fail']['number'])  $status['error'] .= __('The "Volume Input" must be Numeric', 'kommiku');
-						$chapter['title'] = $_POST['title'];
-						$chapter['number'] = $_POST['number'];
-						$chapter['summary'] = $_POST['summary'];
 					}
 				}
+				
+					$chapter['scanlator'] = $_POST['scanlator'];
+					$chapter['scanlator_slug'] = $_POST['scanlator_slug'];
+					$chapter['volume'] = $_POST['volume'];
+					$chapter['slug'] = $_POST['slug'];
+					$chapter['number'] = $_POST['number'];
+					$chapter['title'] = $_POST['title'];
+					$chapter['slug'] = $_POST['slug'];
+					$chapter['number'] = $_POST['number'];
+					$chapter['summary'] = $_POST['summary'];
 				
 				if($_POST['destination'] == "page")
 					kommiku_model_page();
@@ -1258,12 +1263,13 @@ function kommiku_settings() {
 
 function kommiku_install() {
 	global $wpdb;
+	$kommiku_version = '2.1.9';
 	//Update! And if it can't it will be added later.
-	update_option('kommiku_version', KOMMIKU_VERSION);
+	update_option('kommiku_version', $kommiku_version);
 	
 	//Plug Options
 	$kommiku_options = array('kommiku_version','kommiku_comic_upload','kommiku_url_format','kommiku_lang','kommiku_skin_directory','kommiku_one_comic','kommiku_no_slug','kommiku_override_index','kommiku_url_index');
-	$kommiku_default_values = array(KOMMIKU_VERSION,'comics','manga','english','default','false','false','false','directory');
+	$kommiku_default_values = array($kommiku_version,'comics','manga','english','default','false','false','false','directory');
 	foreach($kommiku_options as $option)	{
 		$i++;
 		if(!get_option( $option )) {

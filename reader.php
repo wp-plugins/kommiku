@@ -23,13 +23,13 @@ if(($isPage)) {
 				if(isset($chapterListID[$pass])) $previousChapterID = $chapterListID[$pass];
 			}
 		}
-	}  
-	natsort($chapter_items);
-	krsort($chapter_items);
-	foreach($chapter_items as $chapter_item){
-		$kommiku['chapterOption'] .= $chapter_item;
+		natsort($chapter_items);
+		krsort($chapter_items);
+		foreach($chapter_items as $chapter_item){
+			$kommiku['chapterOption'] .= $chapter_item;
+		}
+		$chapterOption = $kommiku['chapterOption'];
 	}
-	$chapterOption = $kommiku['chapterOption'];
 	
 	if($chapter_pages) {
 	foreach ($chapter_pages as $pageList) { $i++;

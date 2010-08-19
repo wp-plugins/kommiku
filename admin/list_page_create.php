@@ -1,4 +1,4 @@
-<?php	
+<?php global $wpdb;
 $action = '&action=create';
 if($page['id'] || is_numeric($_GET['pg'])) {
 	if(!$page['id']) $page['id'] = strval(intval($_GET['pg']));
@@ -57,6 +57,16 @@ if(get_option('kommiku_one_comic') != 'false') {
 } else {
 	if(!$series['chapterless']) $chapterSlugUrl = $chapter['slug'].'/';
 	$slugUrl = $series['slug'].'/'.$chapterSlugUrl; 	
+}
+
+if(!$page['number']) {
+	if($series['chapterless']) {
+		$page['number'] = intval($wpdb->get_var("SELECT max(number) FROM `".$wpdb->prefix."comic_page` WHERE series_id = '".$series['id']."'"));
+	} else {
+		$page['number'] = $wpdb->get_var("SELECT max(number) FROM `".$wpdb->prefix."comic_page` WHERE chapter_id = '".$chapter['id']."'");
+	}
+	$page['number'] += 1;
+	$page['slug'] = $page['number'];
 }
 
 ?>	

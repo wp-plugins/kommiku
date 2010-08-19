@@ -3,7 +3,7 @@
 	//Check condition if we want to output only Completed Series
 	if($kommiku['category'] == 'complete')
 		$showCompleteOnly = true;
-		
+	
 	//Check if we Series in the List	
 	if($kommiku['series_list_raw'])
 	foreach ($kommiku['series_list_raw'] as $row) {
@@ -25,13 +25,18 @@
 		//Format the Date of the Series
 		//Y-m-d = Years - Month in Number - Day in Number
 		$thedate = date( 'Y-m-d', strtotime($row->last_update) );
-		
+
 		//Format the Series
+		if($row->chapterless == 1) 
+			$chapterless = 'Page';
+		else
+			$chapterless = 'Chapter';		
+
 		$letter[$singleLetter][] = 
 			//Series name and Title
 			'<td class="series"><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->series_slug.'/">'.$row->series_name.'</a></td>'.
-			//The latest chapter from the Series
-			'<td class="chapter"><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->series_slug.'/'.$row->chapter_slug.'/">Chapter '.$row->chapter_slug.'</a></td>'. 
+			//The latest update from the Series
+			'<td class="chapter"><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->series_slug.'/'.$row->latest_slug.'/">'.$chapterless.' '.$row->latest_slug.'</a></td>'. 
 			//When was the series Last Updated?
 			'<td class="updated">'.$thedate.'</td>'.
 			//What is the Status of the Series?
@@ -57,7 +62,7 @@
 				//This <tr> will the header.
 				'<tr id="#letter-'.$alphabet.'" class="headline">
 					<td class="series" style="width: 40%;">'.$alphabet.'</td>
-					<td class="chapter" style="width: 23%;">Latest Chapter</td>
+					<td class="chapter" style="width: 23%;">Latest Update</td>
 					<td class="updated" style="width: 22%;">Last Updated</td>
 					<td class="status" style="width: 15%;">Status</td>
 				</tr>';

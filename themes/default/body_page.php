@@ -18,7 +18,7 @@
 	<?php  if($page["img"] && ($page["title"] || $page["story"])){  ?>
 		<div id="page-info">
 			<?php if($page["title"]){ ?> <h2 id="page-title"><?=$page["title"]?></h2> <?php } ?>
-			<?php if($page["story"]){ ?> <p id="page-story"><?=$page["story"]?></p> <?php } ?>
+			<?php if($page["story"]){ ?> <p id="page-story"><?=stripslashes($page["story"])?></p> <?php } ?>
 		</div>
 	<?php } ?>
 	
@@ -29,24 +29,29 @@
 <?php //Keyboard Commands! No need to touch this. ?>
 <script type="text/javascript">
 	document.onkeyup = KeyCheck;       
-	function KeyCheck(e)
-	{
-	   var KeyID = (window.event) ? event.keyCode : e.keyCode;
-	   switch(KeyID)
-	   {
-		  case 37:
-			<?php if (checkPrevPage()) { ?>  
-				window.location = '<?php prevPage(); ?>';
-			 <?php } else { ?> 
-				alert('You are already on the First Page.'); <?php } ?>
-		  break;
-		  case 39:
-			 <?php if (checkNextPage()) { ?>  
-				window.location = '<?php nextPage(); ?>'; 
-			 <?php } else { ?> 
-				alert('This is the latest page.'); <?php } ?>
-		  break;
-	   }
+	function KeyCheck(e){
+		var KeyID = (window.event) ? event.keyCode : e.keyCode;
+		switch(KeyID){
+			case 36: 
+			  window.location = '<?=HTTP_HOST?><?=$kommiku['url']['series']?><?=$kommiku['url']['chapter']?>'
+			  break;
+			case 33:
+			case 37:
+				<?php if (checkPrevPage()) { ?>  
+					window.location = '<?php prevPage(); ?>';
+				<?php } else { ?> 
+					alert('You are already on the First Page.'); 
+				<?php } ?>
+			  break;
+			case 34:
+			case 39:
+				<?php if (checkNextPage()) { ?>  
+					window.location = '<?php nextPage(); ?>'; 
+				<?php } else { ?> 
+					alert('This is the latest page.'); 
+				<?php } ?>
+			break;
+	    }
 	}
 </script> 
 

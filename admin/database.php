@@ -457,9 +457,9 @@ Class kommiku_database {
 					c.slug as series_slug,
 					c.title as title,
 					c.slug as slug,
-					a.title as chapter_name,
-					a.slug as chapter_slug,
+					a.slug as latest_slug,
 					a.pubdate as last_update,
+					c.chapterless as chapterless,
 					c.status as status
 					FROM `".$wpdb->prefix."comic_chapter` a,
 					(SELECT series_id, max(number) as number
@@ -467,6 +467,30 @@ Class kommiku_database {
 					GROUP BY series_id) b, 
 					`".$wpdb->prefix."comic_series` c
 					WHERE b.series_id = a.series_id AND b.number = a.number AND b.series_id = c.id
+					";
+	  		$results = $wpdb->get_results( $select );
+			return $results;
+	}
+	
+	function series_list_chapterless() {
+		global $wpdb;
+	  		$select = "SELECT
+					c.id as id,
+					c.title as series_name,
+					c.slug as series_slug,
+					c.title as title,
+					c.slug as slug,
+					a.slug as latest_slug,
+					a.pubdate as last_update,
+					c.chapterless as chapterless,
+					c.status as status
+					FROM `".$wpdb->prefix."comic_page` a,
+					(SELECT series_id, max(number) as number
+					FROM `".$wpdb->prefix."comic_page`
+					GROUP BY series_id) b, 
+					`".$wpdb->prefix."comic_series` c
+					WHERE b.series_id = a.series_id AND b.number = a.number 
+					AND b.series_id = c.id AND c.chapterless = 1
 					";
 	  		$results = $wpdb->get_results( $select );
 			return $results;
@@ -497,20 +521,12 @@ Class kommiku_database {
 			return $results;
 	}
 	
-	function series_pages ($series_id) {
-	    global $wpdb, $series;
-	    if (!is_numeric($series_id)) return;
+	function series_pages($series_id) {
+	    global $wpdb;
 		$tableA = $wpdb->prefix."comic_page";
-		$tableB = $wpdb->prefix."comic_chapter";
-			
-			if(!$series['chapterless'])
-	  			$select = "SELECT `".$tableA."`.slug as pageSlug, `".$tableA."`.number as pageNumber, `".$tableA."`.pubdate as pubdate ,`".$tableB."`.slug as chapterNumber FROM `".$tableA."` JOIN `".$tableB."` ON `".$tableA."`.`chapter_id` = `".$tableB."`.`id` WHERE `".$tableA."`.`series_id` = '".$series['id']."' ORDER BY `".$tableA."`.`pubdate` DESC LIMIT 0 , 10";
-	  		else
-	  			$select = "SELECT pubdate, slug as pageSlug, number as pageNumber FROM `".$tableA."` WHERE `series_id` = '".$series['id']."' ORDER BY `pubdate` DESC LIMIT 0 , 10";
-	  			
-	  		$results = $wpdb->get_results( $select );
-	  		sort($results,SORT_NUMERIC);
-			return $results;
+	  	$select = "SELECT * FROM `".$tableA."` WHERE `series_id` = '".$series_id."' ORDER BY `number` DESC";
+	  	$results = $wpdb->get_results( $select );
+		return $results;
 	}
 	
 	function page_detail($id = NULL) {

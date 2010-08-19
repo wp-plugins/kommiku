@@ -29,7 +29,7 @@ Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"),
 3. Activate the plugin. And you should be good to go :)
 
 == Upgrade Notice ==
-= 2.1.8 =
+= 2.1.9 =
 Always backup!
 Especially the theme folder!
 If there are any problems please email me: anri.tora@gmail.com 
@@ -53,6 +53,18 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
+= 2.1.9 =
+* New Keyboard Browser Controls (08/19/2010)
+* "Page Up" is Previous Page. "Page Down" is Next Page. "Home takes" you to the First Page.
+* Maybe Fix Video Embed? (08/19/2010)
+* Fix Number and Slug Grabber in the Page Creation Page (08/19/2010)
+* Fix Warnings for Chapterless Series (08/19/2010)
+* Fix Chapter Creating (08/19/2010)
+* Fix Chapter Updating (08/19/2010)
+* Update Chapter Viewer to show Pages for Chapterless Series (08/18/2010)
+* Update Index and Directory to show Chapterless Series (08/18/2010)
+* Scanlator/Multi-Author Feature is non-visible when not enabled (08/18/2010) 
+
 = 2.1.8 =
 * Single Series Url Updates (08/10/2010)
 * Seo Title Update for Single Series (08/10/2010)
