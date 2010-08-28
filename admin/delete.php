@@ -35,6 +35,8 @@ if ($chapterUrl)
   $actionUrl = $chapterUrl;
 else if($_GET['pg'] && $_GET['chapter'])
   $actionUrl = 'admin.php?page=kommiku&sub='.$chapterless.'&series='.$series['id'];
+else if($_GET['pg'])
+  $actionUrl = 'admin.php?page=kommiku&sub='.$chapterless.'&series='.$series['id'];
 else
   $actionUrl = 'admin.php?page=kommiku';
 

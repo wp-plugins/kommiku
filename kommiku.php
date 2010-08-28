@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.9.1
+Version: 2.1.10
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.9.1' );
+define('KOMMIKU_VERSION', '2.1.10' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -63,6 +63,12 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 		$explodeURL = $checkExplosion;
 	unset($checkExplosion);
 	
+	//Root Words may need to be Fix in the future...
+	$rootWords = km_get_root();
+	if(in_array($explodeURL[0],$rootWords)) {
+		array_shift($explodeURL);
+	}
+
 	//Replace Index
 	if(get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
 		$kommiku['one_comic'] = true;
@@ -381,19 +387,24 @@ function kommiku() {
 		
 		if($_POST['delete'] == "Delete It!") {
 						
-			if(!is_float($_POST['pg']) && is_numeric($_POST['pg'])) {
+			if(is_numeric($_POST['pg'])) {
 				$page = $db->page_detail(intval($_POST['pg']));	
 				$chapter = $db->chapter_detail($page['chapter_id']); 
 				if($page['chapter_id'] && $chapter['folder']) {
 					error_reporting(0); 
-					if(!unlink(UPLOAD_FOLDER.$chapter['folder'].$page['img']))
+					if(!unlink(UPLOAD_FOLDER.$chapter['folder'].$page['img']) && $page['img'])
 						$status['error'] = __('The Image could not be deleted (or it doesn\'t exist) but the record was deleted (or maybe it was already gone?)', 'kommiku');
 					$db->page_delete($_POST['pg'],$page['chapter_id'],$page['series_id']);
 					error_reporting(E_ALL ^ E_NOTICE);
-					unset($page);
-					if($status['error']) $status['error'] .= '<br/>';
-						$status['pass'] = __('The Page has been deleted', 'kommiku');
+				} else {
+					$db->page_delete($_POST['pg'],$page['chapter_id'],$page['series_id']);
+					if(!unlink(UPLOAD_FOLDER.'/'.$series['slug'].'/'.$page['img']) && $page['img'])
+						$status['error'] = __('The Image could not be deleted (or it doesn\'t exist) but the record was deleted (or maybe it was already gone?)', 'kommiku');
+				
 				}
+				unset($page);
+				if($status['error']) $status['error'] .= '<br/>';
+					$status['pass'] = __('The Page has been deleted', 'kommiku');
 				kommiku_model_page();
 			} else if(!is_float($_POST['chapter']) && is_numeric($_POST['chapter']) && !isset($_POST['pg'])) {
 				$chapter = $db->chapter_detail(intval($_POST['chapter'])); 
@@ -1263,17 +1274,24 @@ function kommiku_settings() {
 
 function kommiku_install() {
 	global $wpdb;
-	$kommiku_version = '2.1.9';
 	//Update! And if it can't it will be added later.
-	update_option('kommiku_version', $kommiku_version);
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.10');
+	update_option('kommiku_version', KOMMIKU_VERSION);
 	
 	//Plug Options
-	$kommiku_options = array('kommiku_version','kommiku_comic_upload','kommiku_url_format','kommiku_lang','kommiku_skin_directory','kommiku_one_comic','kommiku_no_slug','kommiku_override_index','kommiku_url_index');
-	$kommiku_default_values = array($kommiku_version,'comics','manga','english','default','false','false','false','directory');
+	$kommiku_values = array('kommiku_version' => KOMMIKU_VERSION,
+							'kommiku_comic_upload' => 'comics',
+							'kommiku_url_format' => 'manga',
+							'kommiku_lang' => 'english',
+							'kommiku_skin_directory' => 'default',
+							'kommiku_one_comic' => 'false',
+							'kommiku_no_slug' => 'false',
+							'kommiku_override_index' => 'false',
+							'kommiku_url_index' => 'directory');
+	$kommiku_options = array_keys($kommiku_values);
 	foreach($kommiku_options as $option)	{
-		$i++;
 		if(!get_option( $option )) {
-			add_option ( $option, $kommiku_default_values[$i] );
+			add_option ( $option, $kommiku_values[$option] );
 		}
 	}
 	
@@ -1404,7 +1422,33 @@ add_shortcode( 'kommiku_chapter_update_list' , 'chapter_update_list' );
 		return $theLIST;
 	}
 		
-		
+function km_get_root()
+{
+    $base = dirname(__FILE__);
+    $path = false;
+
+    if (@file_exists(dirname(dirname($base))."/wp-config.php"))
+    {
+        $path = dirname(dirname($base))."/wp-config.php";
+    }
+    else
+    if (@file_exists(dirname(dirname(dirname($base)))."/"))
+    {
+        $path = dirname(dirname(dirname($base)))."/";
+    }
+    else
+    $path = false;
+	
+    if ($path != false)
+    {
+        $path = str_replace("\\", "/", $path);
+    }
+	
+	$path = explode('/',$path);
+	
+    return $path;
+}
+
 		
 function kommiku_menu() {
 	add_menu_page('Kommiku', 'Comic', 8, KOMMIKU_FOLDER, 'kommiku', KOMMIKU_URLPATH.'comic.png'); //Thanks Lokis :)

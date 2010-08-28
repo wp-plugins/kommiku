@@ -53,6 +53,10 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 
 
 == Changelog ==
+= 2.1.10 =
+* Configure for Local testing such as Xammp.
+* Testing Procedure for non-root Wordpress. Email me if you see any problems!
+
 = 2.1.9 =
 * New Keyboard Browser Controls (08/19/2010)
 * "Page Up" is Previous Page. "Page Down" is Next Page. "Home takes" you to the First Page.
