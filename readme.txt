@@ -30,7 +30,7 @@ Anri.tora@gmail.com
 3. Activate the plugin. And you should be good to go :)
 
 == Upgrade Notice ==
-= 2.1.9 =
+= 2.1.11 =
 Always backup!
 Especially the theme folder!
 If there are any problems please email me: anri.tora@gmail.com 
@@ -53,9 +53,17 @@ Make sure the directory for that Comic Base does not exist. For example, if I ha
 Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "default". You know when you get http://example.com/?p=321 . Well... thats default. Only prerequiste is that you change the permalink to something else.
 
 
+= How do I dump a Zipped Chapter? =
+When you create a zip file. Make sure there are only images in that zip file. There can be one or more folder, but it may make the source of the image look ugly.
+
 == Changelog ==
+= 2.1.11 =
+-Fix Chapter Slug locating (9/3/2010)
+-Fix Dumper and Remove File Upload Limitation
+-Dumper cano now dump a folder (not fully tested). 
+
 = 2.1.10 =
-* Configure for Local testing such as Xammp.
+* Configure for Local testing such as Xammp. (8/28/2010)
 * Testing Procedure for non-root Wordpress. Email me if you see any problems!
 
 = 2.1.9 =

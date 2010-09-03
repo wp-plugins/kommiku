@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.10
+Version: 2.1.11
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.10' );
+define('KOMMIKU_VERSION', '2.1.11' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -277,16 +277,14 @@ function kommiku_source(){
 		}
 		
 		if(isset($kommiku['chapter']) || is_numeric($kommiku['chapter_id'])) {
-			if(is_numeric($kommiku['chapter']) || is_numeric($kommiku['chapter_id'])) {
-				if(!$kommiku['chapter_id']) $kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND number = '".$kommiku['chapter']."'"); 
-				$chapter = $db->chapter_detail($kommiku['chapter_id']);
-				$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
-				$kommiku['slug']['chapter'] = $chapter['slug'];	
-				$kommiku['number']['chapter'] = $chapter['number'];
-				$kommiku["breacrumb"] = "Chapter ".$kommiku["number"]["chapter"]." ";
-				$kommiku['title']['chapter'] = $chapter['title'];
-				$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
-			}
+			if(!$kommiku['chapter_id']) $kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND slug = '".$kommiku['chapter']."'"); 
+			$chapter = $db->chapter_detail($kommiku['chapter_id']);
+			$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
+			$kommiku['slug']['chapter'] = $chapter['slug'];	
+			$kommiku['number']['chapter'] = $chapter['number'];
+			$kommiku["breacrumb"] = "Chapter ".$kommiku["number"]["chapter"]." ";
+			$kommiku['title']['chapter'] = $chapter['title'];
+			$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
 		}
 			
 		if(empty($kommiku['chapter_id'])) {
@@ -1275,7 +1273,7 @@ function kommiku_settings() {
 function kommiku_install() {
 	global $wpdb;
 	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.10');
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.11');
 	update_option('kommiku_version', KOMMIKU_VERSION);
 	
 	//Plug Options
@@ -1284,9 +1282,9 @@ function kommiku_install() {
 							'kommiku_url_format' => 'manga',
 							'kommiku_lang' => 'english',
 							'kommiku_skin_directory' => 'default',
-							'kommiku_one_comic' => 'false',
-							'kommiku_no_slug' => 'false',
-							'kommiku_override_index' => 'false',
+							'kommiku_one_comic' => false,
+							'kommiku_no_slug' => false,
+							'kommiku_override_index' => false,
 							'kommiku_url_index' => 'directory');
 	$kommiku_options = array_keys($kommiku_values);
 	foreach($kommiku_options as $option)	{

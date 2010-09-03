@@ -48,8 +48,8 @@ if(($isPage)) {
 	$pageOption = $kommiku['pageOption'];
 	
 	if(isset($chapter["number"])){
-		$chapter["next"] = $chapter["number"].'/';	
-		$chapter["previous"] = $chapter["number"].'/';
+		$chapter["next"] = $chapter["slug"].'/';	
+		$chapter["previous"] = $chapter["slug"].'/';
 	}
 	
 	if($lastPage == $pageSelected && $nextChapterID) {
