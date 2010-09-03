@@ -832,7 +832,7 @@ function kommiku() {
 								if ($handle = opendir(UPLOAD_FOLDER.$seriesFolder.$chapterFolder)) {
 									while (false !== ($file = readdir($handle))) {
 										if ($file != "." && $file != "..") {
-											$status['pass'] = $file.'<br/>';
+											$status['pass'] = __('The page was successfully created.');
 										}
 									}
 									closedir($handle);
