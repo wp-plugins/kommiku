@@ -24,7 +24,7 @@ Anri.tora@gmail.com
 * Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
 
 1. After downloading the Kommiku plugin, unpack and upload the folder, "kommiku", to the wp-content/plugins folder on your blog. Make sure to leave the directory structure of the archive intact so that all of the Kommiku files are located in 'wp-content/plugins/kommiku/'
-
+
 2. Make sure your "Permalink for Wordpress" are not the default permalink. Change it to "Day and Name" or "Numeric" but not Default.
 
 3. Activate the plugin. And you should be good to go :)
@@ -57,10 +57,14 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 When you create a zip file. Make sure there are only images in that zip file. There can be one or more folder, but it may make the source of the image look ugly.
 
 == Changelog ==
+= 2.1.12 =
+* Fix a small bug concerning with the Series Slug (9/11/2010)
+* Navigation Problem in the Default theme
+
 = 2.1.11 =
--Fix Chapter Slug locating (9/3/2010)
--Fix Dumper and Remove File Upload Limitation
--Dumper cano now dump a folder (not fully tested). 
+* Fix Chapter Slug locating (9/3/2010)
+* Fix Dumper and Remove File Upload Limitation
+* Dumper cano now dump a folder (not fully tested). 
 
 = 2.1.10 =
 * Configure for Local testing such as Xammp. (8/28/2010)

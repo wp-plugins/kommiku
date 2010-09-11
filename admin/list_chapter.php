@@ -211,7 +211,7 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 				</div>
 				</form>
 				<div class="postbox">
-					<h3 style="cursor: default;"><span><?php echo $deleteWord; ?></span></h3>
+					<h3 style="cursor: default;"><span><?=$deleteWord?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<div style="background: none;">

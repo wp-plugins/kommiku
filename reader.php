@@ -144,13 +144,14 @@ if(($isPage)) {
 		if($chapter["folder"]) {
 			$url = $chapter["folder"];	
 		} else if($series['chapterless'] != 0) {
-			$url = '/'.strtolower($series["slug"]).'/';
+			$url = '/'.$series["slug"].'/';
 		} else {
 			die('Something is wrong here!');
 		}
 		
 		$theimage = UPLOAD_URLPATH.$url.$page["img"];
-		$theimage_abs = UPLOAD_FOLDER.$url.$page["img"];		
+		$theimage_abs = UPLOAD_FOLDER.$url.$page["img"];
+		
 		if(file_exists($theimage_abs) && $echo == true) {
 			$wrapper = '<img src="'.$theimage.'" />';
 		} else {
@@ -169,7 +170,7 @@ if(($isPage)) {
 			echo $wrapper;
 		} 
 		
-}
+	}
 	
 }
 ?>

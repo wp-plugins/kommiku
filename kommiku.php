@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.11
+Version: 2.1.12
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.11' );
+define('KOMMIKU_VERSION', '2.1.12' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -66,6 +66,7 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	//Root Words may need to be Fix in the future...
 	$rootWords = km_get_root();
 	if(in_array($explodeURL[0],$rootWords)) {
+		define('WORDPRESS_URL_ROOT', $explodeURL[0].'/');
 		array_shift($explodeURL);
 	}
 
@@ -1272,13 +1273,15 @@ function kommiku_settings() {
 
 function kommiku_install() {
 	global $wpdb;
-	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.11');
-	update_option('kommiku_version', KOMMIKU_VERSION);
 	
+	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.12');
+
+	//Update! And if it can't it will be added later.
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.12');
+	update_option('kommiku_version', KOMMIKU_VERSION);
+
 	//Plug Options
-	$kommiku_values = array('kommiku_version' => KOMMIKU_VERSION,
-							'kommiku_comic_upload' => 'comics',
+	$kommiku_values = array('kommiku_comic_upload' => 'comics',
 							'kommiku_url_format' => 'manga',
 							'kommiku_lang' => 'english',
 							'kommiku_skin_directory' => 'default',
