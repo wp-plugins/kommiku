@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.12
+Version: 2.1.13
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.12' );
+define('KOMMIKU_VERSION', '2.1.13' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -68,6 +68,10 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	if(in_array($explodeURL[0],$rootWords)) {
 		define('WORDPRESS_URL_ROOT', $explodeURL[0].'/');
 		array_shift($explodeURL);
+	}
+	
+	if(!defined('WORDPRESS_URL_ROOT')) {
+		define('WORDPRESS_URL_ROOT', $explodeURL[0].'/');
 	}
 
 	//Replace Index
@@ -1274,10 +1278,10 @@ function kommiku_settings() {
 function kommiku_install() {
 	global $wpdb;
 	
-	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.12');
+	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.13');
 
 	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.12');
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.13');
 	update_option('kommiku_version', KOMMIKU_VERSION);
 
 	//Plug Options
