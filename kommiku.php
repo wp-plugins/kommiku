@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.13
+Version: 2.1.14
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.13' );
+define('KOMMIKU_VERSION', '2.1.14' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -65,13 +65,8 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	
 	//Root Words may need to be Fix in the future...
 	$rootWords = km_get_root();
-	if(in_array($explodeURL[0],$rootWords)) {
-		define('WORDPRESS_URL_ROOT', $explodeURL[0].'/');
+	if($rootWords != KOMMIKU_URL_FORMAT) {
 		array_shift($explodeURL);
-	}
-	
-	if(!defined('WORDPRESS_URL_ROOT')) {
-		define('WORDPRESS_URL_ROOT', $explodeURL[0].'/');
 	}
 
 	//Replace Index
@@ -1278,10 +1273,10 @@ function kommiku_settings() {
 function kommiku_install() {
 	global $wpdb;
 	
-	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.13');
+	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.14');
 
 	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.13');
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.14');
 	update_option('kommiku_version', KOMMIKU_VERSION);
 
 	//Plug Options
@@ -1451,7 +1446,15 @@ function km_get_root()
 	
 	$path = explode('/',$path);
 	
-    return $path;
+	$countRoot = count($path)-2;
+	if($path[count($path)] != "") {
+		$countRoot = count($path)-1;
+	}
+	for($i=0;$i<$countRoot;$i++) {
+		array_shift($path);
+	}
+	$result = $path[0];
+    return $result;
 }
 
 		

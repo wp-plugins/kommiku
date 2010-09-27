@@ -57,6 +57,9 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 When you create a zip file. Make sure there are only images in that zip file. There can be one or more folder, but it may make the source of the image look ugly.
 
 == Changelog ==
+= 2.1.14 =
+* Possible fix for Navigation Bug (9/26/2010)
+
 = 2.1.12 =
 * Fix a small bug concerning with the Series Slug (9/11/2010)
 * Navigation Problem in the Default theme
