@@ -284,7 +284,7 @@ function kommiku_source(){
 			$kommiku['number']['chapter'] = $chapter['number'];
 			$kommiku["breacrumb"] = "Chapter ".$kommiku["number"]["chapter"]." ";
 			$kommiku['title']['chapter'] = $chapter['title'];
-			$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
+			if($chapter['slug']) $kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
 		}
 			
 		if(empty($kommiku['chapter_id'])) {

@@ -9,7 +9,7 @@
 			</select>
 	<?php } ?>
 		Page 
-			<select onchange="javascript:window.location='<?=HTTP_HOST?><?=$kommiku['url']['series']?>'+this.value+'/';" name="Pages" class="viewerPage">
+			<select onchange="javascript:window.location='<?=HTTP_HOST?><?=$kommiku['url']['series']?><?=$kommiku['url']['chapter']?>'+this.value+'/';" name="Pages" class="viewerPage">
 				<?=$kommiku['pageOption']?>
 			</select>
 </div>

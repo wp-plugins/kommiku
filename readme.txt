@@ -58,6 +58,9 @@ When you create a zip file. Make sure there are only images in that zip file. Th
 
 == Changelog ==
 = 2.1.14 =
+* Navigation Bug for Chapters. Sorry for Late Fix. (9/30/2010)
+
+= 2.1.14 =
 * Possible fix for Navigation Bug (9/26/2010)
 
 = 2.1.12 =
