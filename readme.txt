@@ -46,6 +46,9 @@ You may view a demo at http://eslend.com/
 
 == Frequently Asked Questions ==
 
+-  Please check my [Kommiku FAQs](http://dotspiral.com/wiki/faqs/ "Frequently Asked Questions for Kommiku") at [dotSpiral](http://dotspiral.com/)
+
+
 = When I go to my Comic Base URL or http://mysite.com/manga/ it doesn't work. =
 Make sure the directory for that Comic Base does not exist. For example, if I had the directory called "Manga" in my root files, and my Comic Base as "Manga", the directory folder will override Wordpress's Hook, and you will be going to the directory instead.
 
@@ -56,84 +59,10 @@ Okay! Last but not least... make sure your WORDPRESS PERMALINK are not on "defau
 = How do I dump a Zipped Chapter? =
 When you create a zip file. Make sure there are only images in that zip file. There can be one or more folder, but it may make the source of the image look ugly.
 
+
 == Changelog ==
-= 2.1.14 =
-* Navigation Bug for Chapters. Sorry for Late Fix. (9/30/2010)
-
-= 2.1.14 =
-* Possible fix for Navigation Bug (9/26/2010)
-
-= 2.1.12 =
-* Fix a small bug concerning with the Series Slug (9/11/2010)
-* Navigation Problem in the Default theme
-
-= 2.1.11 =
-* Fix Chapter Slug locating (9/3/2010)
-* Fix Dumper and Remove File Upload Limitation
-* Dumper cano now dump a folder (not fully tested). 
-
-= 2.1.10 =
-* Configure for Local testing such as Xammp. (8/28/2010)
-* Testing Procedure for non-root Wordpress. Email me if you see any problems!
-
-= 2.1.9 =
-* New Keyboard Browser Controls (08/19/2010)
-* "Page Up" is Previous Page. "Page Down" is Next Page. "Home takes" you to the First Page.
-* Maybe Fix Video Embed? (08/19/2010)
-* Fix Number and Slug Grabber in the Page Creation Page (08/19/2010)
-* Fix Warnings for Chapterless Series (08/19/2010)
-* Fix Chapter Creating (08/19/2010)
-* Fix Chapter Updating (08/19/2010)
-* Update Chapter Viewer to show Pages for Chapterless Series (08/18/2010)
-* Update Index and Directory to show Chapterless Series (08/18/2010)
-* Scanlator/Multi-Author Feature is non-visible when not enabled (08/18/2010) 
-
-= 2.1.8 =
-* Single Series Url Updates (08/10/2010)
-* Seo Title Update for Single Series (08/10/2010)
-* Serie folder that exist but has no record will provide an error.
-
-= 2.1.7 =
-* Chapter Update Fix? (08/9/2010)
-
 = 2.1.x =
-* Auto-updater fix!
-* Stupid Auto-update Failed!
-* Revamp the Pathing System: Faster and more Simpler!
-* Series, Chapters, and Pages can now be properly Deleted.
-* Series, Chapters, and Pages can now be propery Updated and Renamed.
-* Database Auto Updater now added.
-* Spanish Translation Updated.
-* More Translation Updates. Now Spanish translation are outdated D:
-* Oh God! No more bugs please!
-* Small Error in database upgrade D:
-* More Database Upgrade Errors
-* Category List Fixed
-* Category now Updates
-* Series Page now shows Summary
-* Images now correctly upload to respective Slug. Not number.
-
-= 2.1 =
-* Rework the Theme 
-* Rework the Upgrading Function
-* Add features for a pro version of Kommiku
-* Add features to add information to Stories or Series
-* Add Feature to Upload Chapter through zip/rar files
-* Categories to categorize your stories
-* Chapter Slugs
-* Numerical Listing
-
-= 2.0.14 =
-* Shortcode Framework Added!
-* [kommiku_series_list] will not show the a list of the series in a page or post. Make sure to wrap it with a &lt;ul&gt; tag.
-* Page going Out of Order. Fixed!
-* Uploads sometimes didn't upload. Fixed!
-* Chapter Listing Widget Added
-* Series with Number as their Starting Letter will now properly List.
-* The Comic base will now be properly detected by ONE level if Wordpress is not installed on the root. 
-
-= 1.x =
-* Old Stuff is Old News.
+-  Please check my [Kommiku Update Log](http://dotspiral.com/wiki/updates/ "Changelog of Recent Updates for Kommiku") at [dotSpiral](http://dotspiral.com/)
 
 
 == Upgrade Notice ==
