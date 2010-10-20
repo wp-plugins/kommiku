@@ -29,6 +29,9 @@ Anri.tora@gmail.com
 
 3. Activate the plugin. And you should be good to go :)
 
+-  For additional clarification, please check [Installing Kommiku](http://dotspiral.com/wiki/index.php?title=Installation "Installing Kommiku") at [dotSpiral](http://dotspiral.com/)
+
+
 == Upgrade Notice ==
 = 2.1.11 =
 Always backup!
@@ -46,7 +49,7 @@ You may view a demo at http://eslend.com/
 
 == Frequently Asked Questions ==
 
--  Please check my [Kommiku FAQs](http://dotspiral.com/wiki/faqs/ "Frequently Asked Questions for Kommiku") at [dotSpiral](http://dotspiral.com/)
+-  Please check my [Kommiku FAQs](http://dotspiral.com/wiki/index.php?title=FAQs "Frequently Asked Questions for Kommiku") at [dotSpiral](http://dotspiral.com/)
 
 
 = When I go to my Comic Base URL or http://mysite.com/manga/ it doesn't work. =
@@ -62,7 +65,7 @@ When you create a zip file. Make sure there are only images in that zip file. Th
 
 == Changelog ==
 = 2.1.x =
--  Please check my [Kommiku Update Log](http://dotspiral.com/wiki/updates/ "Changelog of Recent Updates for Kommiku") at [dotSpiral](http://dotspiral.com/)
+-  Please check my [Kommiku Update Log](http://dotspiral.com/wiki/index.php?title=updates "Changelog of Recent Updates for Kommiku") at [dotSpiral](http://dotspiral.com/)
 
 
 == Upgrade Notice ==
