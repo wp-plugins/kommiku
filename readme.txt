@@ -12,6 +12,9 @@ Kommiku. A Online Media viewer. A plug-in that creates pages that can be used as
 
 * Language: English, Spanish
 
+[Kommiku Wiki](http://dotspiral.com/wiki/index.php?title=Main_Page "Kommiku Wiki")
+Stuck? Need further assistance? Have a Question? Want to do something Advance? Check out the Wiki!
+
 Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"), [Eslend](http://eslend.com/ "Eslend: a web-manga | a web-comic"), [Eclipse Scanlation](http://eclipse-scans.net/eso/ "Eclipse Scanlators")
 
 Fastest way to get support, email me! 
