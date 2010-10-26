@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.15
+Version: 2.1.16
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.15' );
+define('KOMMIKU_VERSION', '2.1.16' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -37,7 +37,7 @@ define('KOMMIKU_URL_INDEX', get_option( 'kommiku_url_index' ) );
 define('HTTP_HOST', get_bloginfo('url').'/' );
 define('K_SCANLATOR_URL', get_option('kommiku_scanlator') );
 add_action('admin_menu', 'kommiku_menu');
-$kommiku['alphabets'] = array('0-9',A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z);
+$kommiku['alphabets'] = array('0-9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
 
 function kommiku_fancy_url($var='REQUEST_URI'){
 	global $kommiku;
@@ -63,9 +63,9 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 		$explodeURL = $checkExplosion;
 	unset($checkExplosion);
 	
-	//Root Words may need to be Fix in the future...
 	$rootWords = km_get_root();
-	if($rootWords != KOMMIKU_URL_FORMAT) {
+	$takenRoot = array(KOMMIKU_URL_FORMAT,KOMMIKU_URL_INDEX,"find");
+	if($rootWords != KOMMIKU_URL_FORMAT && !in_array($explodeURL[0],$takenRoot)) {
 		array_shift($explodeURL);
 	}
 
@@ -366,7 +366,7 @@ function kommiku_source(){
 define('V32c7148e', K_A_K);
 	
 function kommiku() {
-		global $wpdb,$series,$page,$chapter,$db,$status,$settings;	
+		global $wpdb,$series,$page,$chapter,$db,$status,$kommiku_settings;	
 		
 		//Auto Updater
 		if(KOMMIKU_VERSION != get_option('kommiku_version')){
@@ -391,13 +391,13 @@ function kommiku() {
 				if($page['chapter_id'] && $chapter['folder']) {
 					error_reporting(0); 
 					if(!unlink(UPLOAD_FOLDER.$chapter['folder'].$page['img']) && $page['img'])
-						$status['error'] = __('The Image could not be deleted (or it doesn\'t exist) but the record was deleted (or maybe it was already gone?)', 'kommiku');
+						$status['error'] = __("The Image could not be deleted (or it doesn't exist) but the record was deleted (or maybe it was already gone?)", 'kommiku');
 					$db->page_delete($_POST['pg'],$page['chapter_id'],$page['series_id']);
 					error_reporting(E_ALL ^ E_NOTICE);
 				} else {
 					$db->page_delete($_POST['pg'],$page['chapter_id'],$page['series_id']);
 					if(!unlink(UPLOAD_FOLDER.'/'.$series['slug'].'/'.$page['img']) && $page['img'])
-						$status['error'] = __('The Image could not be deleted (or it doesn\'t exist) but the record was deleted (or maybe it was already gone?)', 'kommiku');
+						$status['error'] = __("The Image could not be deleted (or it doesn't exist) but the record was deleted (or maybe it was already gone?)", 'kommiku');
 				
 				}
 				unset($page);
@@ -1131,7 +1131,7 @@ function kommiku_scanlator_edit() {
 	}
 	
 function kommiku_category() {
-	global $kommiku,$settings,$status,$wpdb;
+	global $kommiku,$kommiku_settings,$status,$wpdb;
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 	
@@ -1158,22 +1158,22 @@ function kommiku_scanlator() {
 	}
 	
 function kommiku_settings() {
-	global $settings,$status,$wpdb;
+	global $kommiku_settings,$status,$wpdb;
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 			
 		if ($_POST['what'] == "settings" && $_POST['action'] == "update") {
-			$settings['one_comic'] = $db->clean($_POST['one_comic']);
-			$settings['url'] = $db->clean($_POST['url']);
-			$settings['upload'] = $db->clean($_POST['upload']);
-			$settings['skin'] = $db->clean($_POST['skin']);
+			$kommiku_settings['one_comic'] = $db->clean($_POST['one_comic']);
+			$kommiku_settings['url'] = $db->clean($_POST['url']);
+			$kommiku_settings['upload'] = $db->clean($_POST['upload']);
+			$kommiku_settings['skin'] = $db->clean($_POST['skin']);
 			
 			if($_POST['scanlator_url']){
 				update_option('kommiku_scanlator', $_POST['scanlator_url']);
-				$settings['scanlator_url'] = $_POST['scanlator_url'];
+				$kommiku_settings['scanlator_url'] = $_POST['scanlator_url'];
 			} else {
 				update_option('kommiku_scanlator', 'author');
-				$settings['scanlator_url'] = 'author';
+				$kommiku_settings['scanlator_url'] = 'author';
 			}
 			
 			if($_POST['scanlator_enable'] == 1){
@@ -1188,29 +1188,29 @@ function kommiku_settings() {
 					$wpdb->query($structure);
 				}
 				update_option('kommiku_scanlator_enabled', true);
-				$settings['scanlator_enable'] = $_POST['scanlator_enable'];
+				$kommiku_settings['scanlator_enable'] = $_POST['scanlator_enable'];
 			} else {
 				update_option('kommiku_scanlator_enabled', false);
-				$settings['scanlator_enable'] = false;
+				$kommiku_settings['scanlator_enable'] = false;
 			}
 			
 			if($_POST['directory']){
 				update_option('kommiku_url_index', urlencode($_POST['directory']));
-				$settings['directory'] = $_POST['directory'];
+				$kommiku_settings['directory'] = $_POST['directory'];
 			} else {
 				if(!get_option( 'kommiku_url_index' ))
 				add_option("kommiku_url_index", 'directory');
 			
 				update_option('kommiku_url_index', 'directory');
-				$settings['directory'] = 'directory';
+				$kommiku_settings['directory'] = 'directory';
 			}
 			
 			if($_POST['override_index'] == 1){
 				update_option('kommiku_override_index', true);
-				$settings['kommiku_override_index'] = true;
+				$kommiku_settings['kommiku_override_index'] = true;
 			} else {
 				update_option('kommiku_override_index', false);
-				$settings['kommiku_override_index'] = false;
+				$kommiku_settings['kommiku_override_index'] = false;
 			}
 			
 			if(!get_option( 'kommiku_skin_directory' ))
@@ -1224,46 +1224,46 @@ function kommiku_settings() {
 			
 			if($_POST['apikey']) {
 				update_option('K_A_K', $_POST['apikey']);
-				$settings['key'] = $_POST['apikey'];
+				$kommiku_settings['key'] = $_POST['apikey'];
 				if(!get_option( 'K_A_K' ))
 					add_option("K_A_K", $_POST['apikey']);
 			} else {
 				update_option('K_A_K', '');
-				$settings['key'] = $_POST['apikey'];
+				$kommiku_settings['key'] = $_POST['apikey'];
 			}
 			
-			if($settings['one_comic'] != "")
-				update_option('kommiku_one_comic', $settings['one_comic']);
+			if($kommiku_settings['one_comic'] != "")
+				update_option('kommiku_one_comic', $kommiku_settings['one_comic']);
 			else
 				update_option('kommiku_one_comic', 'false');
 								
 			//Remove Trialing and Leading Slash
-			$settings['url'] = $db->trail($settings['url']);
-			$settings['upload'] = $db->trail($settings['upload']);
+			$kommiku_settings['url'] = $db->trail($kommiku_settings['url']);
+			$kommiku_settings['upload'] = $db->trail($kommiku_settings['upload']);
 			
 			//Check if the Directory Already Exist
 			$oldName = WP_LOAD_PATH.'/'.get_option( 'kommiku_comic_upload' );
-			$newName = WP_LOAD_PATH.'/'.$settings['upload'];
+			$newName = WP_LOAD_PATH.'/'.$kommiku_settings['upload'];
 				
 				if(is_dir($newName) && $oldName != $newName) {
-						$settings['error'] = __("The 'Upload Directory' you are trying to rename already exist.", 'kommiku');
-						$settings['upload'] = get_option( 'kommiku_comic_upload' );
-						$settings['fail']['upload'] = true;
+						$kommiku_settings['error'] = __("The 'Upload Directory' you are trying to rename already exist.", 'kommiku');
+						$kommiku_settings['upload'] = get_option( 'kommiku_comic_upload' );
+						$kommiku_settings['fail']['upload'] = true;
 					} else if($oldName != $newName) {
 						rename($oldName,$newName);
-						update_option('kommiku_comic_upload', $settings['upload']);
+						update_option('kommiku_comic_upload', $kommiku_settings['upload']);
 					}
 				
-				if(is_dir(KOMMIKU_FOLDER.'/themes/'.$settings['skin'])) {
-						$settings['pass'] = __("Your skin has been updated", 'kommiku');
-						update_option('kommiku_skin_directory', $settings['skin']);
+				if(is_dir(KOMMIKU_FOLDER.'/themes/'.$kommiku_settings['skin'])) {
+						$kommiku_settings['pass'] = __("Your skin has been updated", 'kommiku');
+						update_option('kommiku_skin_directory', $kommiku_settings['skin']);
 					} else {
-						if($settings['error']) $settings['error'] .= '<br/>';
-						$settings['error'] .= __('The skin does not exist', 'kommiku');
+						if($kommiku_settings['error']) $kommiku_settings['error'] .= '<br/>';
+						$kommiku_settings['error'] .= __('The skin does not exist', 'kommiku');
 					}
 					
-				if(!$settings['fail']) $settings['pass'] = __("Your Settings has been updated", 'kommiku');
-				update_option('kommiku_url_format', $settings['url']);
+				if(!$kommiku_settings['fail']) $kommiku_settings['pass'] = __("Your Settings has been updated", 'kommiku');
+				update_option('kommiku_url_format', $kommiku_settings['url']);
 			}
 			
 	include KOMMIKU_FOLDER.'/admin/settings.php';
@@ -1273,10 +1273,10 @@ function kommiku_settings() {
 function kommiku_install() {
 	global $wpdb;
 	
-	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.15');
+	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.16');
 
 	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.15');
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.16');
 	update_option('kommiku_version', KOMMIKU_VERSION);
 
 	//Plug Options

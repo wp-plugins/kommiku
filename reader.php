@@ -48,7 +48,7 @@ if(($isPage)) {
 	$pageOption = $kommiku['pageOption'];
 	
 	if(isset($chapter["number"])){
-		$chapter["next"] = $chapter["slug"].'/';	
+		$chapter["next"] = $chapter["slug"].'/';
 		$chapter["previous"] = $chapter["slug"].'/';
 	}
 	

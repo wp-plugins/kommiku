@@ -1,34 +1,36 @@
 <?php 
-	if(!$settings) {
-		$settings['url'] = get_option( 'kommiku_url_format' );
-		$settings['upload'] = get_option( 'kommiku_comic_upload' );
-		$settings['theme'] = get_option( 'kommiku_skin_directory' );
-		$settings['one_comic'] = get_option( 'kommiku_one_comic' );
-		$settings['skin'] = $settings['theme'];
-		$settings['key'] = get_option( 'K_A_K' );
-		$settings['scanlator_url'] = get_option( 'kommiku_scanlator' );
-		$settings['scanlator_enable'] = get_option( 'kommiku_scanlator_enabled' );
-		$settings['kommiku_override_index'] = get_option( 'kommiku_override_index' );
-		$settings['directory'] = get_option( 'kommiku_url_index' );
+
+	if(!$kommiku_settings) {
+		$kommiku_settings['url'] = get_option( 'kommiku_url_format' );
+		$kommiku_settings['upload'] = get_option( 'kommiku_comic_upload' );
+		$kommiku_settings['theme'] = get_option( 'kommiku_skin_directory' );
+		$kommiku_settings['one_comic'] = get_option( 'kommiku_one_comic' );
+		$kommiku_settings['skin'] = $kommiku_settings['theme'];
+		$kommiku_settings['key'] = get_option( 'K_A_K' );
+		$kommiku_settings['scanlator_url'] = get_option( 'kommiku_scanlator' );
+		$kommiku_settings['scanlator_enable'] = get_option( 'kommiku_scanlator_enabled' );
+		$kommiku_settings['kommiku_override_index'] = get_option( 'kommiku_override_index' );
+		$kommiku_settings['directory'] = get_option( 'kommiku_url_index' );
 	}
-	if($settings['kommiku_override_index']) $checkboxOver = ' checked=checked';
-	if($settings['scanlator_enable']) $checkboxOverTwo = ' checked=checked';
+	if($kommiku_settings['kommiku_override_index']) $checkboxOver = ' checked=checked';
+	if($kommiku_settings['scanlator_enable']) $checkboxOverTwo = ' checked=checked';
 	
-	$settings['list'] = getFileList(KOMMIKU_FOLDER.'/themes/');
-	if($settings['url']) $settings_url = $settings['url'].'/';
+	$kommiku_settings['list'] = getFileList(KOMMIKU_FOLDER.'/themes/');
+	if($kommiku_settings['url']) $kommiku_settings_url = $kommiku_settings['url'].'/';
 	//For no Slug to happen, we need a Series!
-	if($settings['one_comic'] == 'false') $settings['one_comic'] = '';
-	if(!$settings['scanlator_url']) {
+	if($kommiku_settings['one_comic'] == 'false') $kommiku_settings['one_comic'] = '';
+	if(!$kommiku_settings['scanlator_url']) {
 		add_option('kommiku_scanlator', 'author');
-		$settings['scanlator_url'] = 'author';
+		$kommiku_settings['scanlator_url'] = 'author';
 		}
+		
 ?>
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
 	<h2><?_e('Kommiku Settings', 'kommiku')?></h2>
-	<?php if ($post['pass'] || $settings['error']) { ?>
-		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204); margin-bottom: 0;"><p><?php echo $post['pass'].$settings['error']; ?></p></div>
+	<?php if ($post['pass'] || $kommiku_settings['error']) { ?>
+		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204); margin-bottom: 0;"><p><?php echo $post['pass'].$kommiku_settings['error']; ?></p></div>
 	<?php } ?>
 	<form method="post" action="admin.php?page=kommiku_settings" name="post">
 	<input name="what" value="settings" type="hidden"/>
@@ -42,8 +44,8 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="title" class="screen-reader-text"><?_e('Upload Directory', 'kommiku')?></label>
-						<input style="width: 100%; <?php if($settings['fail']['upload']) echo 'background: #ffeeee;'; ?>" type="text" autocomplete="off"  value="<?php echo $settings['upload']; ?>" tabindex="1" size="30" name="upload"/>
-						<p><?_e('The directory where your comics will be uploaded to.', 'kommiku')?><br/><?_e('Your comics will be uploaded to: ', 'kommiku')?><strong><?php echo get_bloginfo('url'); ?>/<?php echo $settings['upload']; ?>/</strong><br/><span style="font-style: italic;"><?_e('* Do not name your Upload Directory and Permalink the Same name.', 'kommiku')?></span></p>
+						<input style="width: 100%; <?php if($kommiku_settings['fail']['upload']) echo 'background: #ffeeee;'; ?>" type="text" autocomplete="off"  value="<?php echo $kommiku_settings['upload']; ?>" tabindex="1" size="30" name="upload"/>
+						<p><?_e('The directory where your comics will be uploaded to.', 'kommiku')?><br/><?_e('Your comics will be uploaded to: ', 'kommiku')?><strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['upload']; ?>/</strong><br/><span style="font-style: italic;"><?_e('* Do not name your Upload Directory and Permalink the Same name.', 'kommiku')?></span></p>
 					</div>
 				</div>
 			</div>
@@ -53,8 +55,8 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="url" class="screen-reader-text"><?_e('Permalink: Comic Base', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $settings['url']; ?>" tabindex="1" size="30" name="url"/>
-						<p><?_e('This is where you will view your comic.', 'kommiku')?><br/><?_e('Your current Permalinks to your Comic is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $settings['url']; ?>/[<?_e('Slug', 'kommiku')?>]</strong><br/><span style="font-style: italic;"><?_e('* Do not name your Upload Directory and Permalink the Same name.', 'kommiku')?></span><br/><span style="font-style: italic;"><?_e('* Blank  base-slug may be buggy.', 'kommiku')?></span></p>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['url']; ?>" tabindex="1" size="30" name="url"/>
+						<p><?_e('This is where you will view your comic.', 'kommiku')?><br/><?_e('Your current Permalinks to your Comic is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['url']; ?>/[<?_e('Slug', 'kommiku')?>]</strong><br/><span style="font-style: italic;"><?_e('* Do not name your Upload Directory and Permalink the Same name.', 'kommiku')?></span><br/><span style="font-style: italic;"><?_e('* Blank  base-slug may be buggy.', 'kommiku')?></span></p>
 					</div>
 				</div>
 			</div>
@@ -64,9 +66,9 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="url" class="screen-reader-text"><?_e('Url to Directory:', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$settings['directory']?>" tabindex="1" size="30" name="directory"/>
-						<p><?_e('Your current Permalinks to your Directory is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $settings['directory']; ?>/</strong>
-						<br/><?_e('And:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $settings['url']; ?>/</strong>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['directory']?>" tabindex="1" size="30" name="directory"/>
+						<p><?_e('Your current Permalinks to your Directory is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['directory']; ?>/</strong>
+						<br/><?_e('And:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['url']; ?>/</strong>
 						<br/><span style="font-style: italic;"><?_e("* This is your Directory Listing. Make sure it isn't the same as the Permalink/Upload Directory.", 'kommiku')?></span></p>
 					</div>
 				</div>
@@ -78,10 +80,10 @@
 					<div class="submitbox" style="padding: 5px;">
 					<select name="skin" style="width: 250px;">
 						<?php		
-						foreach ($settings['list'] as $row) {
+						foreach ($kommiku_settings['list'] as $row) {
 							$option = str_replace(KOMMIKU_FOLDER.'/themes/','',$row);
 							$option = $db->trail($option); 
-							if($option == $settings['skin'])
+							if($option == $kommiku_settings['skin'])
 								echo '<option value="'.$option.'" selected=selected>'.ucwords($option).'</option>';
 							else
 								echo '<option value="'.$option.'">'.ucwords($option).'</option>';
@@ -99,8 +101,8 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="one_comic" class="screen-reader-text"><?_e('Scanlator Features:', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$settings['scanlator_url']?>" tabindex="1" size="30" name="scanlator_url"/>
-						<p><?_e('Have multiple authors on your Kommiku?', 'kommiku')?><br/><?_e('This feature allows you to give proper credit to your authors.', 'kommiku')?><br/><?_e('Your authors will also get a unique page about them.', 'kommiku')?> <br/><br/><?_e('Permalink:', 'kommiku')?><br/><strong><?php echo get_bloginfo('url'); ?>/<?=$settings['scanlator_url']?>/</strong></p>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['scanlator_url']?>" tabindex="1" size="30" name="scanlator_url"/>
+						<p><?_e('Have multiple authors on your Kommiku?', 'kommiku')?><br/><?_e('This feature allows you to give proper credit to your authors.', 'kommiku')?><br/><?_e('Your authors will also get a unique page about them.', 'kommiku')?> <br/><br/><?_e('Permalink:', 'kommiku')?><br/><strong><?php echo get_bloginfo('url'); ?>/<?=$kommiku_settings['scanlator_url']?>/</strong></p>
 						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?=$checkboxOverTwo?>  value="1" name="scanlator_enable"/>
 
 					</div>
@@ -113,7 +115,7 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="one_comic" class="screen-reader-text"><?_e('Main Story', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$settings['one_comic']?>" tabindex="1" size="30" name="one_comic"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['one_comic']?>" tabindex="1" size="30" name="one_comic"/>
 						<p><?_e('This will switch Kommiku into the "One Story" Mode.', 'kommiku')?><br/><?_e("Type in the <strong>Main Story's slug</strong> to identify the Website's Main Story.", 'kommiku')?><br/><?_e('The Main Story\'s slug will be replace by the "Comic Base" (See Above)', 'kommiku')?><br/><?_e('All other stories will be hidden.', 'kommiku')?><br/><br/><?_e('Example of Permalink:', 'kommiku')?><br/><?_e('With Chapters:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/1/1/</strong><br/><?_e('Chapterless:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/1/</strong></p>
 						<?_e('Override the Index:', 'kommiku')?> <input type="checkbox"<?=$checkboxOver?>  value="1" name="override_index"/>
 
@@ -126,7 +128,7 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="apikey" class="screen-reader-text"><?_e('Key', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $settings['key']; ?>" tabindex="1" size="30" name="apikey"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['key']; ?>" tabindex="1" size="30" name="apikey"/>
 						<p><?_e('Give yourself the special features with the Kommiku Api Key!', 'kommiku')?><br/><?_e('Only given to special people... however.', 'kommiku')?></p>
 					</div>
 				</div>
