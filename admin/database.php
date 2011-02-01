@@ -204,7 +204,7 @@ Class kommiku_database {
 		}
 	}
 	
-	function view_counter_update($user_id,$ip_address,$series_id,$chapter_id = 0,$page_id = 0) {
+	function view_counter_update($ip_address,$series_id,$chapter_id = 0,$page_id = 0,$user_id = 0) {
 		global $wpdb;
 		$table = $wpdb->prefix."comic_counter";
 		$query = "UPDATE $table SET `value` = `value` + 1 WHERE `series_id` = '$series_id' AND `chapter_id` = '$chapter_id' AND `page_id` = $page_id AND `user_id` = '$user_id' AND `ip_address` = '$ip_address'";

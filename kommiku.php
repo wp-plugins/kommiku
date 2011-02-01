@@ -561,18 +561,18 @@ function counter_extension(){
 	if(get_option( 'kommiku_counter' )) {
 	$visitor_ip_address = $db->visitor_ip();
 		if($current_user) {
-			$data = $db->counter_read_user($current_user->ID,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			$data = $db->counter_read($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id'],$current_user->ID);
 			if(!$data['value']) {
-				$db->counter_create($current_user->ID,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+				$db->counter_create($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id'],$current_user->ID);
 			} else {
-				$db->view_counter_update($current_user->ID,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+				$db->view_counter_update($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id'],$current_user->ID);
 			}
 		} else {
 			$data = $db->counter_read($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
 			if(!$data['value']) {
-				$db->counter_create(0,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+				$db->counter_create($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
 			} else {
-				$db->view_counter_update(0,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+				$db->view_counter_update($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
 			}
 		}
 	}	
