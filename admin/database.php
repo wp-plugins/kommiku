@@ -102,6 +102,116 @@ Class kommiku_database {
 		return $str;
 	}
 	
+	function get_top_rated($count = 10) {
+		global $wpdb;
+
+		$result = $wpdb->get_var("
+			SELECT *, 
+			
+			(SELECT sum(`".$wpdb->prefix."comic_counter`.rating)
+			FROM `".$wpdb->prefix."comic_counter`
+			WHERE `".$wpdb->prefix."comic_counter`.series_id = `".$wpdb->prefix."comic_series`.id) as total_rating,
+			
+			(SELECT count(*)
+			FROM `".$wpdb->prefix."comic_counter`
+			WHERE `".$wpdb->prefix."comic_counter`.series_id = `".$wpdb->prefix."comic_series`.id AND `".$wpdb->prefix."comic_counter`.rating IS NOT NULL) as total_votes
+			
+			FROM `".$wpdb->prefix."comic_series`
+			ORDER by total_rating DESC
+			LIMIT 0 , ".$count
+		);
+		
+		return $result;
+	
+	
+	function counter_create($ip_address,$series_id,$chapter_id = 0,$page_id = 0,$user_id = 0) {
+	    global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+	  	$wpdb->insert( $table , 
+	 
+	  	array( 'user_id' => $user_id,
+	  		   'ip_address' => $ip_address,  
+	  		   'series_id' => $series_id, 
+	  		   'chapter_id' => $chapter_id,
+	  		   'page_id' => $page_id,
+	  		   'value' => 1
+	  		 ), 
+	  	
+	  	array( '%d', 
+	  	       '%s',
+	  	       '%d',
+	  	       '%d',
+	  	       '%d',
+	  	       '%d'
+	  	       )  
+	  	    );
+	
+	}
+	
+	function counter_read($ip,$series_id,$chapter_id = 0,$page_id = 0,$user_id = 0) {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+		
+		if($ip) $ipWord = " AND ip_address = '$ip'";
+		
+		$result = $wpdb->get_var("SELECT value FROM `".$table."` 
+		WHERE user_id = '".$user_id."' 
+		AND series_id = '".$series_id."'
+		AND chapter_id = '".$chapter_id."'
+		AND page_id = '".$page_id."'".$ipWord);
+		
+		return $result;
+	}
+		
+	function visitor_ip() {
+		if ( isset($_SERVER["REMOTE_ADDR"]) )    {
+		    return $_SERVER["REMOTE_ADDR"];
+		} else if ( isset($_SERVER["HTTP_X_FORWARDED_FOR"]) )    {
+		    return $_SERVER["HTTP_X_FORWARDED_FOR"];
+		} else if ( isset($_SERVER["HTTP_CLIENT_IP"]) )    {
+		    return $_SERVER["HTTP_CLIENT_IP"];
+		}
+	}
+	
+	function get_rating($series_id,$chapter_id,$page_id) {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+		$results = $wpdb->get_var("SELECT sum(rating)/count(*) FROM `$table` WHERE series_id = '$series_id' AND chapter_id = '$chapter_id' AND page_id = '$page_id' AND rating IS NOT NULL");
+		return $results/4;
+	}
+	
+	function get_my_rating($ip_address,$series_id,$chapter_id = 0,$page_id = 0,$user_id = 0) {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+		$results = $wpdb->get_var("SELECT rating FROM `$table` WHERE series_id = '$series_id' AND chapter_id = '$chapter_id' AND page_id = '$page_id' AND `ip_address` = '$ip_address'  AND `user_id` = '$user_id'");
+		return $results;
+	}
+	
+	function get_votes($series_id,$chapter_id = 0,$page_id = 0) {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+		$results = $wpdb->get_var("SELECT count(*) FROM `$table` WHERE series_id = '$series_id' AND chapter_id = '$chapter_id' AND page_id = '$page_id' AND rating IS NOT NULL");
+		return $results;
+	}
+	
+	function rating_counter_update($ip_address,$series_id,$chapter_id = 0,$page_id = 0,$rating,$user_id = 0) {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+		$query = "UPDATE $table SET `rating` = $rating WHERE `series_id` = '$series_id' AND `chapter_id` = '$chapter_id' AND `page_id` = $page_id AND `user_id` = '$user_id' AND `ip_address` = '$ip_address'";
+		if(is_numeric($chapter_id) && is_numeric($page_id)) {
+			$wpdb->query($query); 
+		}
+	}
+	
+	function view_counter_update($user_id,$ip_address,$series_id,$chapter_id = 0,$page_id = 0) {
+		global $wpdb;
+		$table = $wpdb->prefix."comic_counter";
+		$query = "UPDATE $table SET `value` = `value` + 1 WHERE `series_id` = '$series_id' AND `chapter_id` = '$chapter_id' AND `page_id` = $page_id AND `user_id` = '$user_id' AND `ip_address` = '$ip_address'";
+		if(is_numeric($chapter_id) && is_numeric($page_id)) {
+			$wpdb->query($query); 
+		}
+	}
+	
 	function slug($str) {
 		
 		$str = str_replace("'","",$str);

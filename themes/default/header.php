@@ -3,13 +3,14 @@
 
 <head profile="http://gmpg.org/xfn/11">
 <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>" />
-<meta name="verify-v1" content="7YiiQpKh1EANB6FBOCa73EhYQr6wbAORUoOnu8a0CkU=" />
 
 <title><?php kommiku_title(); ?> | <?php bloginfo('name'); ?></title>
 
 <link rel="stylesheet" href="<?php kommiku_css(); ?>" type="text/css" media="screen" />
-<link rel="alternate" type="application/rss+xml" title="<?php bloginfo('name'); ?> RSS Feed" href="<?php bloginfo('rss2_url'); ?>" />
+<link rel="alternate" type="application/rss+xml" title="<?=$series['title']?> RSS Feed |<?php bloginfo('name'); ?>" href="<?=HTTP_HOST.get_option( "kommiku_url_feed" ).'/'.$series["slug"]; ?>" />
 <link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
+
+<?php kommiku_rating_header();?>
 
 </head>
 <body>

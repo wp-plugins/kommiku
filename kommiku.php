@@ -1,14 +1,14 @@
 <?php
 /*
 Plugin Name: Kommiku Viewer
-Version: 2.1.16
+Version: 2.2
 Plugin URI: http://dotspiral.com/kommiku/
 Description: Kommiku is a Online Media Viewer.
 Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.1.16' );
+define('KOMMIKU_VERSION', '2.2' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -47,30 +47,72 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	if (($var != 'PATH_INFO') && isset($_SERVER['PATH_INFO'])) {
 		kommiku_fancy_url('PATH_INFO');
 	}
-	
-	$searchURL = explode('?',$req);
-
-	if($searchURL[0] == "/find") {
-		$searchExplosion = explode('=',$searchURL[1]);
-		header('Location: '.HTTP_HOST.'find/'.$searchExplosion[1].'/');
-		exit;
-	}	
-	
+		
 	$explodeURL = array_slice(explode('/',$req),1,5);
 	$checkExplosion = $explodeURL;
 	$unecessaryThing = array_shift($checkExplosion);
 	if($checkExplosion[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '' && !get_option('kommiku_one_comic')) 
 		$explodeURL = $checkExplosion;
 	unset($checkExplosion);
-	
+
 	$rootWords = km_get_root();
-	$takenRoot = array(KOMMIKU_URL_FORMAT,KOMMIKU_URL_INDEX,"find");
-	if($rootWords != KOMMIKU_URL_FORMAT && !in_array($explodeURL[0],$takenRoot)) {
+	$takenRoot = array(KOMMIKU_URL_FORMAT,KOMMIKU_URL_INDEX,get_option('kommiku_url_search'),get_option('kommiku_url_feed'),'kommiku-post');
+	if($rootWords != KOMMIKU_URL_FORMAT && !in_array($explodeURL[0],$takenRoot) && get_option('kommiku_url_format') != '') {
 		array_shift($explodeURL);
+	}
+	
+	//RSS
+	if(strtolower($explodeURL[0]) == get_option('kommiku_url_feed')) {
+		$kommiku['manga'] = true;
+		$kommiku['series'] = strtolower($explodeURL[1]);
+		$kommiku['feed'] = true;
+	}
+	
+	$searchURL = explode('?',$req);
+	//Search!
+	if($searchURL[0] == "/".get_option('kommiku_url_search')) {
+		$searchExplosion = explode('=',$searchURL[1]);
+		header('Location: '.HTTP_HOST.get_option("kommiku_url_search").'/'.$searchExplosion[1].'/');
+		exit;
+	}
+
+	if(strtolower($explodeURL[0]) == "kommiku-post"){
+		
+		global $current_user;
+		require_once(KOMMIKU_FOLDER.'/admin/database.php');
+		$db = new kommiku_database();
+		if(is_numeric($explodeURL[1]) && $_POST["v"] ){
+			$visitor_ip_address = $db->visitor_ip();
+			if(!is_numeric($explodeURL[2])) $explodeURL[2] = "0";
+			if(!is_numeric($explodeURL[3])) $explodeURL[3] = "0";
+		    if(!is_numeric($_POST["v"])) $_POST["v"] = "NULL";
+			if(get_option( 'kommiku_rating' )) {
+				if($current_user->ID) {
+					$data = $db->counter_read($explodeURL[1],$explodeURL[2],$explodeURL[3],$current_user->ID);
+					if(!$data['value']) {
+						$db->counter_create($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3],$current_user->ID);
+						$db->rating_counter_update($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3],$_POST["v"],$current_user->ID);
+					} else {
+
+						$db->rating_counter_update($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3],$_POST["v"],$current_user->ID);
+					}
+				} else {
+					$data = $db->counter_read($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3]);
+					if(!$data['value']) {
+						$db->counter_create($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3]);
+						$db->rating_counter_update($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3],$_POST["v"]);
+					} else {
+						$db->rating_counter_update($visitor_ip_address,$explodeURL[1],$explodeURL[2],$explodeURL[3],$_POST["v"]);
+					}
+				}
+			echo $db->get_rating($explodeURL[1],$explodeURL[2],$explodeURL[3]);
+			}	
+    	}  
+    	exit;
 	}
 
 	//Replace Index
-	if(get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') == true) {
+	if(get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') != false) {
 		$kommiku['one_comic'] = true;
 		$kommiku['override'] = true;
 		if($explodeURL[0] == ''){
@@ -84,13 +126,21 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 		}
 	}
 	
-	if(strtolower($explodeURL[0]) == "find" && $explodeURL[1]) {
+	if(get_option('kommiku_url_format') == '' && $explodeURL[0] != '') {
+		global $wpdb;
+		$kommiku['series'] = strtolower($explodeURL[0]);
+		if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
+			$kommiku['manga'] = true;
+			$kommiku['chapter'] = $explodeURL[1];
+			$kommiku['pages'] = $explodeURL[2];
+	} else
+	if(strtolower($explodeURL[0]) == get_option("kommiku_url_search") && $explodeURL[1]) {
 		$kommiku['manga'] = true;
 		$kommiku['find'] = $explodeURL[1];
 	} else if($explodeURL[0] == KOMMIKU_URL_INDEX) {
 		$kommiku['manga'] = true;
 		if($explodeURL[0] != '')
-		$kommiku['category'] = $explodeURL[1];
+			$kommiku['category'] = $explodeURL[1];
 	} else if($explodeURL[0] == KOMMIKU_URL_FORMAT && $explodeURL[0] != '') {
 		//If you are only hosting one series on the site
 		if(get_option('kommiku_one_comic') != 0 && get_option('kommiku_one_comic') != false) {
@@ -100,11 +150,11 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 			$kommiku['pages'] = $explodeURL[2];
 		} else if($explodeURL[1] != '') {
 			global $wpdb;
+			$kommiku['chapter'] = $explodeURL[2];
+			$kommiku['pages'] = $explodeURL[3];
 			$kommiku['series'] = strtolower($explodeURL[1]);
 			if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
 				$kommiku['manga'] = true;
-			$kommiku['chapter'] = $explodeURL[2];
-			$kommiku['pages'] = $explodeURL[3];
 		} else {
 			$kommiku['manga'] = true;
 		} 
@@ -118,7 +168,7 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 				$kommiku['series'] = get_option( 'kommiku_one_comic' );
 				$kommiku['chapter'] = $explodeURL[0];
 				$kommiku['pages'] = $explodeURL[1];
-			} else {
+			} else if(!$kommiku['series']) {
 				global $wpdb;
 				$kommiku['series'] = $explodeURL[0];
 				if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
@@ -134,54 +184,145 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 add_action('init', 'kommiku_fancy_url');
 add_action('init', 'kommiku_source');
 
+//Blocks
+
 function kommiku_header() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;
-		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/header.php';
-		return;
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/header.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/header.php';
+	else
+		include KOMMIKU_FOLDER.'/themes/default/header.php';
+		
+	return;
 }
 
-
-//Blocks
 function kommiku_sidebar_category_list() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
-		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/sidebar_category_list.php';
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/sidebar_category_list.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/sidebar_category_list.php';
+	else
+		include KOMMIKU_FOLDER.'/themes/default/blocks/sidebar_category_list.php';
 		return;
 }
 
 function kommiku_series_table_list() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/series_table_list.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/series_table_list.php';
+	else
 		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/series_table_list.php';
 		return;
 }
 
 function kommiku_series_information() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
-		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/series_information.php';
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/series_information.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/series_information.php';
+	else
+		include KOMMIKU_FOLDER.'/themes/default/blocks/series_information.php';
 		return;
 }
 
 function kommiku_chapter_table_list() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
-		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/chapter_table_list.php';
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/chapter_table_list.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/chapter_table_list.php';
+	else
+		include KOMMIKU_FOLDER.'/themes/default/blocks/chapter_table_list.php';
 		return;
 }
 
 function kommiku_page_navigation() {
 	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
-		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/blocks/page_navigation.php';
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/page_navigation.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/page_navigation.php';
+	else
+		include KOMMIKU_FOLDER.'/themes/default/blocks/page_navigation.php';
 		return;
 }
-//End of blocks
+
+function kommiku_rating() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category;
+	
+	if(get_option( 'kommiku_rating' )) {
+		if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/rating.php'))
+			include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/rating.php';
+		else
+			include KOMMIKU_FOLDER.'/themes/default/blocks/rating.php';
+	}
+	
+	return;
+}
+
+function kommiku_rating_header() {  if(get_option( 'kommiku_rating' )) { ?>
+	<script type='text/javascript' src='<?=KOMMIKU_URLPATH?>extension/jquery.js'></script>
+	<script type='text/javascript' src='<?=KOMMIKU_URLPATH?>extension/five-star-rater/jquery.MetaData.js'></script>
+	<script type='text/javascript' src='<?=KOMMIKU_URLPATH?>extension/five-star-rater/jquery.rating.pack.js'></script>
+	<?php global $voteCount, $voteRating, $voteMyRating, $voteUrl; ?>
+	<script type="text/javascript">
+		var iVoted = <?=$voteMyRating?>;
+		var voteCount = <?=$voteCount?>;
+		$j=jQuery.noConflict();
+		$j(function(){
+		 $j('.star').rating({
+		  callback: function(value, link){
+		   
+			$j.ajax({
+				type: "POST",
+				url: "/kommiku-post/<?=$voteUrl?>",
+				data: "v="+value,
+				dataType: "text",
+				success: function(data){ 
+					if (data) {
+						$j('#voteRating').text(data);
+						if(data == 0 && iVoted > 0) {
+							voteCount--;
+						} else if(data > 0 && iVoted == 0) {
+							voteCount++;
+							iVoted = 1;
+						}
+						$j('#voteNumber').text(voteCount); 
+					} else {
+						alert("Something went wrong! We couldn't record your rating");
+					}
+				 }
+			 });
+			  
+		  }
+		 });
+		});
+	</script>
+<?php }
+} 
 
 function kommiku_css() {
 
-	if(file_exists(KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/style.css'))
-		echo KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/style.css';
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/rating.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/rating.php';	
 	else 
-		echo KOMMIKU_URLPATH.'themes/'.KOMMIKU_SKIN.'/stylesheets/main.css';
+		echo KOMMIKU_URLPATH.'themes/default/stylesheets/main.css';
 
 	return;
 }
+
+function kommiku_footer() {
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;
+	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/footer.php'))
+		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/footer.php';
+	else
+		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/footer.php';
+		
+	return;
+}
+
+//End of blocks
 
 function kommiku_title() {
 		global $kommiku;
@@ -191,19 +332,13 @@ function kommiku_title() {
 
 define('K_A_K', get_option( 'K_A_K' ));
 
-function kommiku_footer() {
-	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;
-		include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/footer.php';
-		return;
-}
-
 function kommiku_source(){
-	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category,$db;	
+	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter, $category, $db ,$current_user;	
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
-
+		
 	load_plugin_textdomain('kommiku', false, dirname( plugin_basename(__FILE__) ) . '/lang');
-	
+		
 	$kommiku['scanlator_feature'] = get_option('kommiku_scanlator_enabled');	
 	if($kommiku['scanlator']) {
 		$scanlator = $wpdb->get_row("SELECT * FROM `".$wpdb->prefix."comic_scanlator` WHERE slug = '".$kommiku['scanlator_slug']."'", ARRAY_A);
@@ -211,15 +346,15 @@ function kommiku_source(){
 			$kommiku['seotitle'] = K_SCANLATOR_URL.": ". $scanlator['title'];
 			$kommiku['description'] = "Information on ".K_SCANLATOR_URL.": ".$scanlator['title'];	
 			$scanlator['releases'] = $db->scanlators_chapter($scanlator['slug']);
-			include KOMMIKU_FOLDER.'/extension/scanlator/body_scanlator_detail.php';
+			include WP_LOAD_PATH.'/_kommiku/extension/body_scanlator_detail.php';
 		} else {
 			$kommiku['description'] = "A page or directory displaying a List of ".K_SCANLATOR_URL;	
 			$kommiku['seotitle'] = K_SCANLATOR_URL."Listings";
-			include KOMMIKU_FOLDER.'/extension/scanlator/body_scanlator.php';
+			include WP_LOAD_PATH.'/_kommiku/extension/body_scanlator.php';
 		}
 		exit;
 	}	
-				
+					
 	if($kommiku['manga'])	{
 						
 		if($kommiku['find']) {
@@ -228,20 +363,24 @@ function kommiku_source(){
 			$kommiku['description'] = __("Search Results for: ", 'kommiku').$kommiku['find'];	
 			$kommiku['keyword'] = "Manga, Comics, ".$kommiku['find'];		
 			$kommiku['seotitle'] = __('Search Results for: ', 'kommiku')."'".$kommiku['find'].'"';
-			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_search.php';
+			
+			if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_search.php')) //Chosen
+				include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_search.php'; 
+			else
+				include KOMMIKU_FOLDER.'/themes/default/body_search.php';
+				
 			exit;
 		}		
 				
-		if($kommiku['category'] == 'complete') {
+		#if($kommiku['category'] == 'complete') {
 			#Seo Feature
 			#$kommiku['keyword'] = "Manga, Comics,Completed Series";
 			#$kommiku['description'] = "Completed stories by various authors and illustrators.";
-		} else if($kommiku['category']) {
+		/*} else */ if($kommiku['category']) {
 			$category = $db->category_detail($kommiku['category']);
 			$category["url"] = HTTP_HOST.KOMMIKU_URL_INDEX.'/'.$category["slug"].'/';
-			$category["name"] = ucfirst($category["name"]);
+			$category["name"] = ucfirst($category["title"]);
 			$category["list"] = $db->category_read();
-			#$kommiku['keyword'] = "Manga, Comics, Tosho, Toshokan, Library";
 			$kommiku['description'] = __("Dead page is Dead.", 'kommiku');
 			if ($category["name"]) {
 				$kommiku['keyword'] .= ', '.$category["name"];
@@ -251,7 +390,12 @@ function kommiku_source(){
 				$kommiku['seotitle'] = __('OMG! 404?! ', 'kommiku'); 
 			}
 			$search_results = $db->search_category($kommiku['category']);
-			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_category.php';
+			
+			if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_category.php'))
+				include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_category.php';
+			else
+				include KOMMIKU_FOLDER.'/themes/default/body_category.php';
+				
 			exit;
 		}
 				
@@ -276,15 +420,17 @@ function kommiku_source(){
 			$kommiku['chapter_id']  = $wpdb->get_var("SELECT max(id) FROM `".$wpdb->prefix."comic_chapter`"); 			
 		}
 		
-		if(isset($kommiku['chapter']) || is_numeric($kommiku['chapter_id'])) {
+		if(isset($kommiku['chapter']) || is_numeric($kommiku['chapter_id'] && $kommiku['chapter'] != '')) {
 			if(!$kommiku['chapter_id']) $kommiku['chapter_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_chapter` WHERE series_id = '".$kommiku['series_id']."' AND slug = '".$kommiku['chapter']."'"); 
 			$chapter = $db->chapter_detail($kommiku['chapter_id']);
-			$kommiku['seotitle'] .= " : Chapter ".$chapter['number'];
-			$kommiku['slug']['chapter'] = $chapter['slug'];	
-			$kommiku['number']['chapter'] = $chapter['number'];
-			$kommiku["breacrumb"] = "Chapter ".$kommiku["number"]["chapter"]." ";
-			$kommiku['title']['chapter'] = $chapter['title'];
-			if($chapter['slug']) $kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
+			if($chapter['slug']) {
+				$kommiku['seotitle'] .= " : Chapter ".$chapter['slug'];
+				$kommiku['slug']['chapter'] = $chapter['slug'];	
+				$kommiku['number']['chapter'] = $chapter['number'];
+				$kommiku["breacrumb"] = "Chapter ".$kommiku["number"]["chapter"]." ";
+				$kommiku['title']['chapter'] = $chapter['title'];
+				$kommiku['url']['chapter'] = $series['url'].$chapter['slug']."/";
+			}
 		}
 			
 		if(empty($kommiku['chapter_id'])) {
@@ -330,20 +476,64 @@ function kommiku_source(){
 			};	
 			
 		if(!$series['chapterless'])
-			$kommiku['series_chapter'] = $db->series_chapter($series['id']);
+			$kommiku['series_chapter'] = $db->series_chapter($kommiku['series_id']);
 		else
-			$kommiku['series_pages'] = $db->series_pages($series['id']);
+			$kommiku['series_pages'] = $db->series_pages($kommiku['series_id']);
 
+		if($kommiku['feed']) {
+			if(!$kommiku['series_chapter'] && !$kommiku['series_pages']){
+				$tableA = $wpdb->prefix."comic_series";
+				$tableB = $wpdb->prefix."comic_chapter";
+				$query = "
+				SELECT 
+					$tableB.slug as chapter_slug,
+					$tableB.pubdate as date, 
+					$tableA.title as series_name, 
+					$tableA.slug as series_slug 
+				FROM $tableA,$tableB 
+				WHERE $tableA.id = $tableB.series_id
+				ORDER BY $tableB.pubdate DESC ";
+				$queryA .= $query."LIMIT 0,15";
+				$kommiku['series_list_raw'] = $wpdb->get_results( $queryA );	
+			}
+			include KOMMIKU_FOLDER.'/extension/feed.php';
+		} else 
+			
+		if(get_option('kommiku_rating')) {
+			global $voteUrl, $voteMyRating, $voteRating, $voteCount, $current_user;
+			$voteRating = $db->get_rating($series['id'],$chapter['id'],$page['id']); 
+ 			$voteCount = $db->get_votes($series['id'],$chapter['id'],$page['id']); 
+ 			
+				$visitor_ip_address = $db->visitor_ip();
+				$voteMyRating = $db->get_my_rating($visitor_ip_address,$series['id'],$chapter['id'],$page['id'],$current_user->ID); 
+
+ 			if (!$voteRating) $voteRating = 0;
+ 			if (!$voteCount) $voteCount = 0;
+ 			if (!$voteMyRating) $voteMyRating = 0;
+ 				
+			$voteUrl = $series['id']; 
+			if($chapter['id']) $voteUrl .= '/'.$chapter['id'].'/'; 
+			if($page['id']) $voteUrl .= $page['id'].'/'; 
+		}
+		
 		//Page, Chapter, Series		
 		if((!empty($kommiku['series']) && isset($kommiku['chapter']) && $kommiku['page']) || 
 			(!empty($kommiku['series_id']) && isset($kommiku['chapter_id']) && !empty($kommiku['page_id']))){
+			counter_extension();
 			$isPage = true; 
-			include KOMMIKU_FOLDER.'/reader.php';		
-			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';
+			include KOMMIKU_FOLDER.'/reader.php';
+			if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_page.php'))
+				include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_page.php';
+			else
+				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';
 		//Series
 		} else if(!empty($kommiku['series']) && $kommiku['series'] != 'index.php' && !$kommiku['one_comic']) {
 			$isChapter = true; 
-			include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
+			counter_extension();
+			if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_chapter.php'))
+				include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
+			else
+				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_chapter.php';
 		//Main Page with no Series Selected
 		} else {
 			$chapterUpdates = $db->chapter_update_list();
@@ -352,6 +542,8 @@ function kommiku_source(){
 			$category["list"] = $db->category_read();
 			if($kommiku['override'])
 				header('Location:'.HTTP_HOST);
+			else if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_index.php'))
+				include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_index.php';
 			else
 				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_index.php';
 		}
@@ -362,6 +554,30 @@ function kommiku_source(){
 	unset($db);
 	
 }
+
+//Counter System and Function
+function counter_extension(){
+	global $kommiku, $db, $current_user;
+	if(get_option( 'kommiku_counter' )) {
+	$visitor_ip_address = $db->visitor_ip();
+		if($current_user) {
+			$data = $db->counter_read_user($current_user->ID,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			if(!$data['value']) {
+				$db->counter_create($current_user->ID,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			} else {
+				$db->view_counter_update($current_user->ID,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			}
+		} else {
+			$data = $db->counter_read($visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			if(!$data['value']) {
+				$db->counter_create(0,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			} else {
+				$db->view_counter_update(0,$visitor_ip_address,$kommiku['series_id'],$kommiku['chapter_id'],$kommiku['page_id']);
+			}
+		}
+	}	
+}
+
 
 define('V32c7148e', K_A_K);
 	
@@ -630,11 +846,14 @@ function kommiku() {
 								$status['error'] .= __('The series could not be renamed: <br/>', 'kommiku').'<br/>From: '.UPLOAD_FOLDER.'/'.$_OLD['slug'].'/<br/>To '.UPLOAD_FOLDER.'/'.$_CLEAN['slug'].'/';
 							}
 						}
+						$chapterless = $wpdb->get_var("SELECT chapterless FROM `".$wpdb->prefix."comic_series` WHERE id = '".$_CLEAN['series_id']."'");
 						$db->series_update($_CLEAN['series_id'],$_CLEAN['title'],$_CLEAN['slug'],stripslashes($_CLEAN['summary']),$chapterless,$_POST['categories'],$_CLEAN['author'],$_CLEAN['illustrator'],$_POST['read'],$_CLEAN['creation'],$_CLEAN['alt_name'],$_POST['status'],$_POST['mature'],$story_type,$_CLEAN['img']);
 						$status['pass'] .= __('The Series has been updated.<br/>', 'kommiku');						
 
 						if($_POST['destination'] == 'chapter')
 							kommiku_model_chapter();
+						else if($_POST['destination'] == 'page')
+							kommiku_model_page();
 						else
 							kommiku_model_series();
 					}
@@ -1015,7 +1234,7 @@ class chapter_lister extends WP_Widget {
 	 */
 	function chapter_lister() {
 		/* Widget settings. */
-		$widget_ops = array( 'classname' => 'kchapter-lister', 'description' => __('A widget that lists the Stories under the Kommiku plugin.', 'Kommiku: Chapter Lister', 'kommiku') );
+		$widget_ops = array( 'classname' => 'kchapter-lister', 'description' => __("A widget that lists the Story's Chapter under the Kommiku plugin.", 'Kommiku: Chapter Lister', 'kommiku') );
 
 		/* Widget control settings. */
 		$control_ops = array( 'width' => 300, 'height' => 350, 'id_base' => 'kommiku-chapter-lister-widget' );
@@ -1162,6 +1381,11 @@ function kommiku_settings() {
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
 			
+		//Auto Updater
+		if(KOMMIKU_VERSION != get_option('kommiku_version')){
+			kommiku_install();
+		}
+		
 		if ($_POST['what'] == "settings" && $_POST['action'] == "update") {
 			$kommiku_settings['one_comic'] = $db->clean($_POST['one_comic']);
 			$kommiku_settings['url'] = $db->clean($_POST['url']);
@@ -1194,6 +1418,38 @@ function kommiku_settings() {
 				$kommiku_settings['scanlator_enable'] = false;
 			}
 			
+			if($_POST['counter_enable'] == 1){
+				update_option('kommiku_counter', true);
+				$kommiku_settings['counter_enable'] = $_POST['counter_enable'];
+			} else {
+				update_option('kommiku_counter', false);
+				$kommiku_settings['counter_enable'] = false;
+			}
+			
+			if($_POST['rating_enable'] == 1){
+				update_option('kommiku_rating', true);
+				$kommiku_settings['rating_enable'] = $_POST['rating_enable'];
+			} else {
+				update_option('kommiku_rating', false);
+				$kommiku_settings['rating_enable'] = false;
+			}
+			
+			if($_POST['search_enable'] == 1){
+				update_option('kommiku_search_enable', true);
+				$kommiku_settings['search_enable'] = $_POST['search_enable'];
+			} else {
+				update_option('kommiku_search_enable', false);
+				$kommiku_settings['search_enable'] = false;
+			}
+			
+			if($_POST['feed_enable'] == 1){
+				update_option('kommiku_feed_enable', true);
+				$kommiku_settings['feed_enable'] = $_POST['feed_enable'];
+			} else {
+				update_option('kommiku_feed_enable', false);
+				$kommiku_settings['feed_enable'] = false;
+			}
+			
 			if($_POST['directory']){
 				update_option('kommiku_url_index', urlencode($_POST['directory']));
 				$kommiku_settings['directory'] = $_POST['directory'];
@@ -1203,6 +1459,28 @@ function kommiku_settings() {
 			
 				update_option('kommiku_url_index', 'directory');
 				$kommiku_settings['directory'] = 'directory';
+			}
+			
+			if($_POST['search']){
+				update_option('kommiku_url_search', urlencode($_POST['search']));
+				$kommiku_settings['search'] = $_POST['search'];
+			} else {
+				if(!get_option( 'kommiku_url_search' ))
+				add_option("kommiku_url_search", 'search');
+			
+				update_option('kommiku_url_search', 'find');
+				$kommiku_settings['search'] = 'find';
+			}
+			
+			if($_POST['feed']){
+				update_option('kommiku_url_feed', urlencode($_POST['feed']));
+				$kommiku_settings['feed'] = $_POST['feed'];
+			} else {
+				if(!get_option( 'kommiku_url_feed' ))
+				add_option("kommiku_url_feed", 'feed');
+			
+				update_option('kommiku_url_feed', 'rss');
+				$kommiku_settings['feed'] = 'rss';
 			}
 			
 			if($_POST['override_index'] == 1){
@@ -1254,8 +1532,8 @@ function kommiku_settings() {
 						update_option('kommiku_comic_upload', $kommiku_settings['upload']);
 					}
 				
-				if(is_dir(KOMMIKU_FOLDER.'/themes/'.$kommiku_settings['skin'])) {
-						$kommiku_settings['pass'] = __("Your skin has been updated", 'kommiku');
+				if(is_dir(WP_LOAD_PATH.'_kommiku/themes/'.$kommiku_settings['skin']) || ($kommiku_settings['skin'] == 'default')) {
+						$kommiku_settings['pass'] = __("Your theme selection has been updated", 'kommiku');
 						update_option('kommiku_skin_directory', $kommiku_settings['skin']);
 					} else {
 						if($kommiku_settings['error']) $kommiku_settings['error'] .= '<br/>';
@@ -1273,15 +1551,21 @@ function kommiku_settings() {
 function kommiku_install() {
 	global $wpdb;
 	
-	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.1.16');
+	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.2');
 
 	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.1.16');
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.2');
 	update_option('kommiku_version', KOMMIKU_VERSION);
 
 	//Plug Options
 	$kommiku_values = array('kommiku_comic_upload' => 'comics',
+							'kommiku_counter' => false,
+							'kommiku_rating' => false,
+							'kommiku_feed_enable' => true,
+							'kommiku_search_enable' => true,
 							'kommiku_url_format' => 'manga',
+							'kommiku_url_feed' => 'rss',
+							'kommiku_url_search' => 'find',
 							'kommiku_lang' => 'english',
 							'kommiku_skin_directory' => 'default',
 							'kommiku_one_comic' => false,
@@ -1299,6 +1583,13 @@ function kommiku_install() {
 	if(!is_dir(WP_LOAD_PATH."/".get_option( 'kommiku_comic_upload' )))
 		mkdir(WP_LOAD_PATH."/".get_option( 'kommiku_comic_upload' ), 0755);
 
+	//Custom Stuff!
+	if(!is_dir(WP_LOAD_PATH."/_kommiku" )) {
+		mkdir(WP_LOAD_PATH."/_kommiku" , 0755);
+		mkdir(WP_LOAD_PATH."/_kommiku/themes" , 0755);
+		mkdir(WP_LOAD_PATH."/_kommiku/extensions", 0755);
+		}
+		
 	//Create and Update the Tables
 	$table = 'comic_series';		
 	$attribute[$table] = array('id' => 'int(9) NOT NULL AUTO_INCREMENT',
@@ -1316,6 +1607,16 @@ function kommiku_install() {
 				'rating' => 'int(1) NOT NULL',
 				'type' => 'int(1) NOT NULL',
 				'img' => 'varchar(255) NOT NULL');
+	$columns[$table] = array_keys($attribute[$table]);
+	
+	$table = 'comic_counter';		
+	$attribute[$table] = array('user_id' => 'BIGINT(20) NOT NULL',
+				'ip_address' => 'varchar(15) NOT NULL',
+				'series_id' => 'INT(9) NOT NULL',
+				'chapter_id' => 'INT(9) NOT NULL',
+				'page_id' => 'INT(9) NOT NULL',
+				'rating' => 'INT(2) NULL',
+				'value' => 'INT(1) NOT NULL');
 	$columns[$table] = array_keys($attribute[$table]);
 	
 	$table = 'comic_chapter';		

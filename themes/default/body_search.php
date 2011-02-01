@@ -20,7 +20,7 @@ $alphabets = array('Series','Categories','Tags','Author','Illustrator');
 	}	
 ?>	
 
-<div style="padding: 20px;">
+<div style="padding: 20px; width: 600px; margin: 0 auto;">
 	<?php if ($result) { ?>
 	<h2 style="margin-bottom: 0px;"><a href="<?=$category["url"]?>"><?=$category["name"]?></a></h2>
 	<div id="tosho-index">

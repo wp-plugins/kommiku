@@ -14,7 +14,8 @@ if($wpdb->get_var("SELECT number FROM ".$table." WHERE number = '".$_CLEAN['numb
 	if (($_POST['action'] != 'update') || ($_POST['action'] == "update" && $_OLD['number'] != $_CLEAN['number']))
 		$chapter['fail']['number']['duplicate'] = true;
 
-if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."'") == $_CLEAN['slug']) 
+//Fantasier fix here
+if($wpdb->get_var("SELECT slug FROM `".$table."` WHERE slug = '".$_CLEAN['slug']."' AND series_id = '".$_CLEAN['series_id']."'") == $_CLEAN['slug']) 
 	if (($_POST['action'] != 'update') || ($_POST['action'] == "update" && $oldSeries['slug'] != $_CLEAN['slug']))
 		$chapter['fail']['slug'] = true;
 		
@@ -38,10 +39,8 @@ if((!empty($_FILES["zip"])) && ($_FILES['zip']['error'] == 0)) {
 	$zipclass = new ZipArchive();	
     $ext = substr($_FILES['zip']['name'], strrpos($_FILES['zip']['name'], '.') + 1);
     
-    /*Get Max File Size from Option
-    $var = 30;
-    $maxFileSize = 1048576 * $var; //(1mb times $var)
-	*/
+    $var = intval(preg_replace("/[^0-9]/", '', ini_get('upload_max_filesize')));
+    $maxFileSize = 1048576 * $var; 
   	$newname = UPLOAD_FOLDER.$seriesFolder.'uploads/'.$chapterSlug.'-'.$_FILES['zip']['name'];	
 		
     if($ext == "zip") {        
@@ -91,8 +90,9 @@ if((!empty($_FILES["zip"])) && ($_FILES['zip']['error'] == 0)) {
 	
 } else {
     //No File Uploaded
+    var_dump($_FILES['zip']);
     $zip['fail']['nofile'] = true;
-    $status['error'] = "There were no files to upload";
+    $status['error'] = "There were no files to upload. If you uploaded a file, please keep in mind that your max upload filesize from your webhost is: ".ini_get('upload_max_filesize');
 }
 
 //Extract

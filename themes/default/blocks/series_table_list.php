@@ -32,7 +32,7 @@
 		else
 			$chapterless = 'Chapter';		
 
-		$letter[$singleLetter][] = 
+		$letter[$singleLetter][strtolower($row->series_name)] = 
 			//Series name and Title
 			'<td class="series"><a href="'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$row->series_slug.'/">'.$row->series_name.'</a></td>'.
 			//The latest update from the Series
@@ -41,7 +41,7 @@
 			'<td class="updated">'.$thedate.'</td>'.
 			//What is the Status of the Series?
 			'<td class="status">'.$status.'</td>';
-
+		ksort($letter[$singleLetter]);
 	}	
 	
 	//Start the Output

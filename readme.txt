@@ -12,15 +12,15 @@ Kommiku. A Online Media viewer. A plug-in that creates pages that can be used as
 
 * Language: English, Spanish
 
-[Kommiku Wiki](http://dotspiral.com/wiki/index.php?title=Main_Page "Kommiku Wiki")
-Stuck? Need further assistance? Have a Question? Want to do something Advance? Check out the Wiki!
+Stuck? Need further assistance? Have a Question? Want to do something Advance? Check out the [Wiki](http://dotspiral.com/wiki/index.php?title=Main_Page "Kommiku Wiki")!
 
 Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"), [Eslend](http://eslend.com/ "Eslend: a web-manga | a web-comic"), [Eclipse Scanlation](http://eclipse-scans.net/eso/ "Eclipse Scanlators")
 
 Fastest way to get support, email me! 
-Anri.tora@gmail.com
+Anri.tora [@] gmail.com
 
-* If you like this plug-in, speak a different language other than English, and would like to contribute to Kommiku. I would like you to [email me](mailto:anri.tora@gmail.com) so I can transcribe this plug-in for other people as well.
+Donate by Paypal:
+Anraiki [@] gmail.com
 
 
 == Installation ==
@@ -36,9 +36,9 @@ Anri.tora@gmail.com
 
 
 == Upgrade Notice ==
-= 2.1.11 =
-Always backup!
-Especially the theme folder!
+= 2.1.16 =
+Download your Theme Folder before upgrading. Then upload your Themes into the new "_kommiku" folder.
+
 If there are any problems please email me: anri.tora@gmail.com 
 
 Lastly, remember if things get buggy, use your back-up!
@@ -67,7 +67,7 @@ When you create a zip file. Make sure there are only images in that zip file. Th
 
 
 == Changelog ==
-= 2.1.x =
+= 2.2.x =
 -  Please check my [Kommiku Update Log](http://dotspiral.com/wiki/index.php?title=updates "Changelog of Recent Updates for Kommiku") at [dotSpiral](http://dotspiral.com/)
 
 
@@ -78,7 +78,7 @@ Backup your theme folder if it's called "default". Things are going to change dr
 
 == Support ==
 Credit
-(c) 2008-2010 Henry Tran
+(c) 2008-2011 Henry Tran
 
 Many thanks to Ngallery for sharing their code.
 And many other plugins as well.
@@ -86,4 +86,4 @@ And many other plugins as well.
 If you run into a bug (I am calling them kittens), report them to me. I will take care of them!
 
 Fastest way to get support, email me! 
-Anri.tora@gmail.com
+Anri.tora [@] gmail.com

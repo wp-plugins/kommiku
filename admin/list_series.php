@@ -7,9 +7,11 @@ $series_admin_list = $db->series_admin_list();
 		if(is_numeric($singleLetter)) { $singleLetter = '0-9'; }
 		if($row->chapterless) $chapterless = 'listpage';
 			else $chapterless = 'listchapter';
-		$letter[$singleLetter][] = '<li><a href="'.$url.'admin.php?page=kommiku&sub='.$chapterless.'&series='.$row->id.'">'.$row->title.'</a></li>';
+		$key = strtolower($row->title);
+		$letter[$singleLetter][$key] = '<li><a href="'.$url.'admin.php?page=kommiku&sub='.$chapterless.'&series='.$row->id.'">'.$row->title.'</a></li>';
+		ksort($letter[$singleLetter]);
 		};	
-
+	
 ?>	
 
 <div class="wrap">

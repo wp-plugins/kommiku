@@ -40,4 +40,5 @@ switch($series['read']) {
 	<?php if($series['creation']) {?><tr><td class="infoTabOne"><strong>Date Created:</strong></td><td><?=$series['creation']?></td><?php } ?>
 	<?php if($readDirection) {?><tr><td class="infoTabOne"><strong>Reading Direction:</strong></td><td><?=$readDirection?></td><?php } ?>		
 	<?php if($series['summary']) {?><tr><td class="infoTabOne"><strong>Summary:</strong></td><td><?=$series['summary']?></td><?php } ?>
+	<?php kommiku_rating(); ?>
 </table>

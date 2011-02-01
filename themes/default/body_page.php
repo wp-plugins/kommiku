@@ -17,7 +17,8 @@
 	<?php //Story Information ?>
 	<?php  if($page["img"] && ($page["title"] || $page["story"])){  ?>
 		<div id="page-info">
-			<?php if($page["title"]){ ?> <h2 id="page-title"><?=$page["title"]?></h2> <?php } ?>
+			<?php if($page["title"]){ ?> <h2 id="page-title"><a href="<?=$kommiku['url']['page']?>"><?=$page["title"]?></a></h2> <?php } ?>
+			<small><?php echo date('M-d-Y',strtotime($page["pubdate"])); ?></small>
 			<?php if($page["story"]){ ?> <p id="page-story"><?=stripslashes($page["story"])?></p> <?php } ?>
 		</div>
 	<?php } ?>

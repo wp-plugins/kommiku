@@ -123,6 +123,107 @@ if ($chapterless == 0) {
 				</div>
 				</form>
 				<?php } ?>
+				<?php if($chapterless) { ?>
+				<form method="post" enctype="multipart/form-data" action="admin.php?page=kommiku&sub=listpage&series=<?=$series['id']?>" name="post">
+				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>
+				<input type="hidden" value="update" name="action"/>
+				<input type="hidden" value="series" name="what"/>	
+				<input type="hidden" value="page" name="destination"/>		
+				<div class="postbox">
+					<h3 style="cursor: default;"><span><?_e('Series Detail', 'kommiku')?></span></h3>
+					<div class="inside">
+						<div class="submitbox">
+							<div style="background: none;">
+									<div style="margin-bottom: 10px;">
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['title'])echo 'style="color: #ff0000;"'; ?>><?_e('Series Name:', 'kommiku')?></span> <input name="title" type="text" value="<?php echo $series['title']; ?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Series Slug:', 'kommiku')?></span> <input name="slug" type="text" value="<?php echo $series['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<?_e('Summary:', 'kommiku')?> <textarea name="summary" type="text" style="width: 150px; float: right; text-align: left;" /><?php echo stripslashes($series['summary']); ?></textarea>
+											<div class="clear"></div> 
+										</div>
+										<?php if($scanlator){ ?>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['author'])echo 'style="color: #ff0000;"'; ?>><?_e('Author:', 'kommiku')?></span> <input name="author" type="text" value="<?=$series['author']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['illustrator'])echo 'style="color: #ff0000;"'; ?>><?_e('Illustrator:', 'kommiku')?></span> <input name="illustrator" type="text" value="<?=$series['illustrator']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<?php } ?>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Date Created:', 'kommiku')?></span> <input name="creation" type="text" value="<?=$series['creation']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Other Names:', 'kommiku')?></span> <input name="alt_name" type="text" value="<?=$series['alt_name']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Categories:', 'kommiku')?></span> <input name="categories" type="text" value="<?=$series['categories']?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<div class="misc-pub-section" style="text-align: right;"> 
+											<?_e('Read Direction:', 'kommiku')?>  
+											<select name="read">
+												<option <?php  if($series['read'] == '0') echo 'selected="selected"'; ?>value="0"><?_e('Left to Right', 'kommiku')?></option>
+												<option <?php  if($series['read'] == '1') echo 'selected="selected"'; ?>value="1"><?_e('Right to Left', 'kommiku')?></option>
+												<option <?php  if($series['read'] == '2') echo 'selected="selected"'; ?>value="2"><?_e('Top to Bottom', 'kommiku')?></option>
+											</select>
+										</div>
+										<div class="misc-pub-section" style="text-align: right;">
+											<?_e('Status: ', 'kommiku')?>
+											<select name="status">
+												<option <?php if($series['status'] == '0') echo 'selected="selected"'; ?>value="0"><?_e('Unknown', 'kommiku')?></option>
+												<option <?php if($series['status'] == '1') echo 'selected="selected"'; ?>value="1"><?_e('Ongoing', 'kommiku')?></option>
+												<option <?php if($series['status'] == '2') echo 'selected="selected"'; ?>value="2"><?_e('On-Hold', 'kommiku')?></option>
+												<option <?php if($series['status'] == '3') echo 'selected="selected"'; ?>value="3"><?_e('Dropped', 'kommiku')?></option>
+												<option <?php if($series['status'] == '4') echo 'selected="selected"'; ?>value="4"><?_e('Complete', 'kommiku')?></option>
+											</select>
+										</div>	
+										<div class="misc-pub-section" style="text-align: right;">
+											<?_e('Story Type:', 'kommiku')?> 
+											<select name="type">
+												<option <?php if($series['type'] == '0') echo 'selected="selected"'; ?>value="0"><?_e('(_blank)', 'kommiku')?></option>
+												<option <?php if($series['type'] == '1') echo 'selected="selected"'; ?>value="1"><?_e('Manga', 'kommiku')?></option>
+												<option <?php if($series['type'] == '2') echo 'selected="selected"'; ?>value="2"><?_e('Manhwa', 'kommiku')?></option>
+												<option <?php if($series['type'] == '3') echo 'selected="selected"'; ?>value="3"><?_e('Manhua', 'kommiku')?></option>
+												<option <?php if($series['type'] == '4') echo 'selected="selected"'; ?>value="4"><?_e('Comic', 'kommiku')?></option>
+												<option <?php if($series['type'] == '5') echo 'selected="selected"'; ?>value="5"><?_e('Unknown', 'kommiku')?></option>
+												<option <?php if($series['type'] == '6') echo 'selected="selected"'; ?>value="6"><?_e('Novel', 'kommiku')?></option>
+											</select>
+										</div>	
+										<?php //For Mature Series?
+											if($matureEnable) { ?>
+										<div class="misc-pub-section">
+											<span <?php if($series['fail']['rating'])echo 'style="color: #ff0000;"'; ?>><?_e('Age Rating:', 'kommiku')?></span> <input name="rating" type="text" value="<?php echo $series['rating']; ?>" style="width: 150px; float: right; text-align: left;" />
+											<div class="clear"></div> 
+										</div>
+										<?php } ?>
+										<div class="misc-pub-section "><?_e('Series Book Cover:', 'kommiku')?> 
+										<?php if($series['img']) echo '<strong>[Exist]</strong>'; ?>
+										<br/><br/>
+											<input type="file" style="background: none repeat scroll 0% 0% rgb(238, 238, 238); width: 100%; -moz-background-inline-policy: continuous;" autocomplete="off" value="" tabindex="1" size="30" name="img">
+										</div>
+									</div>
+									<div class="clear"></div>
+									<div style="width: 100%; float: right; text-align: right">
+											<input type="submit" value="Update Series" accesskey="p" tabindex="5" class="button-primary" name="series_update"/>
+									</div>
+									<div class="clear"></div>
+							</div>							
+						</div>
+					</div>
+				</div>
+				</form>
+				<?php } ?>
+
 				<div class="postbox">
 					<h3 style="cursor: default;"><span><?php echo $deleteWord; ?></span></h3>
 					<div class="inside">
