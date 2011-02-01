@@ -15,6 +15,7 @@ Kommiku. A Online Media viewer. A plug-in that creates pages that can be used as
 Stuck? Need further assistance? Have a Question? Want to do something Advance? Check out the [Wiki](http://dotspiral.com/wiki/index.php?title=Main_Page "Kommiku Wiki")!
 
 Updates from 2.1
+
 * New Skin System
 * RSS Feature
 * Rating Feature 
@@ -23,6 +24,7 @@ Updates from 2.1
 * Lots of Fixes
 
 To do:
+
 * View Counter Widget
 * Top Rated List Widget
 
@@ -31,7 +33,7 @@ Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"),
 Fastest way to get support, email me! 
 Anri.tora [@] gmail.com
 
-Donate by Paypal:
+[Donate by Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=GJ4QR9D5NPHQN):
 Anraiki [@] gmail.com
 
 
