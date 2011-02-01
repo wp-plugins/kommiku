@@ -122,6 +122,7 @@ Class kommiku_database {
 		);
 		
 		return $result;
+	}
 	
 	
 	function counter_create($ip_address,$series_id,$chapter_id = 0,$page_id = 0,$user_id = 0) {
