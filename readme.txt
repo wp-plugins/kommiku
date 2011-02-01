@@ -15,16 +15,16 @@ Kommiku. A Online Media viewer. A plug-in that creates pages that can be used as
 Stuck? Need further assistance? Have a Question? Want to do something Advance? Check out the [Wiki](http://dotspiral.com/wiki/index.php?title=Main_Page "Kommiku Wiki")!
 
 Updates from 2.1
--New Skin System
--RSS Feature
--Rating Feature Optional
--View Counter Feature Optional
--More Url and SEO Control
--Lots of Fixes
+* New Skin System
+* RSS Feature
+* Rating Feature 
+* View Counter Feature 
+* Url and SEO Control
+* Lots of Fixes
 
 To do:
--View Counter Widget
--Top Rated List Widget
+* View Counter Widget
+* Top Rated List Widget
 
 Demo sites: [The Tosho](http://thetosho.com/ "Anime, Manga, and Comic Library"), [Eslend](http://eslend.com/ "Eslend: a web-manga | a web-comic"), [Eclipse Scanlation](http://eclipse-scans.net/eso/ "Eclipse Scanlators")
 
