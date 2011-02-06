@@ -966,14 +966,14 @@ div.star-rating{background:transparent!important;overflow:hidden!important}
 	padding:0 15px;	
 }
 
-#page-info {
+#page-info, #wp-connect {
     border: 1px solid #CCCCCC;
     margin: 15px auto;
     padding: 10px;
     width: 600px;
 }
 
-#page-info small {
+#page-info small, #wp-connect small {
     color: #777777;
     display: block;
     margin-top: -10px;	

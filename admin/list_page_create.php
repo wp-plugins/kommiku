@@ -59,7 +59,7 @@ if(get_option('kommiku_one_comic') != 'false') {
 	$slugUrl = $series['slug'].'/'.$chapterSlugUrl; 	
 }
 
-if(!$page['number']) {
+if(!isset($page['number'])) {
 	if($series['chapterless']) {
 		$page['number'] = intval($wpdb->get_var("SELECT max(number) FROM `".$wpdb->prefix."comic_page` WHERE series_id = '".$series['id']."'"));
 	} else {

@@ -23,6 +23,21 @@
 		</div>
 	<?php } ?>
 	
+	<?php if($page['wp_post_slug']){ ?>
+		<div id="wp-connect">
+			<?php query_posts(array('post_status' => 'publish', 'name' => $page['wp_post_slug'] ));the_post();	?>
+			<div id="post-<?php the_ID() ?>"">
+				<h2 id="page-title"><a href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title_attribute(); ?>"><?php the_title(); ?></a></h2>
+				<div class="entry-content">
+				<?php the_content(); ?>
+				<?php wp_link_pages('before=<div class="page-link">' .__('Pages:', 'thematic') . '&after=</div>') ?>
+				</div>
+				<p style="padding: 0; float: right;"><?php comments_popup_link('No Comments &#187;', '1 Comment &#187;', '% Comments &#187;'); ?></p>
+			</div>
+		</div>
+	<?php } ?>
+	
+	
 </div>
 
 <?php kommiku_footer(); ?>

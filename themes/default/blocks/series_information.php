@@ -24,6 +24,16 @@ switch($series['read']) {
 	case 2: $readDirection = 'Up to Down'; break;
 }
 
+if($series['categories']) {
+	$cats = explode(',',$series['categories']);
+	
+	foreach ($cats as $cat) {
+		if($category_divided) $category_divided .= ", ";
+		$cat_slug = str_replace(' ','_',trim($cat));
+		$category_divided .= '<a href="/'.KOMMIKU_URL_INDEX.'/'.$cat_slug.'/">'.$cat.'</a>';	
+	}
+}
+
 ?>
 
 <?php //Image ?>
@@ -36,7 +46,7 @@ switch($series['read']) {
 	<?php if($seriesStatus) {?><tr><td class="infoTabOne"><strong>Status:</strong></td><td><?=$seriesStatus?></td><?php } ?>
 	<?php if($series['author']) {?><tr><td class="infoTabOne"><strong>Author</strong></td><td><?=$series['author']?></td><?php } ?>
 	<?php if($series['illustrator']) {?><tr><td class="infoTabOne"><strong>Illustrator:</strong></td><td><?=$series['illustrator']?></td><?php } ?>
-	<?php if($series['categories']) {?><tr><td class="infoTabOne"><strong>Categorize in:</strong></td><td><?=$series['categories']?></td><?php } ?>
+	<?php if($series['categories']) {?><tr><td class="infoTabOne"><strong>Categorize in:</strong></td><td><?=$category_divided?></td><?php } ?>
 	<?php if($series['creation']) {?><tr><td class="infoTabOne"><strong>Date Created:</strong></td><td><?=$series['creation']?></td><?php } ?>
 	<?php if($readDirection) {?><tr><td class="infoTabOne"><strong>Reading Direction:</strong></td><td><?=$readDirection?></td><?php } ?>		
 	<?php if($series['summary']) {?><tr><td class="infoTabOne"><strong>Summary:</strong></td><td><?=$series['summary']?></td><?php } ?>
