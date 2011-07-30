@@ -4,7 +4,7 @@ if($page['id'] || is_numeric($_GET['pg'])) {
 	if(!$page['id']) $page['id'] = strval(intval($_GET['pg']));
 	$page = $db->page_detail($page['id']);
 	$action = '&action=update&pg='.$page['id'];
-	$showLink = true:
+	$showLink = true;
 }
 
 if (is_numeric($_GET["series"]) || $page['series_id']) {
