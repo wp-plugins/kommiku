@@ -48,8 +48,8 @@ else
 	<?php if ($series['pass'] || $series['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $series['pass'].$series['error']; ?></p></div>
 	<?php } ?>
-	<form method="post" action="<?=$actionUrl?>" name="post">
-	<input type="hidden" value="<?=$series['id']?>" name="series"/>
+	<form method="post" action="<?php echo $actionUrl?>" name="post">
+	<input type="hidden" value="<?php echo $series['id']; ?>" name="series"/>
 	<?php echo $inputs; ?>
 	<div class="metabox-holder has-right-sidebar" id="poststuff">	
 		<div id="post-body-content">

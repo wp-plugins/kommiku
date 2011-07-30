@@ -40,6 +40,7 @@ if(($isPage)) {
 			$select = "selected=selected ";
 			$pageSelected = $pageList->number;
 		}
+		$kommiku['pageSource'][$pageList->number] = $pageList->img;
 		$kommiku['pageOption'] .= '<option '.$select.'value="'.$pageList->slug.'">'.$pageList->slug.'</option>';
 		$lastPage = $pageList->number;
 		if($select) $previousPage = $pageLists[$i-1];

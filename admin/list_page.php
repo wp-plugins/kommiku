@@ -43,7 +43,7 @@ if ($chapterless == 0) {
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><a href="<?=$url?>admin.php?page=kommiku"><?_e('Series Listing', 'kommiku')?></a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a><?php echo $chapterTitle; ?></h2>
+	<h2><a href="<?php echo $url?>admin.php?page=kommiku"><?_e('Series Listing', 'kommiku')?></a> &raquo; <a href="<?php echo $url.'admin.php?page=kommiku'.$sub.'&series='.$series['id'];?>"><?php echo $series['title']; ?></a><?php echo $chapterTitle; ?></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['error'].$status['pass']; ?></p></div>
 	<?php } ?>
@@ -65,9 +65,9 @@ if ($chapterless == 0) {
 					</div>
 				</div>
 				<?php if($chapter){ ?>
-				<form method="post" action="admin.php?page=kommiku&sub=listpage&series=<?php echo $series['id']; ?>&chapter=<?=$chapter['id']?>" name="post">
-				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>
-				<input type="hidden" value="<?=$chapter['id']?>" name="chapter_id"/>
+				<form method="post" action="admin.php?page=kommiku&sub=listpage&series=<?php echo $series['id']; ?>&chapter=<?php echo $chapter['id']; ?>" name="post">
+				<input type="hidden" value="<?php echo $series['id']; ?>" name="series_id"/>
+				<input type="hidden" value="<?php echo $chapter['id']; ?>" name="chapter_id"/>
 				<input type="hidden" value="update" name="action"/>
 				<input type="hidden" value="chapter" name="what"/>
 				<input type="hidden" value="page" name="destination"/>		
@@ -96,11 +96,11 @@ if ($chapterless == 0) {
 										</div>
 										<?php if($scanlator){ ?>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['scanlator'])echo 'style="color: #ff0000;"'; ?>><?_e('Scanlator:', 'kommiku')?></span> <input name="scanlator" type="text" value="<?=$chapter['scanlator']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['scanlator'])echo 'style="color: #ff0000;"'; ?>><?_e('Scanlator:', 'kommiku')?></span> <input name="scanlator" type="text" value="<?php echo $chapter['scanlator']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['scanlator_slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Scanlator Slug:', 'kommiku')?></span> <input name="scanlator_slug" type="text" value="<?=$chapter['scanlator_slug']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['scanlator_slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Scanlator Slug:', 'kommiku')?></span> <input name="scanlator_slug" type="text" value="<?php echo $chapter['scanlator_slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<?php } else {?>
@@ -108,7 +108,7 @@ if ($chapterless == 0) {
 											<input type="hidden" value="" name="scanlator_slug"/>
 										<?php } ?>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>><?_e('Volume:', 'kommiku')?></span> <input name="volume" type="text" value="<?=$chapter['volume']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>><?_e('Volume:', 'kommiku')?></span> <input name="volume" type="text" value="<?php echo $chapter['volume']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 									</div>
@@ -124,8 +124,8 @@ if ($chapterless == 0) {
 				</form>
 				<?php } ?>
 				<?php if($chapterless) { ?>
-				<form method="post" enctype="multipart/form-data" action="admin.php?page=kommiku&sub=listpage&series=<?=$series['id']?>" name="post">
-				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>
+				<form method="post" enctype="multipart/form-data" action="admin.php?page=kommiku&sub=listpage&series=<?php echo $series['id']; ?>" name="post">
+				<input type="hidden" value="<?php echo $series['id']; ?>" name="series_id"/>
 				<input type="hidden" value="update" name="action"/>
 				<input type="hidden" value="series" name="what"/>	
 				<input type="hidden" value="page" name="destination"/>		
@@ -149,24 +149,24 @@ if ($chapterless == 0) {
 										</div>
 										<?php if($scanlator){ ?>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['author'])echo 'style="color: #ff0000;"'; ?>><?_e('Author:', 'kommiku')?></span> <input name="author" type="text" value="<?=$series['author']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['author'])echo 'style="color: #ff0000;"'; ?>><?_e('Author:', 'kommiku')?></span> <input name="author" type="text" value="<?php echo $series['author']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['illustrator'])echo 'style="color: #ff0000;"'; ?>><?_e('Illustrator:', 'kommiku')?></span> <input name="illustrator" type="text" value="<?=$series['illustrator']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['illustrator'])echo 'style="color: #ff0000;"'; ?>><?_e('Illustrator:', 'kommiku')?></span> <input name="illustrator" type="text" value="<?php echo $series['illustrator']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<?php } ?>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Date Created:', 'kommiku')?></span> <input name="creation" type="text" value="<?=$series['creation']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Date Created:', 'kommiku')?></span> <input name="creation" type="text" value="<?php echo $series['creation']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Other Names:', 'kommiku')?></span> <input name="alt_name" type="text" value="<?=$series['alt_name']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Other Names:', 'kommiku')?></span> <input name="alt_name" type="text" value="<?php echo $series['alt_name']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Categories:', 'kommiku')?></span> <input name="categories" type="text" value="<?=$series['categories']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Categories:', 'kommiku')?></span> <input name="categories" type="text" value="<?php echo $series['categories']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section" style="text-align: right;"> 

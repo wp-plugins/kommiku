@@ -23,13 +23,13 @@ switch(rand(0,3)) {
 
 <div class="wrap">
 	<div class="icon32" id="icon-edit"><br/></div>
-	<h2><a href="<?php echo $url; ?>admin.php?page=kommiku_category"><?_e('Category List', 'kommiku')?></a> &raquo; <a href="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>"><?=$category['title']?></a></h2>
+	<h2><a href="<?php echo $url; ?>admin.php?page=kommiku_category"><?_e('Category List', 'kommiku')?></a> &raquo; <a href="admin.php?page=kommiku&sub=category_edit&category=<?php echo $category['slug']; ?>"><?php echo $category['title']; ?></a></h2>
 	<?php if ($status['pass'] || $status['error']) { ?>
 		<div class="updated fade" id="message" style="background-color: rgb(255, 251, 204);"><p><?php echo $status['pass'].$status['error']; ?></p></div>
 	<?php } ?>
 	<div class="metabox-holder has-right-sidebar">
-	<form method="post" action="admin.php?page=kommiku&sub=category_edit&category=<?=$category['slug']?>" name="post" enctype="multipart/form-data">
-		<input type="hidden" value="<?=$category['id']?>" name="id"/>
+	<form method="post" action="admin.php?page=kommiku&sub=category_edit&category=<?php echo $category['slug']; ?>" name="post" enctype="multipart/form-data">
+		<input type="hidden" value="<?php echo $category['id']; ?>" name="id"/>
 		<input type="hidden" value="category" name="what"/>	
 		<input type="hidden" value="update" name="action"/>	
 		<input type="hidden" value="category_edit" name="destination"/>	
@@ -58,7 +58,7 @@ switch(rand(0,3)) {
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="name" class="screen-reader-text"><?_e('Name', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$category['title']?>" tabindex="1" size="30" name="title"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $category['title']; ?>" tabindex="1" size="30" name="title"/>
 					</div>
 				</div>
 			</div>			
@@ -67,7 +67,7 @@ switch(rand(0,3)) {
 				<div class="inside">
 					<div id="edit-slug-box">
 						<strong><?_e('Permalink:', 'kommiku')?></strong> <span id="sample-permalink"><?php echo HTTP_HOST.KOMMIKU_URL_INDEX.'/'.__("category", 'kommiku').'/'; ?>
-						<input type="text" value="<?=$category['slug']?>" name="slug" style="width: 10%; background: #FFFBCC;" /> /
+						<input type="text" value="<?php echo $category['slug']; ?>" name="slug" style="width: 10%; background: #FFFBCC;" /> /
 						</span>
 					</div>
 				</div>
@@ -81,7 +81,7 @@ switch(rand(0,3)) {
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="summary" class="screen-reader-text"><?_e('Description', 'kommiku')?></label>
-						<textarea tabindex="2" name="summary" style="width: 99.5%;" rows="5"><?=stripslashes($category['summary'])?></textarea>									
+						<textarea tabindex="2" name="summary" style="width: 99.5%;" rows="5"><?php echo stripslashes($category['summary'])?></textarea>									
 						<p><?_e('Add a description of the Category', 'kommiku')?></p>
 					</div>
 				</div>
@@ -96,7 +96,7 @@ switch(rand(0,3)) {
 								<div class="clear"></div>							
 								<div style="padding: 10px 0; width: 100%; float: right; text-align: right;">		
 								<form method="post" action="admin.php?page=kommiku_category" name="post" enctype="multipart/form-data">
-									<input type="hidden" value="<?=$category['id']?>" name="id"/>
+									<input type="hidden" value="<?php echo $category['id']; ?>" name="id"/>
 									<input type="hidden" value="category" name="what"/>	
 									<input type="hidden" value="delete" name="action"/>	
 									<input type="hidden" value="category" name="destination"/>	

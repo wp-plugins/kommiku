@@ -8,7 +8,7 @@ Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.2' );
+define('KOMMIKU_VERSION', '2.2.1' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -60,9 +60,9 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	if($rootWords != KOMMIKU_URL_FORMAT && !in_array($explodeURL[0],$takenRoot) && get_option('kommiku_url_format') != '') {
 		array_shift($explodeURL);
 	}
-	
+		
 	//RSS
-	if(strtolower($explodeURL[0]) == get_option('kommiku_url_feed')) {
+	if(strtolower($explodeURL[0]) == strtolower(get_option('kommiku_url_feed'))) {
 		$kommiku['manga'] = true;
 		$kommiku['series'] = strtolower($explodeURL[1]);
 		$kommiku['feed'] = true;
@@ -77,7 +77,6 @@ function kommiku_fancy_url($var='REQUEST_URI'){
 	}
 
 	if(strtolower($explodeURL[0]) == "kommiku-post"){
-		
 		global $current_user;
 		require_once(KOMMIKU_FOLDER.'/admin/database.php');
 		$db = new kommiku_database();
@@ -111,22 +110,30 @@ function kommiku_fancy_url($var='REQUEST_URI'){
     	exit;
 	}
 
-	//Replace Index
-	if(get_option('kommiku_one_comic') != 'false' && get_option('kommiku_override_index') != false) {
+
+	if(get_option('kommiku_one_comic') != "") {
 		$kommiku['one_comic'] = true;
+	}
+	
+	//Replace Index
+	if($kommiku['one_comic'] && get_option('kommiku_override_index') != false) {
 		$kommiku['override'] = true;
 		if($explodeURL[0] == ''){
 			$kommiku['manga'] = true;
 			$kommiku['series'] = get_option( 'kommiku_one_comic' );
+			$kommiku['chapter'] = "latest";
 			$kommiku['pages'] = "latest";
 			$kommiku['index'] = true;
 		} else if ($explodeURL[0] == get_option( 'kommiku_one_comic' )) {
 			if($explodeURL[1]) $url = $explodeURL[1]."/";
 			header("Location: ".HTTP_HOST.$url);
+		} else if (is_numeric($explodeURL[0]) && $explodeURL[2] == '') {
+			$kommiku['manga'] = true;
+			$kommiku['series'] = get_option( 'kommiku_one_comic' );
+			$kommiku['chapter'] = $explodeURL[0];
+			$kommiku['pages'] = $explodeURL[1];
 		}
-	}
-	
-	if(get_option('kommiku_url_format') == '' && $explodeURL[0] != '') {
+	} else if(get_option('kommiku_url_format') == '' && $explodeURL[0] != '') {
 		global $wpdb;
 		$kommiku['series'] = strtolower($explodeURL[0]);
 		if($kommiku['series_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_series` WHERE slug = '".$kommiku['series']."'"))
@@ -261,13 +268,13 @@ function kommiku_rating() {
 }
 
 function kommiku_rating_header() {  if(get_option( 'kommiku_rating' )) { ?>
-	<script type='text/javascript' src='<?=KOMMIKU_URLPATH?>extension/jquery.js'></script>
-	<script type='text/javascript' src='<?=KOMMIKU_URLPATH?>extension/five-star-rater/jquery.MetaData.js'></script>
-	<script type='text/javascript' src='<?=KOMMIKU_URLPATH?>extension/five-star-rater/jquery.rating.pack.js'></script>
+	<script type='text/javascript' src='<?php echo KOMMIKU_URLPATH; ?>extension/jquery.js'></script>
+	<script type='text/javascript' src='<?php echo KOMMIKU_URLPATH; ?>extension/five-star-rater/jquery.MetaData.js'></script>
+	<script type='text/javascript' src='<?php echo KOMMIKU_URLPATH; ?>extension/five-star-rater/jquery.rating.pack.js'></script>
 	<?php global $voteCount, $voteRating, $voteMyRating, $voteUrl; ?>
 	<script type="text/javascript">
-		var iVoted = <?=$voteMyRating?>;
-		var voteCount = <?=$voteCount?>;
+		var iVoted = <?php echo $voteMyRating; ?>;
+		var voteCount = <?php echo $voteCount; ?>;
 		$j=jQuery.noConflict();
 		$j(function(){
 		 $j('.star').rating({
@@ -275,7 +282,7 @@ function kommiku_rating_header() {  if(get_option( 'kommiku_rating' )) { ?>
 		   
 			$j.ajax({
 				type: "POST",
-				url: "/kommiku-post/<?=$voteUrl?>",
+				url: "/kommiku-post/<?php echo $voteUrl; ?>",
 				data: "v="+value,
 				dataType: "text",
 				success: function(data){ 
@@ -303,8 +310,8 @@ function kommiku_rating_header() {  if(get_option( 'kommiku_rating' )) { ?>
 
 function kommiku_css() {
 
-	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/rating.php'))
-		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/blocks/rating.php';	
+	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/stylesheets/main.css'))
+		echo HTTP_HOST.'_kommiku/themes/'.KOMMIKU_SKIN.'/stylesheets/main.css';	
 	else 
 		echo KOMMIKU_URLPATH.'themes/default/stylesheets/main.css';
 
@@ -312,7 +319,6 @@ function kommiku_css() {
 }
 
 function kommiku_footer() {
-	global $wpdb, $post, $comment, $kommiku, $page, $series, $chapter;
 	
 	if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/footer.php'))
 		include WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/footer.php';
@@ -406,7 +412,7 @@ function kommiku_source(){
 			$kommiku['seotitle'] = $series['title'];
 			$kommiku['slug']['series'] = $series['slug'];	
 			$kommiku['title']['series'] = $series['title'];
-			$kommiku['url']['series'] = KOMMIKU_URL_FORMAT.'/'.$series['slug'].'/';
+			if(!$kommiku['override']) $kommiku['url']['series'] = KOMMIKU_URL_FORMAT.'/'.$series['slug'].'/';
 		}
 		
 		if(!empty($series['chapterless']) && !$kommiku['index']) {
@@ -437,7 +443,7 @@ function kommiku_source(){
 			$kommiku['chapter_id'] = 0;
 		} 	
 				
-		if(isset($kommiku['pages']) && ($chapter || $series['chapterless']) && $kommiku['pages'] != '') {
+		if(isset($kommiku['pages']) && ($chapter || $series['chapterless']) && $kommiku['pages']) {
 			if(!$kommiku['page_id']) $kommiku['page_id'] = $wpdb->get_var("SELECT id FROM `".$wpdb->prefix."comic_page` WHERE series_id = '".$kommiku['series_id']."' AND slug = '".$kommiku['pages']."' AND chapter_id = '".$kommiku['chapter_id']."'"); 
 			$page = $db->page_detail($kommiku['page_id']);
 			$chapter_pages = $db->chapter_pages($kommiku['series_id'],$kommiku['chapter_id']);
@@ -527,7 +533,7 @@ function kommiku_source(){
 			else
 				include KOMMIKU_FOLDER.'/themes/'.KOMMIKU_SKIN.'/body_page.php';
 		//Series
-		} else if(!empty($kommiku['series']) && $kommiku['series'] != 'index.php' && !$kommiku['one_comic']) {
+		} else if(!empty($kommiku['series']) && $kommiku['series'] != 'index.php') {
 			$isChapter = true; 
 			counter_extension();
 			if(is_file(WP_LOAD_PATH.'_kommiku/themes/'.KOMMIKU_SKIN.'/body_chapter.php'))
@@ -1551,10 +1557,10 @@ function kommiku_settings() {
 function kommiku_install() {
 	global $wpdb;
 	
-	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.2');
+	if(!get_option( 'kommiku_version' )) add_option ('kommiku_version' , '2.2.1');
 
 	//Update! And if it can't it will be added later.
-	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.2');
+	if(!KOMMIKU_VERSION) define('KOMMIKU_VERSION','2.2.1');
 	update_option('kommiku_version', KOMMIKU_VERSION);
 
 	//Plug Options

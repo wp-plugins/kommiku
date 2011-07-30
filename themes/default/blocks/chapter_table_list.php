@@ -5,7 +5,7 @@ if($kommiku['series_chapter']) {
 		unset($title); unset($scanperson);
 
 		//Format the Date Y-m-d
-		$thedate = date( 'Y-m-d', strtotime($item->pubdate) );
+		$thedate = date( 'M d, Y', strtotime($item->pubdate) );
 		
 		//Make sure the Title does not overwrite non-existing titles.
 		//No need to touch this
@@ -40,7 +40,7 @@ if($kommiku['series_chapter']) {
 		unset($title);
 
 		//Format the Date Y-m-d
-		$thedate = date( 'Y-m-d', strtotime($item->pubdate) );
+		$thedate = date( 'M d, Y', strtotime($item->pubdate) );
 		
 		//Make sure the Title does not overwrite non-existing titles.
 		//No need to touch this

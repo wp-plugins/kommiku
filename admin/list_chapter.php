@@ -35,8 +35,8 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 	<div class="metabox-holder has-right-sidebar" id="poststuff">
 		<div class="inner-sidebar" id="side-info-column">
 			<div class="meta-box-sortables ui-sortable" id="side-sortables">
-				<form method="post" action="admin.php?page=kommiku&sub=listchapter&series=<?=$series['id']?>" name="post">
-				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>					
+				<form method="post" action="admin.php?page=kommiku&sub=listchapter&series=<?php echo $series['id'];?>" name="post">
+				<input type="hidden" value="<?php echo $series['id']; ?>" name="series_id"/>					
 				<input type="hidden" value="create" name="action"/>
 				<input type="hidden" value="chapter" name="what"/>	
 				<input type="hidden" value="chapter" name="destination"/>		
@@ -74,8 +74,8 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 				</div>
 				</form>
 				<?php if(file_exists(KOMMIKU_ABSPATH.'extension/dumper.php')){ ?>
-				<form method="post" action="admin.php?page=kommiku&sub=listchapter&series=<?=$series['id']?>" name="post" enctype="multipart/form-data">
-				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>					
+				<form method="post" action="admin.php?page=kommiku&sub=listchapter&series=<?php echo $series['id'];?>" name="post" enctype="multipart/form-data">
+				<input type="hidden" value="<?php echo $series['id'];?>" name="series_id"/>					
 				<input type="hidden" value="dump" name="action"/>
 				<input type="hidden" value="chapter" name="what"/>	
 				<input type="hidden" value="chapter" name="destination"/>		
@@ -89,15 +89,15 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 											<input type="file" name="zip" size="30" tabindex="1" value="" autocomplete="off" style="background: rgb(238, 238, 238) none repeat scroll 0% 0%; width: 100%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous;"/>
 										</div>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>><?_e('Chapter Name:', 'kommiku')?></span> <input name="title" type="text" value="<?=$chapter['title']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['title'])echo 'style="color: #ff0000;"'; ?>><?_e('Chapter Name:', 'kommiku')?></span> <input name="title" type="text" value="<?php echo $chapter['title']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>><?_e('Chapter #:', 'kommiku')?></span> <input name="number" type="text" value="<?=$chapter['number']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['number'])echo 'style="color: #ff0000;"'; ?>><?_e('Chapter #:', 'kommiku')?></span> <input name="number" type="text" value="<?php echo $chapter['number'];?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section ">
-											<span <?php if($chapter['fail']['slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Slug:', 'kommiku')?></span> <input name="slug" type="text" value="<?=$chapter['slug']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($chapter['fail']['slug'])echo 'style="color: #ff0000;"'; ?>><?_e('Slug:', 'kommiku')?></span> <input name="slug" type="text" value="<?php echo $chapter['slug']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 									</div>
@@ -112,8 +112,8 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 					</div>
 				</form>
 				<?php } ?>
-				<form method="post" enctype="multipart/form-data" action="admin.php?page=kommiku&sub=listchapter&series=<?=$series['id']?>" name="post">
-				<input type="hidden" value="<?=$series['id']?>" name="series_id"/>
+				<form method="post" enctype="multipart/form-data" action="admin.php?page=kommiku&sub=listchapter&series=<?php echo $series['id'];?>" name="post">
+				<input type="hidden" value="<?php echo $series['id'];?>" name="series_id"/>
 				<input type="hidden" value="update" name="action"/>
 				<input type="hidden" value="series" name="what"/>	
 				<input type="hidden" value="chapter" name="destination"/>		
@@ -137,24 +137,24 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 										</div>
 										<?php if($scanlator){ ?>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['author'])echo 'style="color: #ff0000;"'; ?>><?_e('Author:', 'kommiku')?></span> <input name="author" type="text" value="<?=$series['author']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['author'])echo 'style="color: #ff0000;"'; ?>><?_e('Author:', 'kommiku')?></span> <input name="author" type="text" value="<?php echo $series['author']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['illustrator'])echo 'style="color: #ff0000;"'; ?>><?_e('Illustrator:', 'kommiku')?></span> <input name="illustrator" type="text" value="<?=$series['illustrator']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['illustrator'])echo 'style="color: #ff0000;"'; ?>><?_e('Illustrator:', 'kommiku')?></span> <input name="illustrator" type="text" value="<?php echo $series['illustrator']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<?php } ?>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Date Created:', 'kommiku')?></span> <input name="creation" type="text" value="<?=$series['creation']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Date Created:', 'kommiku')?></span> <input name="creation" type="text" value="<?php echo $series['creation']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Other Names:', 'kommiku')?></span> <input name="alt_name" type="text" value="<?=$series['alt_name']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Other Names:', 'kommiku')?></span> <input name="alt_name" type="text" value="<?php echo $series['alt_name']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section">
-											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Categories:', 'kommiku')?></span> <input name="categories" type="text" value="<?=$series['categories']?>" style="width: 150px; float: right; text-align: left;" />
+											<span <?php if($series['fail']['alternate'])echo 'style="color: #ff0000;"'; ?>><?_e('Categories:', 'kommiku')?></span> <input name="categories" type="text" value="<?php echo $series['categories']; ?>" style="width: 150px; float: right; text-align: left;" />
 											<div class="clear"></div> 
 										</div>
 										<div class="misc-pub-section" style="text-align: right;"> 
@@ -211,7 +211,7 @@ $scanlator = get_option('kommiku_scanlator_enabled');
 				</div>
 				</form>
 				<div class="postbox">
-					<h3 style="cursor: default;"><span><?=$deleteWord?></span></h3>
+					<h3 style="cursor: default;"><span><?php echo $deleteWord?></span></h3>
 					<div class="inside">
 						<div class="submitbox">
 							<div style="background: none;">

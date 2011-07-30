@@ -71,7 +71,7 @@ if($kommiku['series_chapter']) {
 		//Chapter Formatting - Wrap in a TD
 		$listing[] = 
 		'<item>'.
-			'<title>'.$item->series_name.' '.$item->chapter_slug.' heee</title>'.
+			'<title>'.$item->series_name.' '.$item->chapter_slug.'</title>'.
 			'<description><![CDATA[Chapter '.$item->chapter_slug.' of '.$item->series_name.']]></description>'.
 			'<link>'.HTTP_HOST.KOMMIKU_URL_FORMAT.'/'.$item->series_name.'/'.$item->chapter_slug.'</link>'.
 			'<pubDate>'.$thedate.'</pubDate>'.

@@ -104,7 +104,7 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="url" class="screen-reader-text"><?_e('Url to Directory:', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['directory']?>" tabindex="1" size="30" name="directory"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['directory']; ?>" tabindex="1" size="30" name="directory"/>
 						<p><?_e('Your current Permalinks to your Directory is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['directory']; ?>/</strong>
 						<br/><?_e('And:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['url']; ?>/</strong>
 						<br/><span style="font-style: italic;"><?_e("* This is your Directory Listing.", 'kommiku')?> <?_e("Make sure it does not conflict with any other names or folders in your website.", 'kommiku')?></span></p>
@@ -117,10 +117,10 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="url" class="screen-reader-text"><?_e('Url to your Feeds:', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['feed']?>" tabindex="1" size="30" name="feed"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['feed']; ?>" tabindex="1" size="30" name="feed"/>
 						<p><?_e('Your current Permalinks to your Directory is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['feed']; ?>/</strong>
 						<br/><span style="font-style: italic;"><?_e("* This is your Feed Listing.", 'kommiku')?> <?_e("Make sure it does not conflict with any other names or folders in your website.", 'kommiku')?></span></p>
-						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?=$checkboxOverFive?>  value="1" name="feed_enable"/>
+						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?php echo $checkboxOverFive?>  value="1" name="feed_enable"/>
 					</div>
 				</div>
 			</div>
@@ -130,10 +130,10 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="url" class="screen-reader-text"><?_e('Url to Search:', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['search']?>" tabindex="1" size="30" name="search"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['search']; ?>" tabindex="1" size="30" name="search"/>
 						<p><?_e('Your current Permalinks to Search is:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['search']; ?>/</strong>
 						<br/><span style="font-style: italic;"><?_e("* This is your Search Function.", 'kommiku')?> <?_e("Make sure it does not conflict with any other names or folders in your website.", 'kommiku')?></span></p>
-						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?=$checkboxOverSix?>  value="1" name="search_enable"/>
+						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?php echo $checkboxOverSix?>  value="1" name="search_enable"/>
 					</div>
 				</div>
 			</div>
@@ -144,9 +144,9 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="one_comic" class="screen-reader-text"><?_e('Scanlator Features:', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['scanlator_url']?>" tabindex="1" size="30" name="scanlator_url"/>
-						<p><?_e('Have multiple authors on your Kommiku?', 'kommiku')?><br/><?_e('This feature allows you to give proper credit to your authors.', 'kommiku')?><br/><?_e('Your authors will also get a unique page about them.', 'kommiku')?> <br/><br/><?_e('Permalink:', 'kommiku')?><br/><strong><?php echo get_bloginfo('url'); ?>/<?=$kommiku_settings['scanlator_url']?>/</strong></p>
-						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?=$checkboxOverTwo?>  value="1" name="scanlator_enable"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['scanlator_url']; ?>" tabindex="1" size="30" name="scanlator_url"/>
+						<p><?_e('Have multiple authors on your Kommiku?', 'kommiku')?><br/><?_e('This feature allows you to give proper credit to your authors.', 'kommiku')?><br/><?_e('Your authors will also get a unique page about them.', 'kommiku')?> <br/><br/><?_e('Permalink:', 'kommiku')?><br/><strong><?php echo get_bloginfo('url'); ?>/<?php echo $kommiku_settings['scanlator_url']; ?>/</strong></p>
+						<?_e('Enable this feature:', 'kommiku')?> <input type="checkbox"<?php echo $checkboxOverTwo?>  value="1" name="scanlator_enable"/>
 
 					</div>
 				</div>
@@ -158,9 +158,9 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<label for="one_comic" class="screen-reader-text"><?_e('Main Story', 'kommiku')?></label>
-						<input style="width: 100%;" type="text" autocomplete="off" value="<?=$kommiku_settings['one_comic']?>" tabindex="1" size="30" name="one_comic"/>
+						<input style="width: 100%;" type="text" autocomplete="off" value="<?php echo $kommiku_settings['one_comic']; ?>" tabindex="1" size="30" name="one_comic"/>
 						<p><?_e('This will switch Kommiku into the "One Story" Mode.', 'kommiku')?><br/><?_e("Type in the <strong>Main Story's slug</strong> to identify the Website's Main Story.", 'kommiku')?><br/><?_e('The Main Story\'s slug will be replace by the "Comic Base" (See Above)', 'kommiku')?><br/><?_e('All other stories will be hidden.', 'kommiku')?><br/><br/><?_e('Example of Permalink:', 'kommiku')?><br/><?_e('With Chapters:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/1/1/</strong><br/><?_e('Chapterless:', 'kommiku')?> <strong><?php echo get_bloginfo('url'); ?>/1/</strong></p>
-						<?_e('Override the Index:', 'kommiku')?> <input type="checkbox"<?=$checkboxOver?>  value="1" name="override_index"/>
+						<?_e('Override the Index:', 'kommiku')?> <input type="checkbox"<?php echo $checkboxOver?>  value="1" name="override_index"/>
 
 					</div>
 				</div>
@@ -171,7 +171,7 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<p style="margin-top: 0;"><?_e('Record each visit for each Page and Series read. Enabling this feature may slow down page load.', 'kommiku')?><br/><?_e('* Enabling this feature may slow down page load.', 'kommiku')?></p>
-						<span style="font-style: italic;"><?_e('Enable this feature:', 'kommiku')?></span> <input type="checkbox"<?=$checkboxOverThree?>  value="1" name="counter_enable"/>
+						<span style="font-style: italic;"><?_e('Enable this feature:', 'kommiku')?></span> <input type="checkbox"<?php echo $checkboxOverThree?>  value="1" name="counter_enable"/>
 					</div>
 				</div>
 			</div>
@@ -181,7 +181,7 @@
 				<div class="inside">
 					<div class="submitbox" style="padding: 5px;">
 						<p style="margin-top: 0;"><?_e('Allow the viewers or readers to rate the Page, Series, or Chapters', 'kommiku')?><br/><?_e('* Enabling this feature may slow down page load.', 'kommiku')?></p>
-						<span style="font-style: italic;"><?_e('Enable this feature:', 'kommiku')?></span> <input type="checkbox"<?=$checkboxOverFour?>  value="1" name="rating_enable"/>
+						<span style="font-style: italic;"><?_e('Enable this feature:', 'kommiku')?></span> <input type="checkbox"<?php echo $checkboxOverFour?>  value="1" name="rating_enable"/>
 					</div>
 				</div>
 			</div>

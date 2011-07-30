@@ -51,13 +51,12 @@ switch(rand(0,3)) {
 		break;
 		
 		}
-
-if(get_option('kommiku_one_comic') != 'false') { 
-	$slugUrl = ''; 
-} else {
-	if(!$series['chapterless']) $chapterSlugUrl = $chapter['slug'].'/';
-	$slugUrl = $series['slug'].'/'.$chapterSlugUrl; 	
+		
+if(!$series['chapterless']) $slugUrl = $chapter['slug'].'/';
+if(get_option('kommiku_override_index') == false) {
+	$slugUrl = $series['slug'].'/'.$slugUrl; 	
 }
+if(KOMMIKU_URL_FORMAT) $slugUrl = KOMMIKU_URL_FORMAT.'/'.$slugUrl;
 
 if(!isset($page['number'])) {
 	if($series['chapterless']) {
@@ -79,11 +78,9 @@ if(!isset($page['number'])) {
 	<form method="post" action="admin.php?page=kommiku&sub=createpage<?php echo $action; ?>&series=<?php echo $series['id']; ?><?php echo $chapterURL; ?>" name="post" enctype="multipart/form-data">
 	<div class="metabox-holder has-right-sidebar">
 		<?php if ($page['id'] || $_GET['pg']) { ?>
-		<input type="hidden" value="update" name="action"/>
 		<input type="hidden" value="<?php echo $page['id']; ?>" name="page_id"/>
-		<?php $publishWord = __("Update", 'kommiku'); } else { ?>
-		<input type="hidden" value="create" name="action"/>
-		<?php } ?>
+		<?php $publishWord = __("Update", 'kommiku'); } ?>
+
 		<input type="hidden" value="page" name="what"/>	
 		<input type="hidden" value="page_create" name="destination"/>	
 		<div class="inner-sidebar" id="side-info-column">
@@ -113,7 +110,8 @@ if(!isset($page['number'])) {
 									<div class="clear"></div> 
 								</div>
 								<div style="width: 100%; float: right; text-align: right">
-									<input style="margin-top:10px; width: 100px;" type="submit" value="<?php echo $publishWord; ?>" accesskey="p" tabindex="5" class="button-primary" name="publish"/>
+									<?php if($page['img']){ ?><a target="_blank" href="<?php echo HTTP_HOST.$slugUrl.$page['slug']; ?>" style="margin-top: 10px; display: block; text-align: center; padding: 3px 8px; float: left; width: 100px; height: 17px;" class="button-primary">View Page</a><?php } ?>
+									<input style="margin-top:10px; width: 100px;" type="submit" value="<?php echo $publishWord; ?>" accesskey="p" tabindex="5" class="button-primary" name="action"/>
 								</div>
 								<div class="clear"></div>
 								<div class="misc-pub-section "></div>
@@ -121,6 +119,26 @@ if(!isset($page['number'])) {
 						</div>
 					</div>
 				</div>
+				
+				<?php if ($notReady) { ?>
+				<div class="postbox">
+					<h3 style="cursor: default;"><span><?_e('Push/Pull Page Number', 'kommiku')?></span></h3>
+					<div class="inside">
+						<div class="submitbox">
+							<div style="background: none;">
+								<div class="clear"></div>							
+								<div style="padding: 10px 0; width: 100%; float: right; text-align: right;">
+										<input type="submit" value="<?_e('Push', 'kommiku')?>" tabindex="5" class="button-primary" name="action"/>
+									
+										<input type="submit" value="<?_e('Pull', 'kommiku')?>" tabindex="5" class="button-primary" name="action"/>
+					
+								</div>
+								<div class="clear"></div>									
+							</div>								    
+						</div>
+					</div>
+				</div>
+				<?php } ?>
 				
 				<?php if ($page['id'] || is_numeric($_GET['pg'])) { ?>
 				<div class="postbox">
