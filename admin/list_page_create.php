@@ -4,6 +4,7 @@ if($page['id'] || is_numeric($_GET['pg'])) {
 	if(!$page['id']) $page['id'] = strval(intval($_GET['pg']));
 	$page = $db->page_detail($page['id']);
 	$action = '&action=update&pg='.$page['id'];
+	$showLink = true:
 }
 
 if (is_numeric($_GET["series"]) || $page['series_id']) {
@@ -110,7 +111,7 @@ if(!isset($page['number'])) {
 									<div class="clear"></div> 
 								</div>
 								<div style="width: 100%; float: right; text-align: right">
-									<?php if($page['img']){ ?><a target="_blank" href="<?php echo HTTP_HOST.$slugUrl.$page['slug']; ?>" style="margin-top: 10px; display: block; text-align: center; padding: 3px 8px; float: left; width: 100px; height: 17px;" class="button-primary">View Page</a><?php } ?>
+									<?php if($showLink){ ?><a target="_blank" href="<?php echo HTTP_HOST.$slugUrl.$page['slug']; ?>" style="margin-top: 10px; display: block; text-align: center; padding: 3px 8px; float: left; width: 100px; height: 17px;" class="button-primary">View Page</a><?php } ?>
 									<input style="margin-top:10px; width: 100px;" type="submit" value="<?php echo $publishWord; ?>" accesskey="p" tabindex="5" class="button-primary" name="action"/>
 								</div>
 								<div class="clear"></div>
