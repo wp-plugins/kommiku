@@ -968,6 +968,7 @@ function kommiku() {
 			//
 			
 			if($_POST['what'] == "page" && $_CLEAN['series_id']) { 
+
 				$table = $wpdb->prefix."comic_page";
 					$page['title']           = $_POST['title'];
 					$page['number']          = $_POST['number'];
@@ -1046,7 +1047,7 @@ function kommiku() {
 			if(!$page['fail']) {
 				$page['pubdate'] = date("Y-m-d H:i:s O");
 				if($chapter['number']) $chapterHistory = ' Chapter '.$chapter['number'].' -';
-				if ($_POST['action'] == "create") {
+				if ($_POST['action'] == "Publish") {
 						if($newname){
 							if(move_uploaded_file($_FILES['img']['tmp_name'],$newname)) {								
 								$table = $wpdb->prefix."comic_page";
