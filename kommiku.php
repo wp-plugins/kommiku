@@ -8,7 +8,7 @@ Author: Henry Tran
 Author URI: http://dotspiral.com/
 Text Domain: kommiku
 */ 
-define('KOMMIKU_VERSION', '2.2.1' );
+define('KOMMIKU_VERSION', '2.2.2' );
 
 if ( !defined('WP_LOAD_PATH') ) {
 
@@ -1484,8 +1484,8 @@ function kommiku_settings() {
 				$kommiku_settings['feed'] = $_POST['feed'];
 			} else {
 				if(!get_option( 'kommiku_url_feed' ))
-				add_option("kommiku_url_feed", 'feed');
-			
+					add_option("kommiku_url_feed", 'feed');
+				
 				update_option('kommiku_url_feed', 'rss');
 				$kommiku_settings['feed'] = 'rss';
 			}
@@ -1494,7 +1494,7 @@ function kommiku_settings() {
 				update_option('kommiku_override_index', true);
 				$kommiku_settings['kommiku_override_index'] = true;
 			} else {
-				update_option('kommiku_override_index', false);
+				delete_option('kommiku_override_index');
 				$kommiku_settings['kommiku_override_index'] = false;
 			}
 			
@@ -1504,8 +1504,7 @@ function kommiku_settings() {
 			if($_POST['url'] == "")
 				update_option('kommiku_no_slug', 'true');
 			else
-				update_option('kommiku_no_slug', 'false');
-			
+				delete_option('kommiku_no_slug');
 			
 			if($_POST['apikey']) {
 				update_option('K_A_K', $_POST['apikey']);
@@ -1513,14 +1512,14 @@ function kommiku_settings() {
 				if(!get_option( 'K_A_K' ))
 					add_option("K_A_K", $_POST['apikey']);
 			} else {
-				update_option('K_A_K', '');
+				delete_option('K_A_K');
 				$kommiku_settings['key'] = $_POST['apikey'];
 			}
 			
 			if($kommiku_settings['one_comic'] != "")
 				update_option('kommiku_one_comic', $kommiku_settings['one_comic']);
 			else
-				update_option('kommiku_one_comic', 'false');
+				delete_option('kommiku_one_comic');
 								
 			//Remove Trialing and Leading Slash
 			$kommiku_settings['url'] = $db->trail($kommiku_settings['url']);

@@ -70,7 +70,7 @@ if(($isPage)) {
 	if(KOMMIKU_URL_FORMAT)
 		$komUrlDash = KOMMIKU_URL_FORMAT.'/';
 		
-	if(!$kommiku['one_comic'])
+	if($kommiku['one_comic'])
 		$seriesUrl = $series["slug"].'/';
 					
 	if($chapter) {
