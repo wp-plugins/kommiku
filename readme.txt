@@ -11,9 +11,16 @@ Stable tag: 2.8
 
 A Online Media viewer. A plug-in that creates pages that can be used as a Manga, Comic, Movie, or Novel Viewer or a Portfolio. To simply put, Kommiku aims to be the ultimate media viewer.
 
+= Will not work on Windows Server! =
+
+Main Support site: http://thetosho.com/
+
+Demo Site: http://eclipse-scans.com/
 
 == Installation ==
 * Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
+
+* Note 2: Kommiku uses some extensive URL Rewriting. It may not work on a Windows Server!
 
 1. After downloading the Kommiku plugin, unpack and upload the folder, "kommiku", to the wp-content/plugins folder on your blog. Make sure to leave the directory structure of the archive intact so that all of the Kommiku files are located in 'wp-content/plugins/kommiku/'
 
@@ -40,9 +47,6 @@ You may view a demo at http://eslend.com/
 
 
 == Frequently Asked Questions ==
-
--  Please check my [Kommiku FAQs](http://dotspiral.com/wiki/index.php?title=FAQs "Frequently Asked Questions for Kommiku") at [dotSpiral](http://dotspiral.com/)
-
 
 = When I go to my Comic Base URL or http://mysite.com/manga/ it doesn't work. =
 Make sure the directory for that Comic Base does not exist. For example, if I had the directory called "Manga" in my root files, and my Comic Base as "Manga", the directory folder will override Wordpress's Hook, and you will be going to the directory instead.
