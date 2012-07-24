@@ -15,8 +15,6 @@ A Online Media viewer. A plug-in that creates pages that can be used as a Manga,
 
 Main Support site: http://thetosho.com/
 
-Demo Site: http://eclipse-scans.com/
-
 == Installation ==
 * Note: As is the case when installing any new plugin, it's always a good idea to backup your blog data before installing.*
 

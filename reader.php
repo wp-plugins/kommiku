@@ -1,6 +1,6 @@
 <?php  
 if(($isPage)) {
-	global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku, $theimage;
+	global $previousPage, $previousLink, $nextPage, $nextLink, $kommiku, $theimage,$naviNextChapter, $naviLastChapter;
 	if($kommiku['series_chapter']) {
 		foreach ($kommiku['series_chapter'] as $chapterList) { $h++;
 			$chapterLists[$h] = $chapterList->slug;
@@ -13,14 +13,16 @@ if(($isPage)) {
 			if($chapterList->slug == $chapter["slug"]) {
 				$select = "selected=selected ";
 				$chapterSelected = $h;
+				$afterChapter = $h+1;
+				$beforeChapter = $h-1;
 			}
 			unset($chapterTitle);
 			if ($chapterList->title) $chapterTitle = ' - '.stripslashes($chapterList->title);
 			$chapter_items[$chapterList->number] = '<option '.$select.'value="'.$chapterList->slug.'">'.$chapterList->slug.$chapterTitle.'</option>';			
 			if($select) {
 				$pass = $h-1;
-				if(isset($chapterListID[$pass])) $previousChapter = $chapterLists[$pass];
-				if(isset($chapterListID[$pass])) $previousChapterID = $chapterListID[$pass];
+				if(isset($chapterListID[$beforeChapter])) $previousChapter = $chapterLists[$beforeChapter];
+				if(isset($chapterListID[$beforeChapter])) $previousChapterID = $chapterListID[$beforeChapter];
 			}
 		}
 		natsort($chapter_items);
@@ -42,17 +44,20 @@ if(($isPage)) {
 		}
 		$kommiku['pageSource'][$pageList->number] = $pageList->img;
 		$kommiku['pageOption'] .= '<option '.$select.'value="'.$pageList->slug.'">'.$pageList->slug.'</option>';
+		$kommiku['pageSlug'][$pageList->number] = $pageList->slug;
 		$lastPage = $pageList->number;
 		if($select) $previousPage = $pageLists[$i-1];
 		}
-	}	
+		$kommiku['pageLists'] = $pageLists;
+	}
+	
 	$pageOption = $kommiku['pageOption'];
 	
 	if(isset($chapter["number"])){
 		$chapter["next"] = $chapter["slug"].'/';
 		$chapter["previous"] = $chapter["slug"].'/';
 	}
-	
+		
 	if($lastPage == $pageSelected && $nextChapterID) {
 		$number = $wpdb->get_var("SELECT min(number) FROM `".$wpdb->prefix."comic_page` WHERE chapter_id = '".$nextChapterID."'");
 		$nextPage = $wpdb->get_var("SELECT min(slug) FROM `".$wpdb->prefix."comic_page` WHERE chapter_id = '".$nextChapterID."' AND number = '".$number."'");
@@ -70,9 +75,12 @@ if(($isPage)) {
 	if(KOMMIKU_URL_FORMAT)
 		$komUrlDash = KOMMIKU_URL_FORMAT.'/';
 		
-	#if($kommiku['one_comic'])
-		$seriesUrl = $series["slug"].'/';
-					
+	$seriesUrl = $series["slug"].'/';
+		
+	$oneSeries = get_option( 'kommiku_override_index' );
+	if($oneSeries)	
+		unset($seriesUrl);
+		
 	if($chapter) {
 		if(isset($previousPage)) $previousLink = HTTP_HOST.$komUrlDash.$seriesUrl.$chapter["previous"].$previousPage.'/';
 		if(isset($nextPage)) $nextLink = HTTP_HOST.$komUrlDash.$seriesUrl.$chapter["next"].$nextPage.'/';
@@ -80,10 +88,13 @@ if(($isPage)) {
 		if(isset($previousPage)) $previousLink = HTTP_HOST.$komUrlDash.$seriesUrl.$previousPage.'/';
 		if(isset($nextPage)) $nextLink = HTTP_HOST.$komUrlDash.$seriesUrl.$nextPage.'/';
 	}
+	if($previousChapter) $naviLastChapter = HTTP_HOST.$komUrlDash.$seriesUrl.$previousChapter.'/';  
+	if($nextChapter) $naviNextChapter = HTTP_HOST.$komUrlDash.$seriesUrl.$nextChapter.'/';
 			
-	function prevPage($link = false,$wrapper = '',$class = NULL,$title = NULL) {
-		global $previousPage, $previousLink;
+	function prevPage($link = false,$wrapper = '',$class = NULL,$title = NULL,$chapterNavi = NULL) {
+		global $previousPage, $previousLink, $naviLastChapter;
 		
+		if($chapterNavi == true) $previousLink = $naviLastChapter;
 		if($link && isset($previousLink)) {
 			if($class) $class = 'class="'.$class.'" '; 
 			if($title) {
@@ -120,9 +131,10 @@ if(($isPage)) {
 
 	}
 			
-	function nextPage($link = false,$wrapper = '',$class = NULL,$title = NULL) {
-		global $nextPage, $nextLink;
+	function nextPage($link = false,$wrapper = '',$class = NULL,$title = NULL, $chapterNavi = NULL) {
+		global $nextPage, $nextLink, $naviNextChapter;
 		
+		if($chapterNavi == true) $nextLink = $naviNextChapter;
 		if($link && isset($nextLink)) {
 			if($class) $class = 'class="'.$class.'" '; 
 			if($title) {
@@ -139,8 +151,8 @@ if(($isPage)) {
 			
 	}
 
-	function img($echo = true,$class = NULL,$title = NULL) {
-		global $nextPage, $nextLink, $series, $chapter, $page;
+	function img($echo = true,$class = NULL,$title = NULL,$showall = NULL) {
+		global $nextPage, $nextLink, $series, $chapter, $page, $kommiku;
 		
 		if($chapter["folder"]) {
 			$url = $chapter["folder"];	
@@ -158,6 +170,14 @@ if(($isPage)) {
 		} else {
 			return $theimage;	
 		}
+		
+		if($showall == true) {
+			foreach($kommiku['pageLists'] as $pageNumber){
+				$chapterImages .= '<img src="'.UPLOAD_URLPATH.$url.$kommiku['pageSource'][$pageNumber].'" />';
+			}
+			echo ( $chapterImages ); 
+			return;
+		}  
 		
 		if(isset($nextLink)) {
 			if($class) $class = 'class="'.$class.'" '; 
